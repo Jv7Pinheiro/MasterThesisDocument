@@ -1,0 +1,51 @@
+\documentclass{standalone}
+\usepackage{tikz}
+
+\usetikzlibrary{3d}
+\usepackage{amsmath} % For the array environment
+
+% Define a command to draw a single cube
+\newcommand{\drawcube}{
+    % These distances can be meddled with to get you what you want
+    \def\ix{2} %
+    \def\iy{2} %
+    \def\iz{1.5} %
+    \def\corescale{1}
+    \def\rot{90}
+    \def\r{0.25} % Thickness of edges
+    \def\rx{\ix/\corescale}
+    \def\ry{\iy/\corescale}
+    \def\rz{\iz/\corescale}
+
+    % Draw the cube
+    \begin{tikzpicture}[scale=0.5, every node/.style={inner sep=0pt}] % Scale for smaller cubes
+        % Define starting point
+        \coordinate (TFrontLowerLeft) at (0,0);
+        \draw (TFrontLowerLeft) rectangle ++ (\rx,\ry); % Front face
+
+        % Top face
+        \begin{scope}[shift={(TFrontLowerLeft)}, canvas is zx plane at y=\ry,rotate=\rot]
+        \draw (0,0) rectangle ++ (\rx,\rz);
+        \end{scope}
+
+        % Left face
+        \begin{scope}[shift={(TFrontLowerLeft)},canvas is zy plane at x=\rx,rotate=\rot]
+        \draw (0,0) rectangle ++ (\ry,\rz);
+        \end{scope}
+    \end{tikzpicture}
+}
+
+\begin{document}
+
+% The vector of cubes
+\[
+\left[
+\begin{array}{c}
+    \drawcube \\ % First cube
+    \vdots \\ % Dots for other cubes
+    \drawcube % Last cube
+\end{array}
+\right]
+\]
+
+\end{document}

@@ -1,0 +1,85 @@
+\documentclass[tikz, border=2pt]{standalone}
+% \usepackage{tikz}
+
+\usepackage{amsmath, amssymb}
+
+\begin{document}
+    \include{setup}
+    % Mess with the first scale to change the size of your drawings
+    % Mess with the second scale to change the size of your letters
+    \begin{tikzpicture}[scale=1,namenode/.style={scale=1}]
+        % These distances can be meddled with to get you what you want
+        % Within reason...
+        \def\ix{2} %
+        \def\iy{2} %
+        \def\iz{1.5} %
+        \def\corescale{1}
+        \def\rot{90}
+        \def\r{0.25} % Thicknesss of chickenfeet
+        \def\rx{\ix/\corescale}
+        \def\ry{\iy/\corescale}
+        \def\rz{\iz/\corescale}
+        
+        % Give figure's starting point and draw a rectange
+        \coordinate (TFrontLowerLeft) at (0,0);
+        \draw (TFrontLowerLeft) rectangle ++ (\rx,\ry);
+    
+        % This scope draws the top face of the cube
+        \begin{scope}[shift={(TFrontLowerLeft)}, canvas is zx plane at y=\ry,rotate=\rot]
+           \draw (0,0) rectangle ++ (\rx,\rz);
+        \end{scope}
+    
+        % This scope draws the left side of the cube
+        \begin{scope}[shift={(TFrontLowerLeft)},canvas is zy plane at x=\rx,rotate=90]
+           \draw (0,0) rectangle ++ (\ry,\rz); %
+        \end{scope}
+    
+        % This writes the tensor name in the front face of the cube
+        \node[namenode] at ($(TFrontLowerLeft) + (0.5*\rx, 0.5*\ry)$)  {$\mathbf{\mathcal{T}}$};
+    
+        % This writes the equal sign to the side of the cube
+        \coordinate (ApproxCtr) at ($(TFrontLowerLeft) + (0.75+\rx+0.4*\rz,0.7*\ry)$);
+        \node[namenode] at (ApproxCtr) {=};
+
+    
+        %%%%%%%%% 1st component
+        % This draws the vertical chicken feet
+        \coordinate (A1LowerLeft) at ($(ApproxCtr) + (0.75,-0.75*\iy)$);
+        \draw (A1LowerLeft) rectangle ++ (\r,\iy);
+        \node[namenode] at ($(A1LowerLeft)-(0,2*\r)$) {$A_1$};
+    
+        % This drwas the horizontal chicken feet
+        \coordinate (B1LowerLeft) at ($(A1LowerLeft) + (\r,\iy) + (\r,\r)$);
+        \draw (B1LowerLeft) rectangle ++ (\ix,\r);
+        \node[namenode] at ($(B1LowerLeft)+(.5*\iy,-2*\r)$) {$B_1$};
+    
+        % This scopee draws the tp-screen chicken feet
+        \begin{scope}[shift={($(A1LowerLeft) + (-0.05,2.25*\r)$)},canvas is zx plane at y=\iy,rotate=90]
+           \draw (0,\r) rectangle ++ (\r,\iz);
+        \end{scope}
+        \node[namenode] at ($(B1LowerLeft)+(.5*\ix,1)$) {$C_1$};
+     
+        
+        % % middle ellipsis
+        \coordinate (MiddleEllipsis) at (4*\ix,0.75*\iy);
+        \node[namenode] at (MiddleEllipsis) {$+ \quad \cdots \quad +$};
+        
+        % %%%%%%%%% last component
+        \coordinate (ARLowerLeft) at ($(A1LowerLeft) + (2.9*\ix,0)$);
+        \draw (ARLowerLeft) rectangle ++ (\r,\iy);
+        \node[namenode] at ($(ARLowerLeft)-(0,2*\r)$) {$A_R$};
+     
+        \coordinate (BRLowerLeft) at ($(ARLowerLeft) + (\r,\iy) + (\r,\r)$);
+        \draw (BRLowerLeft) rectangle ++ (\ix,\r);
+        \node[namenode] at ($(BRLowerLeft)+(.5*\iy,-2*\r)$) {$B_R$};
+     
+        \begin{scope}[shift={($(ARLowerLeft) + (-0.05,2.25*\r)$)},canvas is zx plane at y=\iy,rotate=90]
+          \draw (0,\r) rectangle ++ (\r,\iz);
+        \end{scope}
+        \node[namenode] at ($(BRLowerLeft)+(.5*\ix,1)$) {$C_R$};
+
+        % \coordinate (OuterProducts) at ($(TFrontLowerLeft) + (\ix+0.4*\iz,0.75*\iy) + (12.75,0)$);
+        % \node[namenode] at (OuterProducts) {$\displaystyle = \sum_{i=1}^R \underbrace{\raisebox{0pt}[0pt][10pt]{A_i \circ B_i \circ C_i}}_{\textbf{Outer Products}} = \underbrace{\raisebox{0pt}[0pt][10pt]{\Dsquare{A, B, C}}}_{\textbf{K Tensor}}$};
+        
+    \end{tikzpicture}
+\end{document}

@@ -1,0 +1,93 @@
+\documentclass[tikz, border=2pt]{standalone}
+% \usepackage{tikz}
+
+\usepackage{amsmath, amssymb}
+
+\begin{document}
+    \include{setup}
+    % Mess with the first scale to change the size of your drawings
+    % Mess with the second scale to change the size of your letters
+    \begin{tikzpicture}[scale=1,namenode/.style={scale=1}]
+        % These distances can be meddled with to get you what you want
+        % Within reason...
+        \def\ix{2} %
+        \def\iy{2} %
+        \def\iz{2} %
+        \def\r{\iz/4}
+        \def\corescale{1.75}
+        \def\rx{\ix/\corescale}
+        \def\ry{\iy/\corescale}
+        \def\rz{\iz/\corescale}
+        \def\sp{\rx/6}
+        
+        % This line chooses the starting location of the object
+        \coordinate (MFrontLowerLeft) at (0,0);
+    
+        % This draws the front og the cube
+        \draw (MFrontLowerLeft) rectangle ++ (\ix,\iy);
+    
+        % This scope draws the top face of the cube
+        \begin{scope}[shift={(MFrontLowerLeft)}, canvas is zx plane at y=\iy,rotate=90]
+           \draw (0,0) rectangle ++ (\ix,\iz);
+        \end{scope}
+    
+        % This scope draws the left side of the cube
+        \begin{scope}[shift={(MFrontLowerLeft)},canvas is zy plane at x=\ix,rotate=90]
+           \draw (0,0) rectangle ++ (\iy,\iz); %
+        \end{scope}
+    
+        % This writes the M in the front face of the cube
+        \node[namenode] at ($(MFrontLowerLeft) + (0.5*\ix, 0.5*\iy)$)  {$\mathcal{M}$};
+    
+        \coordinate (ALowerLeft) at ($(MFrontLowerLeft) + (-\ix - 0.5, \iy-\r/1.5)$);
+        \draw (ALowerLeft) rectangle ++ (\iy, \r/1.25);
+        \node[namenode] at ($(ALowerLeft) + (\iy/2, 0.2)$) {$A$};
+    
+        \coordinate (BLowerLeft) at ($(MFrontLowerLeft) + (\ix+1.15,0.775)$);
+        \draw (BLowerLeft) rectangle ++ (\r/1.25, \iy);
+        \node[namenode] at ($(BLowerLeft) + (0.19, \iy/2)$) {$B$};
+    
+        \coordinate (L1) at ($(MFrontLowerLeft) + (\ix + \sp, \sp)$);
+        \coordinate (L1H) at ($(L1) + (0, \iy)$);
+        \draw[thin, densely dotted] (L1) -- (L1H);
+        \coordinate (L1) at ($(MFrontLowerLeft) + (\ix + 2*\sp, 2*\sp)$);
+        \coordinate (L1H) at ($(L1) + (0, \iy)$);
+        \draw[thin, densely dotted] (L1) -- (L1H);
+        \coordinate (L1) at ($(MFrontLowerLeft) + (\ix + 3*\sp, 3*\sp)$);
+        \coordinate (L1H) at ($(L1) + (0, \iy)$);
+        \draw[thin, densely dotted] (L1) -- (L1H);
+        
+        \coordinate (L1) at ($(MFrontLowerLeft) + (\sp, \iy + \sp)$);
+        \coordinate (L1H) at ($(L1) + (\ix, 0)$);
+        \draw[thin, densely dotted] (L1) -- (L1H);
+        \coordinate (L1) at ($(MFrontLowerLeft) + (2*\sp, \iy + 2*\sp)$);
+        \coordinate (L1H) at ($(L1) + (\ix, 0)$);
+        \draw[thin, densely dotted] (L1) -- (L1H);
+        \coordinate (L1) at ($(MFrontLowerLeft) + (3*\sp, \iy + 3*\sp)$);
+        \coordinate (L1H) at ($(L1) + (\ix, 0)$);
+        \draw[thin, densely dotted] (L1) -- (L1H);
+    
+        \node[namenode] at ($(MFrontLowerLeft) + (3.25+0.5*\ix, 0.5*\iy)$)  {$ = $};
+    
+        % This scope draws the top face of the cube
+        \coordinate (CLowerLeft) at ($(MFrontLowerLeft) + (4.85, -\iy/3)$);
+        \begin{scope}[shift={(CLowerLeft)}, canvas is zx plane at y=\iy,rotate=90]
+           \draw (0,0) rectangle ++ (\r/1.25, \ix);
+        \end{scope}
+    
+        \node[namenode] at ($(CLowerLeft) + (1.25, \iy + 0.3)$) {$C^\text{T}$};
+    \end{tikzpicture}
+\end{document}
+
+\begin{tikzpicture}[scale=2,namenode/.style={scale=1}]
+                    	\def\ix{2} %
+                    	\def\iy{2} %
+                    	\def\iz{2} %
+                        \def\r{\iz/4}
+                        \def\corescale{1.75}
+                    	\def\rx{\ix/\corescale}
+                    	\def\ry{\iy/\corescale}
+                    	\def\rz{\iz/\corescale}
+                        \def\sp{\rx/6}
+                        
+                    \end{tikzpicture}

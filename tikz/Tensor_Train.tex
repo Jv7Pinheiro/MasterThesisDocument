@@ -1,0 +1,70 @@
+\documentclass[tikz, border=2pt]{standalone}
+% \usepackage{tikz}
+
+\usepackage{amsmath, amssymb}
+
+\begin{document}
+    \include{setup}
+    % Mess with the first scale to change the size of your drawings
+    % Mess with the second scale to change the size of your letters
+    \begin{tikzpicture}[scale=1,namenode/.style={scale=1}]
+        % These distances can be meddled with to get you what you want
+        % Within reason...
+        \def\ix{2.5} %
+        \def\iy{2.5} %
+        \def\iz{1.75} %
+        \def\corescale{2} % Has to be more than 1
+        \def\rot{90}
+        \def\rx{\ix/\corescale}
+        \def\ry{\iy/\corescale}
+        \def\rz{\iz/\corescale}
+        
+        % First Factor Matrix
+        \coordinate (AFrontLowerLeft) at ($(0, 0)$);
+        \draw (AFrontLowerLeft) rectangle ++ (\rx,\iy);
+        \node[namenode] at ($(AFrontLowerLeft) + (0.5*\rx, 0.5*\iy)$)  {$\mathbf{\mathcal{G}}_1$};
+
+        % This scope draws the top face of the cube
+        \coordinate (CFrontLowerLeft) at ($(AFrontLowerLeft) + (0.5 + \rx, 0.25*\ix)$);
+        \draw (CFrontLowerLeft) rectangle ++ (\rx,\ry);
+        
+        \begin{scope}[shift={(CFrontLowerLeft)}, canvas is zx plane at y=\ry,rotate=\rot]
+           \draw (0,0) rectangle ++ (\rx,\iz);
+        \end{scope}
+    
+        % This scope draws the left side of the cube
+        \begin{scope}[shift={(CFrontLowerLeft)},canvas is zy plane at x=\rx,rotate=90]
+           \draw (0,0) rectangle ++ (\ry,\iz); %
+        \end{scope}
+    
+        % This writes the core name in the front face of the cube
+        \node[namenode] at ($(CFrontLowerLeft) + (0.5*\rx, 0.5*\ry)$)  {$\mathbf{\mathcal{G}}_2$};
+
+        % middle ellipsis
+        \coordinate (MiddleEllipsis) at (3.4*\rx,1.25*\ry);
+        \node[namenode] at (MiddleEllipsis) {$\cdots$};
+
+        % This scope draws the top face of the cube
+        \coordinate (CFrontLowerLeft) at ($(CFrontLowerLeft) + (0.5 + \ix, 0)$);
+        \draw (CFrontLowerLeft) rectangle ++ (\rx,\ry);
+        
+        \begin{scope}[shift={(CFrontLowerLeft)}, canvas is zx plane at y=\ry,rotate=\rot]
+           \draw (0,0) rectangle ++ (\rx,\iz);
+        \end{scope}
+    
+        % This scope draws the left side of the cube
+        \begin{scope}[shift={(CFrontLowerLeft)},canvas is zy plane at x=\rx,rotate=90]
+           \draw (0,0) rectangle ++ (\ry,\iz); %
+        \end{scope}
+    
+        % This writes the core name in the front face of the cube
+        \node[namenode] at ($(CFrontLowerLeft) + (0.5*\rx, 0.5*\ry)$)  {$\mathbf{\mathcal{G}}_{d-1}$};
+
+        % Second Factor Matrix
+        \coordinate (BFrontLowerLeft) at ($(CFrontLowerLeft) + (\rx + 1.25*\rz, 0.15*\rz)$);
+        \draw (BFrontLowerLeft) rectangle ++ (\ix,\ry);
+        \node[namenode] at ($(BFrontLowerLeft) + (0.5*\ix, 0.5*\ry)$)  {$\mathbf{\mathcal{G}}_d$};
+
+        
+    \end{tikzpicture}
+\end{document}
