@@ -93,17 +93,17 @@
 
     If we have a three-dimensional array of numners, then we have a higher-order
     tensor. Tensors of order 3 or greater are denoted by uppercase mathematical
-    caligraphy letters: $\mathcal{X}$. This can be vizualized on Fiugure
-    \ref{fig:tensor3}. If $\mathcal{X}$ is a real-valued tensor of size $m\times
-    n \times p$, then we write $\mathcal{X}\in \mathbb{R}^{m\times n\times p}$.
-    For instance, given a set of $m$ objects, each of which has $n$ features,
-    measured under $p$ different scenatios, the tensor entry $\mathcal{X}(i, j,
-    k)$ would represent the $j^\text{th}$ feature of object $i$ measured in
-    scenario $k$. More generally, entry $(i, j, k) \in [m]\otimes [n]\otimes
-    [p]$ of $\mathcal{X}$ is denoted as $X(i, j, k)$ or compactly as
-    $x_{i, j, k}$. We refer to each dimension as a \textbf{mode}. Of a
-    3-way tensor, we say that mode 1 is of size $m$, mode 2 of size $n$, and
-    mode 3 of size $p$. If all modes have the same size, we call this tensor
+    caligraphy letters: $\mathcal{X}$. This can be vizualized on
+    \Cref{fig:tensor3}. If $\mathcal{X}$ is a real-valued tensor of size
+    $m\times n \times p$, then we write $\mathcal{X}\in \mathbb{R}^{m\times
+    n\times p}$. For instance, given a set of $m$ objects, each of which has $n$
+    features, measured under $p$ different scenatios, the tensor entry
+    $\mathcal{X}(i, j, k)$ would represent the $j^\text{th}$ feature of object
+    $i$ measured in scenario $k$. More generally, entry $(i, j, k) \in
+    [m]\otimes [n]\otimes [p]$ of $\mathcal{X}$ is denoted as $X(i, j, k)$ or
+    compactly as $x_{i, j, k}$. We refer to each dimension as a \textbf{mode}.
+    Of a 3-way tensor, we say that mode 1 is of size $m$, mode 2 of size $n$,
+    and mode 3 of size $p$. If all modes have the same size, we call this tensor
     \textbf{uniform}.
 
     As mentioned earlier, any tensor of order greater or equal to three is
@@ -117,7 +117,7 @@
     martrix of 3-way tensors, in real life that is often used to describe an
     experiment with 3 spatial dimensions, one time dimension, and and a
     certain amount of variables being measured is the fifth fimension. To
-    remember all of this, Table \ref{tab:tensor_notation}
+    remember all of this, \Cref{tab:tensor_notation}
 
     % Define a command to draw a single cube
     \newcommand{\drawcube}[1]{
@@ -216,7 +216,7 @@
     $j^\text{th}$ \textbf{lateral slice} is a matrix of size $m\times n$ given
     by $\mathcal{X}(:, j, :)$. The $k^\text{th}$ \textbf{frontal slice} is a
     matrix of size $m\times n$ given by $\mathcal{X}(:, :, k)$. The three types
-    of slices for 3-way tensors are shown in \Cref{fig:slices}
+    of slices for 3-way tensors are shown in \Cref{fig:slices}.
 
     \begin{figure}[ht]
         \def\distance{0.2}

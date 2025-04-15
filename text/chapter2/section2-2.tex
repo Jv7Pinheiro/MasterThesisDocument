@@ -8,17 +8,24 @@ multiplication tensor.
 
 \subsection{Cyclic Invariant Matrix Multiplication Algorithms} \label{sec:Cyclic Invariant Matrix Multiplication Algorithms} 
     
-    Recall that we can rearrange the multiplications and additions of Strassen's
-    agorithms to obtain variantions. Some of these variantions can be cyclic
-    invariant. Below is one of these Strassen's variant algorithm next to the
-    original. Both of these algorithms have already been introduced back in
-    \Cref{sec:Fast Matrix Multiplication Algorithms}. Notive how the variant
-    Strassen's algorithm on the left is composed of smaller submatrices that
-    appear throughout the main factor matrices of the KTensor. The $4\times 1$
-    matrix in red is called the \textbf{symmetric component}, and it always
-    appears at the beginning of all three factor matrices, we denote it as
-    $\mathbf{S}$. The remaining three $4\times 2$ submatrices are called the
-    \textbf{cyclic component}, we denote them as $\mathbf{U, V, W}$. 
+    Recall that we can permute and rearrange the multiplications and additions
+    of Strassen's agorithms to obtain variantions. Some of these variantions can
+    be cyclic invariant. Below is one of these Strassen's variant algorithm next
+    to the original. Both of these algorithms have already been introduced back
+    in \Cref{sec:Fast Matrix Multiplication Algorithms}. The algorithm on the
+    left is \Cref{eq:classic_strassen} and the one on the right is
+    \Cref{eq:per_strassen}. Notice how (1) the permutation is given by simply
+    moving the columns of the KTensor (in unity) just the way it was described
+    previously. $\mathbf M_3$ became $\mathbf M_6$, $\mathbf M_4$ became
+    $\mathbf M_3$, and $\mathbf M_6$ became $\mathbf M_4$, which force the
+    additions in $\mathbf C$ changed accordingly and (2) the permutted
+    Strassen's algorithm on the right is composed of smaller submatrices that
+    appear throughout the main factor matrices of the KTensor (highlighted in
+    colors). The $4\times 1$ matrix in red is called the \textbf{symmetric
+    component}, and it always appears at the beginning of all three factor
+    matrices, we denote it as $\mathbf{S}$. The remaining three $4\times 2$
+    submatrices are called the \textbf{cyclic component}, we denote them as
+    $\mathbf{U, V, W}$. 
 
     \pagebreak
     \vspace{-50pt}
@@ -76,13 +83,12 @@ multiplication tensor.
     given rank $r$, there are multiple choices for $r_c$, which in turn define
     the value of $r_s$ since $r_s = r - 3r_c$. For rank 7 algorithms of $2\times
     2$ matrices, we have two options $[r_s = 1, r_c = 2]$ and  $[r_s = 4, r_c =
-    1]$. Below are two different Strassen's algorithm, on the left is the same
-    algorithm we saw above of $r_s = 1$, and on the right is an $r_s = 4$
-    algorithm. Besides the difference in $r_s$, these algorithms share another
-    distinction, which is the number of matrix additions. The algorithm on the
-    left has 18 additions while the one on the left has 24 additions, thus
-    making it slighly less optimal. Generally we disregard this distinction as
-    matrix addition is not the bottleneck computation. 
+    1]$. We have seen both of these algorithms before in \Cref{sec:Fast Matrix
+    Multiplication Algorithms}. The one on the left is \Cref{eq:per_strassen}
+    and the one on the right is \Cref{eq:var_strassen}. Recall that the one on
+    the left has 18 matrix additions and the one on the right has 24. We can
+    easily count such by counting the number of non zero entries in our factor
+    matrices. 
 
 %     \pagebreak
     \vspace{-50pt}
@@ -189,9 +195,9 @@ look like \Cref{fig:cyc_inv_cp}.
 \newpage
 \subsection{Adapting CP\_DGN to Cyclic Invariance} \label{Adapting CP-DGN to Cyclic Invariance}
 
-    We must now adapt \Cref{sec:Cyclic Invariant Matrix Multiplication
-    Algorithms} to our cyclic invariance structure. Now we have the imposed
-    structure on any CP Decomposition of the matrix multiplication tensor. 
+    We must now adapt \Cref{sec:The Matrix Multiplication Tensor} to our cyclic
+    invariance structure. Now we have the imposed structure on any CP
+    Decomposition of the matrix multiplication tensor. 
 
     \begin{equation*}
         \begin{array}{rcl}

@@ -21,13 +21,19 @@ tensor. On the other hand, the second project focuses on numeric tensor
 approximations using the Tucker Decomposition. 
 
 
-\subsection{Kruskal Tensors and The CP Decomposition} \label{sec:Kruskal Tensors and The CP Decomposition}
-    The CP Decomposition compresses an input tensor into a Kruskal Tensor
-    (KTensor), which is a collection of $r$ rank-1 components. Each component is
-    an outer product of $r$ vectors. We refer to $r$ as the rank of the CP
-    decomposition, though this is technically true only when $r$ is minimal. The
-    vectors in each mode come together to form a factor matrix. We can visualize
-    this in the case of a 3-way tensor as shown in \Cref{fig:KTensor}.
+\subsection{Kruskal Tensors and The CP Decomposition} \label{sec:Kruskal Tensors
+    and The CP Decomposition} The CP Decomposition compresses an input tensor
+    into a Kruskal Tensor (KTensor), which is a collection of $r$ rank-1
+    components. Each component is an outer product of $r$ vectors. We refer to
+    $r$ as the rank of the CP decomposition, though this is technically true
+    only when $r$ is minimal. The vectors in each mode come together to form a
+    factor matrix. We can visualize this in the case of a 3-way tensor as shown
+    in \Cref{fig:KTensor}. The rank-1 components in their outer-product format
+    are cassually and kindheartdly referred to as chicken feet for their
+    appearance. It is crucial to note that we can move these chicken feet around
+    as long as we keep their corresponding indeces accross all factor matrices
+    together, this fact will be relevant later on.
+
     \begin{figure}[ht!]
         \centering
         \begin{subfigure}[b]{0.99\textwidth}
@@ -97,7 +103,8 @@ approximations using the Tucker Decomposition.
 
     \begin{figure}[ht]
         \centering
-        \includegraphics[scale=1]{tikz/chapter1/section1-2/Tucker_Tensor.pdf}
+        % \includegraphics[scale=1]{tikz/chapter1/section1-2/Tucker_Tensor.pdf}
+        \input{tikz/chapter1/section1-2/Tucker_Tensor.tex}
         \caption[A 3-way Tucker Tensor Diagram]{A 3-way Tucker Tensor Diagram}
         \label{fig:TTensor}
     \end{figure}
@@ -118,8 +125,8 @@ approximations using the Tucker Decomposition.
     \end{equation}
     
     
-    The traditional methods are
-    HOSVD (Higher Order Singular Value Decomposition) and STHOSVD (Sequentially
-    Truncated Singular Value Decomposition). Though HOOI (Higher Order
-    Orthogonal Iteration) is not as traditional, it will be the protagonist for
-    this work. We describe these algorithms in ??
+    The traditional methods are HOSVD (Higher Order Singular Value
+    Decomposition) and STHOSVD (Sequentially Truncated Singular Value
+    Decomposition). Though HOOI (Higher Order Orthogonal Iteration) is not as
+    traditional, it will be the protagonist for this work. We describe these
+    algorithms in \Cref{sec:Tucker Algorithms}

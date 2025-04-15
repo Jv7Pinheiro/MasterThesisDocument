@@ -93,7 +93,7 @@
     cost can be decresed by carefully manipulating our multiplications and additions
     in order to reduce the number of recursive calls. In 1969, Volker Strassen
     became the first to develop an algorithm with cost less than $O(n^3)$, which
-    made way for \textit{fast matrix multiplication algorithms}. His classic
+    made way for \textbf{fast matrix multiplication algorithms}. His classic
     algorithm is showcased in \ref{eq:classic_strassen}. His algorithm involves 7
     multiplications and 18 additions, but recall that additions are computationally
     less expensive than multiplications. The computational complexity of Strassen's
@@ -109,7 +109,7 @@
             \color{blue} \mathbf{M}_2 & = & (\mathbf{A}_{12} + \mathbf{A}_{22})\cdot \mathbf{B}_{11} \\
             \color{blue} \mathbf{M}_3 & = & \mathbf{A}_{11}\cdot (\mathbf{B}_{21} - \mathbf{B}_{22}) \\
             \color{blue} \mathbf{M}_4 & = & \mathbf{A}_{22}\cdot (\mathbf{B}_{12} - \mathbf{B}_{11}) \\
-            \color{blue} \mathbf{M}_5 & = & (\mathbf{A}_{11} + \mathbf{A}_{21})\cdot B_{22} \\
+            \color{blue} \mathbf{M}_5 & = & (\mathbf{A}_{11} + \mathbf{A}_{21})\cdot \mathbf{B}_{22} \\
             \color{blue} \mathbf{M}_6 & = & (\mathbf{A}_{12} - \mathbf{A}_{11})\cdot (\mathbf{B}_{11} + \mathbf{B}_{21}) \\
             \color{blue} \mathbf{M}_7 & = & (\mathbf{A}_{21} - \mathbf{A}_{22})\cdot (\mathbf{B}_{12} + \mathbf{B}_{22}) \\
             \mathbf{C}_{11} & = & \color{blue} \mathbf{M}_1 \color{black} + \color{blue} \mathbf{M}_4 \color{black} - \color{blue} \mathbf{M}_5 \color{black} + \color{blue} \mathbf{M}_7 \\
@@ -120,15 +120,21 @@
         \label{eq:classic_strassen}
     \end{equation}
 
-
-
-    Strassen's algorithm is not unique. We can rearrange and slighlty modify the
-    additions and multiplies to get another algorithm with the same number of
-    multiplies and additions. An example of these variations of Strassen's
-    algorithms can be seen in \ref{eq:var_strassen}. 
+    Strassen's algorithm can be rearranged; we can modify the additions and
+    multiplies to get another a permuted version of his algorithm with the same
+    number of multiplies and additions. An example of these variations of
+    Strassen's algorithms can be seen in \ref{eq:per_strassen}. This permutted
+    version will be relevant for \Cref{sec:Cyclic Invariance} as it contains a
+    special structure that is hard to visualize in the
+    \Cref{eq:classic_strassen}. Notice how the two algorithms are the same,
+    except that $\mathbf M_3$ became $\mathbf M_6$, $\mathbf M_4$ became
+    $\mathbf M_3$, and $\mathbf M_6$ became $\mathbf M_4$, and the additions in
+    $\mathbf C$ changed respectively. It is explained in \Cref{sec:Cyclic
+    Invariant Matrix Multiplication Algorithms} that this is due to a change in
+    the columns of a KTensor decomposition. 
 
     \begin{center}
-        \textbf{Variant Strassen's Algorithm}
+        \textbf{Permuted Strassen's Algorithm}
         \vspace{-20pt}
     \end{center}
     \begin{equation}
@@ -145,45 +151,77 @@
             \mathbf{C}_{21} & = & \color{blue} \mathbf{M}_5 \color{black} + \color{blue} \mathbf{M}_6 \\
             \mathbf{C}_{22} & = & \color{blue} \mathbf{M}_1 \color{black} - \color{blue} \mathbf{M}_2 \color{black} + \color{blue} \mathbf{M}_5 \color{black} + \color{blue} \mathbf{M}_7
         \end{array}
+        \label{eq:per_strassen}
+    \end{equation}
+    
+    It is at this point that an important distinction must be made; what is
+    considered a new algorithm? Both Strassen's algorithm and its permutation
+    are considered Strassen's algorithm because they both involve 7
+    multiplications. This is because the term \textit{Strassen's algorithm} has
+    become an all-encapsulating term for any 2 by 2 matrix multiplication
+    algorithm that uses 7 multiplications instead of the classic 8. For example,
+    take a look at \Cref{eq:var_strassen}. It is no longer just a permutted
+    version of \Cref{eq:classic_strassen} as this onw has 24 matrix additions as
+    opposed to the original's 18. Again, since matrix addition is not the
+    bottleneck, both of these algorithms have the same computational complexity.
+    The algorithm below is still called Strassen's algorithm for the reasons
+    mentioned previously. Furthermore, this variant version will also be
+    relevant in \Cref{sec:Cyclic Invariance} as it contains the same srtructure
+    we will explore later on, but slighly different. It has been proven that
+    there are no possible fast matrix multiplication algorithms with 6
+    multiplications. 
+
+    \begin{center}
+        \textbf{Variant Strassen's Algorithm}
+        \vspace{-20pt}
+    \end{center}
+    \begin{equation}
+        \begin{array}{rcl}
+            \color{blue} \mathbf{M}_1 & = & \mathbf{A}_{11}\cdot \mathbf{B}_{11} \\
+            \color{blue} \mathbf{M}_2 & = & (\mathbf{A}_{12} + \mathbf{A}_{22})\cdot (\mathbf{B}_{12} + \mathbf{B}_{22}) \\
+            \color{blue} \mathbf{M}_3 & = & (\mathbf{A}_{22} - \mathbf{A}_{21})\cdot (\mathbf{B}_{22} - \mathbf{B}_{21}) \\
+            \color{blue} \mathbf{M}_4 & = & (\mathbf{A}_{21} - \mathbf{A}_{12} - \mathbf{A}_{22})\cdot (\mathbf{B}_{21} - \mathbf{B}_{12} - \mathbf{B}_{22}) \\
+            \color{blue} \mathbf{M}_5 & = & (-\mathbf{A}_{12})\cdot (-\mathbf{B}_{21}) \\
+            \color{blue} \mathbf{M}_6 & = & (\mathbf{A}_{11} - \mathbf{A}_{12} + \mathbf{A}_{21} - \mathbf{A}_{22})\cdot (- \mathbf{B}_{12}) \\
+            \color{blue} \mathbf{M}_7 & = & (- \mathbf{A}_{21})\cdot (\mathbf{B}_{11} - \mathbf{B}_{12} + \mathbf{B}_{21} - \mathbf{B}_{22}) \\
+            \mathbf{C}_{11} & = & \color{blue} \mathbf{M}_1 \color{black} + \color{blue} \mathbf{M}_5 \\
+            \mathbf{C}_{22} & = & \color{blue} \mathbf{M}_4 \color{black} - \color{blue} \mathbf{M}_3 \color{black} + \color{blue} \mathbf{M}_5 \color{black} + \color{blue} \mathbf{M}_6 \\
+            \mathbf{C}_{22} & = & \color{blue} \mathbf{M}_2 \color{black} - \color{blue} \mathbf{M}_4 \color{black} - \color{blue} \mathbf{M}_5 \color{black} + \color{blue} \mathbf{M}_7 \\
+            \mathbf{C}_{22} & = & \color{blue} \mathbf{M}_2 \color{black} + \color{blue} \mathbf{M}_3 \color{black} - \color{blue} \mathbf{M}_4 \color{black} + \color{blue} \mathbf{M}_5
+        \end{array}
         \label{eq:var_strassen}
     \end{equation}
+    
 
-    It is at this point that an important distinction must be made; what is
-    considered a new algorithm? Both Strassen's algorithm and the variant presented
-    are considered Strassen's algorithm because they both involve 7 multiplications.
-    This is because the term \textit{Strassen's algorithm} has become an
-    all-encapsulating term for any 2 by 2 matrix multiplication algorithm that uses
-    7 multiplications instead of the classic 8. If we wish to be precise, the
-    algorithm presented in \ref{eq:classic_strassen} is the one and only original
-    algorithm and all other variations are different algorithms that also happen to
-    have 7 multiplications and, like previously mentioned, historically any
-    algorithm with 7 multiplications are referred to Strassen's algorithm. It can
-    get confusing, but any functioning variant of Strassen's algorithm is Strassen's
-    algorithm despite them having distinct order of multiplications and additions.
-    Thus, a question arises, how many possibilities are there? We could search for
-    different solutions that all have the same number of multiplications by
+    Thus, a question arises, how many possibilities are there? We could search
+    for different solutions that all have the same number of multiplications by
     performing either an eshaustive search or an optimization search on each
     parameter involved in matrix multiplication as seen in
-    \ref{eq:serching_fast_matmul}. If we are searching for a discrete solution with
-    only -1, 0, 1 as coefficients then we have $3^84$ possibilities, though not all
-    of these possibilities would be valid algotithms.
+    \ref{eq:serching_fast_matmul}. If we are searching for a discrete solution
+    with only -1, 0, 1 as coefficients then we have $3^{84}$ possibilities,
+    though not all of these possibilities would be valid algotithms. We will see
+    how we can decrease this number later on to something much more feasible
+    using the structure hinted at in these algorithms. Before we can move on to
+    how to search for these algorithms non-exhaustively, we turn to the
+    protagonist of this project.
+
 
 
     \begin{center}
         \textbf{Exhaustive Search of Fast MatMul Algorithms}
-        \vspace{-20pt}
+        \vspace{-10pt}
     \end{center}
     \begin{equation}
         \scalebox{0.9}{
             $\displaystyle
             \begin{array}{rcl}
-                \color{blue} \mathbf{M}_1 & = & (\textcolor{purple}{ u_{11}^{(1)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(1)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(1)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(1)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(1)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(1)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(1)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(1)}} \mathbf{B}_{22}) \\
-                \color{blue} \mathbf{M}_2 & = & (\textcolor{purple}{ u_{11}^{(2)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(2)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(2)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(2)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(2)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(2)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(2)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(2)}} \mathbf{B}_{22}) \\
-                \color{blue} \mathbf{M}_3 & = & (\textcolor{purple}{ u_{11}^{(3)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(3)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(3)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(3)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(3)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(3)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(3)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(3)}} \mathbf{B}_{22}) \\
-                \color{blue} \mathbf{M}_4 & = & (\textcolor{purple}{ u_{11}^{(4)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(4)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(4)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(4)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(4)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(4)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(4)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(4)}} \mathbf{B}_{22}) \\
-                \color{blue} \mathbf{M}_5 & = & (\textcolor{purple}{ u_{11}^{(5)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(5)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(5)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(5)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(5)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(5)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(5)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(5)}} \mathbf{B}_{22}) \\
-                \color{blue} \mathbf{M}_6 & = & (\textcolor{purple}{ u_{11}^{(6)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(6)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(6)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(6)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(6)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(6)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(6)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(6)}} \mathbf{B}_{22}) \\
-                \color{blue} \mathbf{M}_7 & = & (\textcolor{purple}{ u_{11}^{(7)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(7)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(7)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(7)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(7)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(7)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(7)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(7)}} \mathbf{B}_{22}) \\ \\
+                \color{blue} \mathbf{M}_1 & = & (\textcolor{purple}{ u_{11}^{(1)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(1)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(1)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(1)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(1)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(1)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(1)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(1)}} + \mathbf{B}_{22}) \\
+                \color{blue} \mathbf{M}_2 & = & (\textcolor{purple}{ u_{11}^{(2)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(2)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(2)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(2)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(2)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(2)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(2)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(2)}} + \mathbf{B}_{22}) \\
+                \color{blue} \mathbf{M}_3 & = & (\textcolor{purple}{ u_{11}^{(3)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(3)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(3)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(3)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(3)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(3)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(3)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(3)}} + \mathbf{B}_{22}) \\
+                \color{blue} \mathbf{M}_4 & = & (\textcolor{purple}{ u_{11}^{(4)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(4)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(4)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(4)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(4)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(4)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(4)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(4)}} + \mathbf{B}_{22}) \\
+                \color{blue} \mathbf{M}_5 & = & (\textcolor{purple}{ u_{11}^{(5)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(5)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(5)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(5)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(5)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(5)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(5)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(5)}} + \mathbf{B}_{22}) \\
+                \color{blue} \mathbf{M}_6 & = & (\textcolor{purple}{ u_{11}^{(6)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(6)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(6)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(6)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(6)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(6)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(6)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(6)}} + \mathbf{B}_{22}) \\
+                \color{blue} \mathbf{M}_7 & = & (\textcolor{purple}{ u_{11}^{(7)}} \mathbf{A}_{11} + \textcolor{purple}{u_{12}^{(7)}} \mathbf{A}_{12} + \textcolor{purple}{ u_{21}^{(7)}} \mathbf{A}_{21} + \textcolor{purple}{ u_{22}^{(7)}} \mathbf{A}_{22}) \cdot (\textcolor{purple}{ v_{11}^{(7)}} \mathbf{B}_{11} + \textcolor{purple}{v_{12}^{(7)}} \mathbf{B}_{12} + \textcolor{purple}{v_{21}^{(7)}} \mathbf{B}_{21} \textcolor{purple}{ v_{22}^{(7)}} + \mathbf{B}_{22}) \\ \\
                 \mathbf{C}_{11} & = & \textcolor{purple}{w_{11}^{(1)}} \color{blue} \mathbf{M}_1 + \textcolor{purple}{w_{11}^{(2)}} \color{blue} \mathbf{M}_2 + \textcolor{purple}{w_{11}^{(3)}} \color{blue} \mathbf{M}_3 + \textcolor{purple}{w_{11}^{(4)}} \color{blue} \mathbf{M}_4 + \textcolor{purple}{w_{11}^{(5)}} \color{blue} \mathbf{M}_5 + \textcolor{purple}{w_{11}^{(6)}} \color{blue} \mathbf{M}_6 + \textcolor{purple}{w_{11}^{(7)}} \color{blue} \mathbf{M}_7 \\
                 \mathbf{C}_{12} & = & \textcolor{purple}{w_{12}^{(1)}} \color{blue} \mathbf{M}_1 + \textcolor{purple}{w_{12}^{(2)}} \color{blue} \mathbf{M}_2 + \textcolor{purple}{w_{12}^{(3)}} \color{blue} \mathbf{M}_3 + \textcolor{purple}{w_{12}^{(4)}} \color{blue} \mathbf{M}_4 + \textcolor{purple}{w_{12}^{(5)}} \color{blue} \mathbf{M}_5 + \textcolor{purple}{w_{12}^{(6)}} \color{blue} \mathbf{M}_6 + \textcolor{purple}{w_{12}^{(7)}} \color{blue} \mathbf{M}_7 \\
                 \mathbf{C}_{21} & = & \textcolor{purple}{w_{21}^{(1)}} \color{blue} \mathbf{M}_1 + \textcolor{purple}{w_{21}^{(2)}} \color{blue} \mathbf{M}_2 + \textcolor{purple}{w_{21}^{(3)}} \color{blue} \mathbf{M}_3 + \textcolor{purple}{w_{21}^{(4)}} \color{blue} \mathbf{M}_4 + \textcolor{purple}{w_{21}^{(5)}} \color{blue} \mathbf{M}_5 + \textcolor{purple}{w_{21}^{(6)}} \color{blue} \mathbf{M}_6 + \textcolor{purple}{w_{21}^{(7)}} \color{blue} \mathbf{M}_7 \\
@@ -194,25 +232,27 @@
         \label{eq:serching_fast_matmul}
     \end{equation}
 
+
+
 \subsection{The Matrix Multiplication Tensor} \label{sec:The Matrix Multiplication Tensor}
 
     There is a specific type of tensor that is crucial to this project: the
     Matrix Multiplication Tensor. Matrix multiplication can be performed in
-    tensor format using this tensor. If we wish to multiply two matrices
-    $\mathbf{A} \in \mathbb{R}^{m\times n}$ and $\mathbf{B}\in
-    \mathbb{R}^{n\times p}$, we can form the respective matrix multiplication
-    tensor $\mathcal{M}\in \mathbb{R}^{mn \times np\times mp}$ through
-    \Cref{alg:matmul_tensor}. In order to do so, we vectorize $\mathbf{A}$ and
-    $\mathbf{B}$ and multiply them through TTMs in the first and second mode
-    respectively. The output, in the third mode, is the vectorization of the
-    output $\mathbf{C} = \mathbf{A}\cdot \mathbf{B}$ transposed (i.e.
-    $\mathbf{C^\intercal}$). This project is concerned only with square
-    matrices, thus we always assume $\mathbf{A}, \mathbf{B}, \mathbf{C}\in
-    \mathbb{R}^{n\times n}$ and $\mathcal{M}\in\mathbb{R}^{n^2\times n^2\times
-    n^2}$. We can visualize such product in \Cref{fig:matmul_tensor}. 
+    tensor format using this tensor as visualized in \Cref{fig:matmul_tensor}.
+    If we wish to multiply two matrices $\mathbf{A} \in \mathbb{R}^{m\times n}$
+    and $\mathbf{B}\in \mathbb{R}^{n\times p}$, we can form the respective
+    matrix multiplication tensor $\mathcal{M}\in \mathbb{R}^{mn \times np\times
+    mp}$ through \Cref{alg:matmul_tensor}. In order to do so, we vectorize
+    $\mathbf{A}$ and $\mathbf{B}$ and multiply them through TTMs in the first
+    and second mode respectively. The output, in the third mode, is the
+    vectorization of the output $\mathbf{C} = \mathbf{A}\cdot \mathbf{B}$
+    transposed (i.e. $\mathbf{C^\intercal}$). This project is concerned only
+    with square matrices, thus we always assume $\mathbf{A}, \mathbf{B},
+    \mathbf{C}\in \mathbb{R}^{n\times n}$ and
+    $\mathcal{M}\in\mathbb{R}^{n^2\times n^2\times n^2}$.
 
     \begin{algorithm}
-        \caption{Create MatMul Tensor}
+        \caption{Forming the Matrix Multiplication Tensor}
         \label{alg:matmul_tensor}
         \begin{algorithmic}[0]
             \Function{$\mathcal{T}$ = MatMul-Tensor}{$m, n, p$}
@@ -243,23 +283,28 @@
     fast matrix multiplication algorithm embedded in the components of the CP
     decomposition. In fact, the number of components $r$ corresponds to the
     number of multiplications in the algorithm. This in return results in two
-    different implications, really you could argue that they mean the same thing
-    in two different directions, but we seperate these implications for the sake
-    of understanding. The first implication is that given an algorithm, say one
-    of the $3^84$ for $2\times 2$ algorithms with rank 7, we can form the
-    KTensor of the corresponding algorithm, namely $\mathcal{\hat{M}}$ and take
-    the norm of the difference from the original matmul tensor. If $\|\mathcal{M
-    - \hat{M}} = 0$, then we have a valid algorithm. Below is the original
-    Strassen's algorithm with two representations, the one we have seen before
-    and the KTensor representation. The way to interpret the algorithm on the
-    right, is that each horizontal lines separate the factor matrices, therefore
-    just like in \Cref{fig:KTensor} the factor matrices $\mathbf{A}, \mathbf{B}$
-    and $\mathbf{C}$ are separated by the horizontal lines, the columns of the
-    factor matrices represent the chicken feet components. If you pay close
-    attention you can see how the columns representing $\mathbf{M}_\ell$
-    correspond to the representation on the right. If a 1 or -1 appear in the
-    right representation then they appear as $\mathbf{A}_{ij}$ or
-    $\mathbf{-A}_{ij}$ respectively on the left. 
+    different implications (could argue that they mean the same thing in two
+    different directions but we seperate these implications for the sake of
+    understanding). The first implication is that given an algorithm, say one of
+    the $3^84$ for $2\times 2$ algorithms with rank 7, we can form the KTensor
+    of the corresponding algorithm, namely $\mathcal{\hat{M}}$ and take the norm
+    of the difference from the original matmul tensor. If $\|\mathcal{M -
+    \hat{M}}\| = 0$, then we have a valid algorithm, there are easier ways to
+    check for the validity of an algorithm, but this helps with forming the
+    search equation. Before continuing with the second implication, we must
+    understand how to visualize the hidden algorithm in the factor matrices of
+    a KTensor. 
+    
+    Below is the original Strassen's algorithm with two representations, the one
+    we have seen before and the KTensor representation. The way to interpret the
+    algorithm on the right, is that each horizontal lines separate the factor
+    matrices, therefore just like in \Cref{fig:KTensor} the factor matrices
+    $\mathbf{A}, \mathbf{B}$ and $\mathbf{C}$ are separated by the horizontal
+    lines, the columns of the factor matrices represent the chicken feet
+    components. If you pay close attention you can see how the columns
+    representing $\mathbf{M}_\ell$ correspond to the representation on the
+    right. If a 1 or -1 appear in the right representation then they appear as
+    $\mathbf{A}_{ij}$ or $\mathbf{-A}_{ij}$ respectively on the left.
 
     \vspace{-50pt}
     \begin{multicols}{2}
@@ -269,7 +314,7 @@
                 \color{blue} \mathbf{M}_2 & = & (\mathbf{A}_{12} + \mathbf{A}_{22})\cdot \mathbf{B}_{11} \\
                 \color{blue} \mathbf{M}_3 & = & \mathbf{A}_{11}\cdot (\mathbf{B}_{21} - \mathbf{B}_{22}) \\
                 \color{blue} \mathbf{M}_4 & = & \mathbf{A}_{22}\cdot (\mathbf{B}_{12} - \mathbf{B}_{11}) \\
-                \color{blue} \mathbf{M}_5 & = & (\mathbf{A}_{11} + \mathbf{A}_{21})\cdot B_{22} \\
+                \color{blue} \mathbf{M}_5 & = & (\mathbf{A}_{11} + \mathbf{A}_{21})\cdot \mathbf{B}_{22} \\
                 \color{blue} \mathbf{M}_6 & = & (\mathbf{A}_{12} - \mathbf{A}_{11})\cdot (\mathbf{B}_{11} + \mathbf{B}_{21}) \\
                 \color{blue} \mathbf{M}_7 & = & (\mathbf{A}_{21} - \mathbf{A}_{22})\cdot (\mathbf{B}_{12} + \mathbf{B}_{22}) \\
                 \mathbf{C}_{11} & = & \color{blue} \mathbf{M}_1 \color{black} + \color{blue} \mathbf{M}_4 \color{black} - \color{blue} \mathbf{M}_5 \color{black} + \color{blue} \mathbf{M}_7 \\
@@ -304,9 +349,8 @@
     
     
     The other implication, is that we can decompose the matmul tensor with
-    specified CP rank through (as in \Cref{eq:cp_opt}) an optimization
-    algorithmto search for fast matrix multiplication algorithms. Now how do we
-    do that?
+    specified CP rank (as in \Cref{eq:cp_opt}) through an optimization algorithm
+    to search for fast matrix multiplication algorithms.
 
 
 
@@ -356,22 +400,23 @@
 
     With that out of the way we must choose an optimization method. Gradient is
     too simple, taking one step further we reach Newton's method. Newton's
-    mathod gets the search direction by using Newton's equation
-    \[\nabla^2 f(\mathbf{v})\mathbf{d}_k = -\nabla f(\mathbf{v})\] We dislike
-    the Hessian here because it is computationally expensive and difficult to
-    derive mathematicall (perhaps not now but for the cylic part). Thus, we
-    prefer the Gauss-Newton method which approximates the Hessian with
-    $\mathbf{J^\intercal J}$ where $\mathbf{J}: \mathbb{R}^n\to
-    \mathbb{R}^{n\times m}$ is the jacobian of $\phi$: \[(\mathbf{J^\intercal
-    J})\mathbf{d}_k = -\nabla f(\mathbf{v})\] But even then, the Gauss-Newton
-    matrix $\mathbf{J^\intercal J}$ can be singular, we add a damping parameter,
-    $\lambda \mathbf{I}$, to enforce positive definiteness. Thus, we reach the
-    damped Gauss-Newton Method: \[(\mathbf{J^\intercal J} +
-    \lambda\mathbf{I})\mathbf{d}_k = -\nabla f(\mathbf{v})\]. At this point, we
-    have two tasks at hand, given our $\mathbf{v}, f(\mathbf{v})$ and
-    $\phi(\mathbf{v})$. We must derive the gradient of $f$ for the right-hand
-    side and the jacobian of $\phi$ for the left-hand side (when really we just
-    want to know how to apply it to a vector). The gradient is easy. 
+    method gets the search direction by using Newton's equation
+    \[\nabla^2 f(\mathbf{v})\mathbf{d}_k = -\nabla f(\mathbf{v})\] where
+    $\mathbf{d}_k$ is our approximation. We dislike the Hessian here because it
+    is computationally expensive and difficult to derive mathematicall (perhaps
+    not now but for the cylic part). Thus, we prefer the Gauss-Newton method
+    which approximates the Hessian with $\mathbf{J^\intercal J}$ where
+    $\mathbf{J}: \mathbb{R}^n\to \mathbb{R}^{n\times m}$ is the jacobian of
+    $\phi$: \[(\mathbf{J^\intercal J})\mathbf{d}_k = -\nabla f(\mathbf{v})\] But
+    even then, the Gauss-Newton matrix $\mathbf{J^\intercal J}$ can be singular,
+    we add a damping parameter, $\lambda \mathbf{I}$, to enforce positive
+    definiteness. Thus, we reach the damped Gauss-Newton Method:
+    \[(\mathbf{J^\intercal J} + \lambda\mathbf{I})\mathbf{d}_k = -\nabla
+    f(\mathbf{v})\]. At this point, we have two tasks at hand. Given our
+    $\mathbf{v}, f(\mathbf{v})$ and $\phi(\mathbf{v})$, we must derive the
+    gradient of $f$ for the right-hand side and the jacobian of $\phi$ for the
+    left-hand side (when really we just want to know how to apply it to a
+    vector). The gradient is easy. 
 
     \begin{equation} \label{eq:cp_dgn_gradient}
         \nabla f = \text{vec}
