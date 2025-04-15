@@ -1,0 +1,90 @@
+%!TEX root = ../../main.tex
+
+% need to define \datapath and \thresh (set of error thresholds)
+
+\newcommand{\algorithmname}{HOSI_DT}
+
+\pgfplotsset{HOOIstyle/.style={
+	red,
+	mark=o,
+	point meta = {\thisrow{STHOSVD_Size}/\thisrow{HOSI_DT_Size}},
+	every node near coord/.append style={
+		above right,
+		inner sep=1pt,
+		yshift=1ex
+	}
+}}
+\pgfplotsset{STHOSVDstyle/.style={
+	blue,
+	mark=square*,
+	only marks
+}}
+
+
+\begin{tikzpicture}
+    \begin{groupplot}[
+        group style={
+            group size=2 by 1,
+            xlabels at=edge bottom,
+            ylabels at=edge left,
+            horizontal sep=2cm,
+            vertical sep=2cm,
+        },
+        width= 0.45\textwidth,
+        height=0.45\textwidth,
+        ylabel=Relative Error,
+        ylabel near ticks,
+        xlabel near ticks,
+        ymajorgrids=true,
+        legend to name=namedlegend,
+        legend style={draw=none, cells={anchor=west}, font=\small,
+        legend columns=2},
+        title style={yshift=-1.5ex},
+      ]
+        % First plot: error vs time
+        \nextgroupplot[
+            title=Error vs Time, 
+            xlabel=Time (in seconds),
+            ytick = \thresh,
+            yticklabel style={/pgf/number format/fixed}
+        ]
+
+	\foreach \t in \thresh {
+		\addplot [HOOIstyle,mark=triangle] table[x=\algorithmname_Time, y=\algorithmname_Error, col sep=comma] {\datapath_\t_Over.csv};
+        		\addplot [HOOIstyle,mark=star] table[x=\algorithmname_Time, y=\algorithmname_Error, col sep=comma] {\datapath_\t_Perfect.csv};
+        		\addplot [HOOIstyle,mark=square] table[x=\algorithmname_Time, y=\algorithmname_Error, col sep=comma] {\datapath_\t_Under.csv};
+        		\addplot [STHOSVDstyle] table[x=STHOSVD_Time, y=STHOSVD_Error, col sep=comma] {\datapath_\t_Under.csv};	
+	}
+      
+        % Second plot: error vs relative size
+        \nextgroupplot[
+            title=Error vs Size,
+            xlabel=Size (relative to STHOSVD),
+            ytick = \thresh,
+            yticklabel style={/pgf/number format/fixed}
+        ]
+        
+        \foreach \t in \thresh {
+        		\addplot[HOOIstyle,mark=triangle] table [x expr = (\thisrow{HOSI_DT_Size}/\thisrow{STHOSVD_Size}), y=HOSI_DT_Error, col sep=comma] {\datapath_\t_Over.csv};
+        		\addplot[HOOIstyle,mark=star] table [x expr = (\thisrow{HOSI_DT_Size}/\thisrow{STHOSVD_Size}), y=HOSI_DT_Error, col sep=comma] {\datapath_\t_Perfect.csv};
+        		\addplot[HOOIstyle,mark=square] table [x expr = (\thisrow{HOSI_DT_Size}/\thisrow{STHOSVD_Size}), y=HOSI_DT_Error, col sep=comma] {\datapath_\t_Under.csv};
+        		\addplot[STHOSVDstyle] table [x expr = (\thisrow{STHOSVD_Size}/\thisrow{STHOSVD_Size}), y=STHOSVD_Error, col sep=comma] {\datapath_\t_Under.csv};
+        }
+
+        \addlegendimage{mark=triangle, color=red}
+        \addlegendentry{HOSI-DT Over}
+        \addlegendimage{mark=star, color=red}
+        \addlegendentry{HOSI-DT Perfect}
+        \addlegendimage{mark=square, color=red}
+        \addlegendentry{HOSI-DT Under}
+        \addlegendimage{mark=square*, color=blue, only marks}
+        \addlegendentry{STHOSVD}
+    \end{groupplot}
+\end{tikzpicture}
+
+% Place the legend below the figure
+\begin{center}
+    \ref{namedlegend}
+\end{center}
+
+ 

@@ -1,0 +1,26 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (TFrontLowerLeft) at (0, 0);
+    
+    \draw[ultra thick] (TFrontLowerLeft) rectangle (\n*\pslices, \m);
+
+    \draw[-to, ultra thick] ($(\n/\nslices/2, \m - 0.15)$) -- ($(\n/\nslices/2, 0.15)$);
+
+    % Draw slices (horizontal lines) on the front face
+    \foreach \i in {1,...,20} {
+        \pgfmathsetmacro{\z}{\i*\n/\nslices}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thin] (\z,0) -- (\z,\m);
+        }
+        
+    \foreach \i in {0,...,4} {
+        \pgfmathsetmacro{\z}{\i*\n}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thick] (\z,0) -- (\z,\m);
+    }
+
+
+
+\end{tikzpicture}

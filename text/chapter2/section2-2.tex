@@ -1,0 +1,365 @@
+%!TEX root = ../../main.tex
+
+We can reduce our search space in our search for fast matrix multiplication
+algorithms by levevering \textbf{cyclic invariance}. Cyclic invariance is an
+added structure in matrix multiplication algorithms that reduce the number of
+variables of the CP Decomposition optimization problem for the matrix
+multiplication tensor. 
+
+\subsection{Cyclic Invariant Matrix Multiplication Algorithms} \label{sec:Cyclic Invariant Matrix Multiplication Algorithms} 
+    
+    Recall that we can rearrange the multiplications and additions of Strassen's
+    agorithms to obtain variantions. Some of these variantions can be cyclic
+    invariant. Below is one of these Strassen's variant algorithm next to the
+    original. Both of these algorithms have already been introduced back in
+    \Cref{sec:Fast Matrix Multiplication Algorithms}. Notive how the variant
+    Strassen's algorithm on the left is composed of smaller submatrices that
+    appear throughout the main factor matrices of the KTensor. The $4\times 1$
+    matrix in red is called the \textbf{symmetric component}, and it always
+    appears at the beginning of all three factor matrices, we denote it as
+    $\mathbf{S}$. The remaining three $4\times 2$ submatrices are called the
+    \textbf{cyclic component}, we denote them as $\mathbf{U, V, W}$. 
+
+    \pagebreak
+    \vspace{-50pt}
+    \begin{multicols}{2}
+        \setlength{\arraycolsep}{3pt}
+        \[\begin{array}{c|ccccccc}
+                & \color{blue} \mathbf{M}_1 & \color{blue} \mathbf{M}_2 & \color{blue} \mathbf{M}_3 & \color{blue} \mathbf{M}_4 & \color{blue} \mathbf{M}_5 & \color{blue} \mathbf{M}_6 & \color{blue} \mathbf{M}_7 \\
+                \hline
+                \mathbf{A}_{11} & 1 & 0 & 1 & 0 & 1 & -1 & 0 \\
+                \mathbf{A}_{12} & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+                \mathbf{A}_{21} & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
+                \mathbf{A}_{22} & 1 & 1 & 0 & 1 & 0 & 0 & -1 \\
+                \hline
+                \mathbf{B}_{11} & 1 & 1 & 0 & -1 & 0 & 1 & 0 \\
+                \mathbf{B}_{12} & 0 & 0 & 0 & 1 & 0 & 0 & 1 \\
+                \mathbf{B}_{21} & 0 & 0 & 1 & 0 & 0 & 1 & 0 \\
+                \mathbf{B}_{22} & 1 & 0 & -1 & 0 & 1 & 0 & 1 \\
+                \hline
+                \mathbf{C}_{11} & 1 & 0 & 0 & 1 & -1 & 0 & 1 \\
+                \mathbf{C}_{21} & 0 & 0 & 1 & 0 & 1 & 0 & 0 \\
+                \mathbf{C}_{12} & 0 & 1 & 0 & 1 & 0 & 0 & 0 \\
+                \mathbf{C}_{22} & 1 & -1 & 1 & 0 & 0 & 1 & 0 \\
+        \end{array}\]
+
+        \columnbreak
+
+        \setlength{\arraycolsep}{3pt}
+        \[\begin{array}{c|ccccccc}
+                & \color{blue} \mathbf{M}_1 & \color{blue} \mathbf{M}_2 & \color{blue} \mathbf{M}_3 & \color{blue} \mathbf{M}_4 & \color{blue} \mathbf{M}_5 & \color{blue} \mathbf{M}_6 & \color{blue} \mathbf{M}_7 \\
+                \hline
+                \mathbf{A}_{11} & \color{red} 1 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 1 & \color{orange} 1 & \color{orange} -1 \\
+                \mathbf{A}_{12} & \color{red} 0 & \color{mycustomgreen} 1 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 0 & \color{orange} 0 & \color{orange} 1 \\
+                \mathbf{A}_{21} & \color{red} 0 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 1 & \color{violet} 1 & \color{orange} 0 & \color{orange} 0 \\
+                \mathbf{A}_{22} & \color{red} 1 & \color{mycustomgreen} 1 & \color{mycustomgreen} 1 & \color{violet} -1 & \color{violet} 0 & \color{orange} 0 & \color{orange} 0 \\
+                \hline
+                \mathbf{B}_{11} & \color{red} 1 & \color{orange} 1 & \color{orange} -1 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 1 \\
+                \mathbf{B}_{12} & \color{red} 0 & \color{orange} 0 & \color{orange} 1 & \color{mycustomgreen} 1 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 0 \\
+                \mathbf{B}_{21} & \color{red} 0 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 1 & \color{violet} 1 \\
+                \mathbf{B}_{22} & \color{red} 1 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 1 & \color{mycustomgreen} 1 & \color{violet} -1 & \color{violet} 0 \\
+                \hline
+                \mathbf{C}_{11} & \color{red} 1 & \color{violet} 0 & \color{violet} 1 & \color{orange} 1 & \color{orange} -1 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 \\
+                \mathbf{C}_{21} & \color{red} 0 & \color{violet} 0 & \color{violet} 0 & \color{orange} 0 & \color{orange} 1 & \color{mycustomgreen} 1 & \color{mycustomgreen} 0 \\
+                \mathbf{C}_{12} & \color{red} 0 & \color{violet} 1 & \color{violet} 1 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 \\
+                \mathbf{C}_{22} & \color{red} 1 & \color{violet} -1 & \color{violet} 0 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 1 & \color{mycustomgreen} 1 \\
+        \end{array}\]
+    \end{multicols}
+
+    Because they are always submatrices of the factor matrices, both the
+    symmetric and the cyclic components have the same number of rows as the
+    factor matrices, namely $n$. However, they can have a different number of
+    columns. We denote the number of columns of the symmetric component as $r_s$
+    and the number of columns of the cyclic component as $r_c$. Since $r$ is the
+    rank of the CP Decomposition, we have that $r_s + 3r_c = r$. Because of
+    this, given a matrix multiplication tensor of $n\times n$ matrices, and a
+    given rank $r$, there are multiple choices for $r_c$, which in turn define
+    the value of $r_s$ since $r_s = r - 3r_c$. For rank 7 algorithms of $2\times
+    2$ matrices, we have two options $[r_s = 1, r_c = 2]$ and  $[r_s = 4, r_c =
+    1]$. Below are two different Strassen's algorithm, on the left is the same
+    algorithm we saw above of $r_s = 1$, and on the right is an $r_s = 4$
+    algorithm. Besides the difference in $r_s$, these algorithms share another
+    distinction, which is the number of matrix additions. The algorithm on the
+    left has 18 additions while the one on the left has 24 additions, thus
+    making it slighly less optimal. Generally we disregard this distinction as
+    matrix addition is not the bottleneck computation. 
+
+%     \pagebreak
+    \vspace{-50pt}
+    \begin{multicols}{2}
+        \setlength{\arraycolsep}{3pt}
+        \[\begin{array}{c|ccccccc}
+                & \color{blue} \mathbf{M}_1 & \color{blue} \mathbf{M}_2 & \color{blue} \mathbf{M}_3 & \color{blue} \mathbf{M}_4 & \color{blue} \mathbf{M}_5 & \color{blue} \mathbf{M}_6 & \color{blue} \mathbf{M}_7 \\
+                \hline
+                \mathbf{A}_{11} & \color{red} 1 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 1 & \color{orange} 1 & \color{orange} -1 \\
+                \mathbf{A}_{12} & \color{red} 0 & \color{mycustomgreen} 1 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 0 & \color{orange} 0 & \color{orange} 1 \\
+                \mathbf{A}_{21} & \color{red} 0 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 1 & \color{violet} 1 & \color{orange} 0 & \color{orange} 0 \\
+                \mathbf{A}_{22} & \color{red} 1 & \color{mycustomgreen} 1 & \color{mycustomgreen} 1 & \color{violet} -1 & \color{violet} 0 & \color{orange} 0 & \color{orange} 0 \\
+                \hline
+                \mathbf{B}_{11} & \color{red} 1 & \color{orange} 1 & \color{orange} -1 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 1 \\
+                \mathbf{B}_{12} & \color{red} 0 & \color{orange} 0 & \color{orange} 1 & \color{mycustomgreen} 1 & \color{mycustomgreen} 0 & \color{violet} 0 & \color{violet} 0 \\
+                \mathbf{B}_{21} & \color{red} 0 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 & \color{violet} 1 & \color{violet} 1 \\
+                \mathbf{B}_{22} & \color{red} 1 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 1 & \color{mycustomgreen} 1 & \color{violet} -1 & \color{violet} 0 \\
+                \hline
+                \mathbf{C}_{11} & \color{red} 1 & \color{violet} 0 & \color{violet} 1 & \color{orange} 1 & \color{orange} -1 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 \\
+                \mathbf{C}_{21} & \color{red} 0 & \color{violet} 0 & \color{violet} 0 & \color{orange} 0 & \color{orange} 1 & \color{mycustomgreen} 1 & \color{mycustomgreen} 0 \\
+                \mathbf{C}_{12} & \color{red} 0 & \color{violet} 1 & \color{violet} 1 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 0 & \color{mycustomgreen} 0 \\
+                \mathbf{C}_{22} & \color{red} 1 & \color{violet} -1 & \color{violet} 0 & \color{orange} 0 & \color{orange} 0 & \color{mycustomgreen} 1 & \color{mycustomgreen} 1 \\
+        \end{array}\]
+    
+        \columnbreak
+        
+        \setlength{\arraycolsep}{3pt}
+        \[\begin{array}{c|ccccccc}
+                & \color{blue} \mathbf{M}_1 & \color{blue} \mathbf{M}_2 & \color{blue} \mathbf{M}_3 & \color{blue} \mathbf{M}_4 & \color{blue} \mathbf{M}_5 & \color{blue} \mathbf{M}_6 & \color{blue} \mathbf{M}_7 \\
+                \hline
+                \mathbf{A}_{11} & \color{red} 1 & \color{red} 0 & \color{red} 0 & \color{red} 0  & \color{mycustomgreen} 0 &  \color{violet} 1 &  \color{orange} 0 \\
+                \mathbf{A}_{12} & \color{red} 0 & \color{red} 0 & \color{red} -1 & \color{red} 1 & \color{mycustomgreen} 0 &  \color{violet} 1 &  \color{orange} -1 \\
+                \mathbf{A}_{21} & \color{red} 0 & \color{red} 1 & \color{red} 0 & \color{red} -1 & \color{mycustomgreen} -1 & \color{violet} -1 & \color{orange} 0 \\
+                \mathbf{A}_{22} & \color{red} 0 & \color{red} 1 & \color{red} 1 & \color{red} -1 & \color{mycustomgreen} 0 &  \color{violet} -1 & \color{orange} 0 \\
+                \hline
+                \mathbf{B}_{11} & \color{red} 1 & \color{red} 0 & \color{red} 0 & \color{red} 0  & \color{orange} 0 &  \color{mycustomgreen} 0 &  \color{violet} 1 \\
+                \mathbf{B}_{12} & \color{red} 0 & \color{red} 0 & \color{red} -1 & \color{red} 1 & \color{orange} -1 & \color{mycustomgreen} 0 &  \color{violet} 1 \\
+                \mathbf{B}_{21} & \color{red} 0 & \color{red} 1 & \color{red} 0 & \color{red} -1 & \color{orange} 0 &  \color{mycustomgreen} -1 & \color{violet} -1 \\
+                \mathbf{B}_{22} & \color{red} 0 & \color{red} 1 & \color{red} 1 & \color{red} -1 & \color{orange} 0 &  \color{mycustomgreen} 0 &  \color{violet} -1 \\
+                \hline
+                \mathbf{C}_{11} & \color{red} 1 & \color{red} 0 & \color{red} 0 & \color{red} 0  & \color{violet} 1 &  \color{orange} 0 &  \color{mycustomgreen} 0 \\
+                \mathbf{C}_{21} & \color{red} 0 & \color{red} 0 & \color{red} -1 & \color{red} 1 & \color{violet} 1 &  \color{orange} -1 & \color{mycustomgreen} 0 \\
+                \mathbf{C}_{12} & \color{red} 0 & \color{red} 1 & \color{red} 0 & \color{red} -1 & \color{violet} -1 & \color{orange} 0 &  \color{mycustomgreen} -1 \\
+                \mathbf{C}_{22} & \color{red} 0 & \color{red} 1 & \color{red} 1 & \color{red} -1 & \color{violet} -1 & \color{orange} 0 &  \color{mycustomgreen} 0 \\
+        \end{array}\]    
+    \end{multicols}
+
+% The following two are the previous two in format number two
+% \begin{multicols}{2}
+%         \textbf{Variant of Strassen's Algorithm (Rs=1 Rc=2)}
+%         \begin{eqnarray*}
+%                 \color{blue} M_1 & = & (A_{11} + A_{22})\cdot (B_{11} + B_{22}) \\
+%                 \color{blue} M_2 & = & (A_{12} + A_{22})\cdot B_{11} \\
+%                 \color{blue} M_3 & = & A_{22}\cdot (B_{12} - B_{11}) \\
+%                 \color{blue} M_4 & = & (A_{21} - A_{22})\cdot (B_{12} + B_{22}) \\
+%                 \color{blue} M_5 & = & (A_{11} + A_{21})\cdot B_{22} \\
+%                 \color{blue} M_6 & = & A_{11}\cdot (B_{21} - B_{22}) \\
+%                 \color{blue} M_7 & = & (A_{12} - A_{11})\cdot (B_{11} + B_{21}) \\
+%                 C_{11} & = & \color{blue} M_1 \color{black} + \color{blue} M_3 \color{black} - \color{blue} M_4 \color{black} - \color{blue} M_6 \\
+%                 C_{12} & = & \color{blue} M_2 \color{black} + \color{blue} M_3 \\
+%                 C_{21} & = & \color{blue} M_5 \color{black} + \color{blue} M_6 \\
+%                 C_{22} & = & \color{blue} M_1 \color{black} - \color{blue} M_2 \color{black} + \color{blue} M_5 \color{black} + \color{blue} M_7
+%         \end{eqnarray*}
+
+%         \columnbreak
+
+%         \textbf{Variant of Strassen's Algorithm (Rs=4 Rc=1)}
+%         \begin{eqnarray*}
+%                 \color{blue} M_1 & = & A_{11}\cdot B_{11} \\
+%                 \color{blue} M_2 & = & (A_{12} + A_{22})\cdot (B_{12} + B_{22}) \\
+%                 \color{blue} M_3 & = & (A_{22} - A_{21})\cdot (B_{22} - B_{21}) \\
+%                 \color{blue} M_4 & = & (A_{21} - A_{12} - A_{22})\cdot (B_{21} - B_{12} - B_{22}) \\
+%                 \color{blue} M_5 & = & (-A_{12})\cdot (-B_{21}) \\
+%                 \color{blue} M_6 & = & (A_{11} - A_{12} + A_{21} - A_{22})\cdot (- B_{12}) \\
+%                 \color{blue} M_7 & = & (- A_{21})\cdot (B_{11} - B_{12} + B_{21} - B_{22}) \\
+%                 C_{11} & = & \color{blue} M_1 \color{black} + \color{blue} M_5 \\
+%                 C_{22} & = & \color{blue} M_4 \color{black} - \color{blue} M_3 \color{black} + \color{blue} M_5 \color{black} + \color{blue} M_6 \\
+%                 C_{22} & = & \color{blue} M_2 \color{black} - \color{blue} M_4 \color{black} - \color{blue} M_5 \color{black} + \color{blue} M_7 \\
+%                 C_{22} & = & \color{blue} M_2 \color{black} + \color{blue} M_3 \color{black} - \color{blue} M_4 \color{black} + \color{blue} M_5
+%         \end{eqnarray*}
+% \end{multicols}
+
+Recall that our factor matrices correspond to the components of the KTensor as
+seen in \Cref{fig:KTensor_factor_matrices}. The same factor matrices with ths
+cyclic invariant structure imposed on them now look like
+\Cref{fig:cyc_inv_matrices}. That means we can now adjust \Cref{fig:KTensor} to
+look like \Cref{fig:cyc_inv_cp}.
+
+\begin{figure}
+    \centering
+    \input{tikz/chapter2/section2-2/cyclic_inv.tex}
+    \caption{Cyclic Invariance in a KTensor}
+    \label{fig:cyc_inv_matrices}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \input{tikz/chapter2/section2-2/cp_cyclic_inv.tex}
+    \caption{CP Decomposition Diagram with Cyclic Invariant Structure}
+    \label{fig:cyc_inv_cp}
+\end{figure}
+
+
+\newpage
+\subsection{Adapting CP\_DGN to Cyclic Invariance} \label{Adapting CP-DGN to Cyclic Invariance}
+
+    We must now adapt \Cref{sec:Cyclic Invariant Matrix Multiplication
+    Algorithms} to our cyclic invariance structure. Now we have the imposed
+    structure on any CP Decomposition of the matrix multiplication tensor. 
+
+    \begin{equation*}
+        \begin{array}{rcl}
+            \mathbf{A} = [\begin{array}{cccc} \mathbf S & \mathbf U & \mathbf V & \mathbf W \end{array}]\\
+            \mathbf{B} = [\begin{array}{cccc} \mathbf S & \mathbf W & \mathbf U & \mathbf V \end{array}]\\
+            \mathbf{C} = [\begin{array}{cccc} \mathbf S & \mathbf V & \mathbf W & \mathbf U \end{array}]
+        \end{array}
+    \end{equation*}
+
+    That means \Cref{eq:cp_least_squares} becomes \Cref{eq:ci_cp_least_squares}
+    in accordance with \Cref{fig:cyc_inv_cp}. 
+
+    \begin{equation} \label{eq:ci_cp_least_squares}
+        f(v) = \frac{1}{2} \sum_{i}^m \sum_{j}^n \sum_{k}^p \left( x_{ijk} - \sum_{q}^{r_s} s_{iq}s_{jq}s_{kq} - \sum_{l}^{r_c} (u_{il}v_{jl}w_{kl} + w_{il}u_{jl}v_{kl} + v_{il}w_{jl}u_{kl}) \right)^2
+    \end{equation}
+
+    In order for that to be the case, we must change our $\mathbf{v}$ such that
+
+    \begin{equation*}
+        \mathbf{v} = \text{vec}
+        \left(
+        \left[
+            \begin{array}{c}
+                \mathbf{S} \\
+                \mathbf{U} \\
+                \mathbf{V} \\
+                \mathbf{W}
+            \end{array}
+        \right]
+        \right) = 
+        \left[
+            \begin{array}{c}
+                \text{vec}(\mathbf{S}) \\
+                \text{vec}(\mathbf{U}) \\
+                \text{vec}(\mathbf{V}) \\
+                \text{vec}(\mathbf{W})
+            \end{array}
+        \right]
+        \in \mathbb{R}^{nr}
+    \end{equation*}
+
+    The Gradient becomes
+
+    \begin{equation}
+        \nabla f =
+        \left[
+        \begin{array}{c}
+                \mathsf{vec}(\frac{\partial f}{\partial \mathbf{S}})\\
+                \mathsf{vec}(\frac{\partial f}{\partial \mathbf{U}})\\
+                \mathsf{vec}(\frac{\partial f}{\partial \mathbf{V}})\\
+                \mathsf{vec}(\frac{\partial f}{\partial \mathbf{W}})
+        \end{array}
+        \right]
+        \in \mathbb{R}^{(m+n+p)r}
+    \end{equation}
+
+    Where each partial derivative is defined as:
+
+    \begin{equation}
+        \begin{array}{rcl}
+            \frac{\partial f}{\partial \mathbf{S}} & = & \scriptstyle 3 \mathbf{\cdot \bigl(S\left(S^\intercal S\ast S^\intercal S\right) + U\left(V^\intercal S\ast W^\intercal S\right) + V\left(U^\intercal S\ast W^\intercal S\right) + W\left(U^\intercal S\ast V^\intercal S\right)}\\ 
+            & & \scriptstyle - \mathbf{(X_{(1)} + X_{(2)} + X_{(3)})(S\odot S)}\bigl) \\
+
+            \frac{\partial f}{\partial \mathbf{U}} & = & \scriptstyle 3\mathbf{\cdot \bigl(S\left(S^\intercal V\ast S^\intercal W\right) + U\left(V^\intercal V\ast W^\intercal W\right) + V\left(W^\intercal V\ast U^\intercal W\right) + W\left(U^\intercal V\ast V^\intercal W\right)\bigl)}\\ 
+            & & \scriptstyle - \mathbf{X_{(1)}(V\odot W) - X_{(2)}(W\odot V) - X_{(3)}(V\odot W)} \\
+
+            \frac{\partial f}{\partial \mathbf{V}} & = & \scriptstyle 3\mathbf{\cdot \bigl(S\left(S^\intercal U\ast S^\intercal W\right) + U\left(W^\intercal U\ast V^\intercal W\right) + V\left(U^\intercal U\ast W^\intercal W\right) + W\left(V^\intercal U\ast U^\intercal W\right)\bigl)}\\ 
+            & & \scriptstyle - \mathbf{X_{(1)}(W\odot U) - X_{(2)}(U\odot W) - X_{(3)}(W\odot U)} \\
+
+            \frac{\partial f}{\partial \mathbf{W}} & = & \scriptstyle 3\mathbf{\cdot \bigl(S\left(S^\intercal U\ast S^\intercal V\right) + U\left(V^\intercal U\ast W^\intercal V\right) + V\left(W^\intercal U\ast U^\intercal V\right) + W\left(U^\intercal U\ast V^\intercal V\right)\bigl)}\\ 
+            & & \scriptstyle - \mathbf{X_{(1)}(U\odot V) - X_{(2)}(V\odot U) - X_{(3)}(U\odot V)}
+        \end{array}
+        \label{eq:ci_cp_dgn_partials}
+    \end{equation}
+
+    Similarly, our jacobian becomes
+
+    \begin{equation} \label{eq:ci_cp_dgn_jacobian}
+        \mathbf{J} = [\mathbf{J}_\mathbf{S} + \mathbf{J}_\mathbf{U} + \mathbf{J}_\mathbf{V} + \mathbf{J}_\mathbf{W}] \in \mathbb{R}^{n^3\times nr}
+    \end{equation}
+    
+    Where
+    
+    \begin{equation}
+        \begin{array}{rcl}
+                \mathbf{J}_\mathbf{S} & = \mathbf{(S\odot S)} \otimes \mathbf{I} + \mathbf{\Pi}_2^\intercal\cdot \mathbf{(S\odot S)} \otimes \mathbf{I} + \mathbf{\Pi}_3^\intercal\cdot \mathbf{(S\odot S)} \otimes \mathbf{I}\\
+                \mathbf{J}_\mathbf{U} & = \mathbf{(V\odot W)} \otimes \mathbf{I} + \mathbf{\Pi}_2^\intercal\cdot \mathbf{(W\odot V)} \otimes \mathbf{I} + \mathbf{\Pi}_3^\intercal\cdot \mathbf{(V\odot W)} \otimes \mathbf{I}\\
+                \mathbf{J}_\mathbf{V} & = \mathbf{(W\odot U)} \otimes \mathbf{I} + \mathbf{\Pi}_2^\intercal\cdot \mathbf{(U\odot W)} \otimes \mathbf{I} + \mathbf{\Pi}_3^\intercal\cdot \mathbf{(W\odot U)} \otimes \mathbf{I}\\
+                \mathbf{J}_\mathbf{V} & = \mathbf{(U\odot V)} \otimes \mathbf{I} + \mathbf{\Pi}_2^\intercal\cdot \mathbf{(V\odot U)} \otimes \mathbf{I} + \mathbf{\Pi}_3^\intercal\cdot \mathbf{(U\odot V)} \otimes \mathbf{I}
+        \end{array}
+        \label{eq:ci_cp_dgn_jacobians}
+    \end{equation}
+
+    However, just like in \Cref{sec:Damped Gauss Newton Optimization for CP
+    Decompositions}, we don't care as much about the explicit jacobian as we do
+    about how to apply $\mathbf{J^\intercal J}$ to a vector. 
+
+    \begin{equation}
+        \mathbf{J^\intercal J} \cdot \text{vec}(\mathbf{K}) = 
+        \left[
+        \begin{array}{cccc}
+            \mathbf{J_S^\intercal J_S} & \mathbf{J_S^\intercal J_U} & \mathbf{J_S^\intercal J_V} & \mathbf{J_S^\intercal J_W} \\
+            \mathbf{J_U^\intercal J_S} & \mathbf{J_U^\intercal J_U} & \mathbf{J_U^\intercal J_V} & \mathbf{J_U^\intercal J_W} \\
+            \mathbf{J_V^\intercal J_S} & \mathbf{J_V^\intercal J_U} & \mathbf{J_V^\intercal J_V} & \mathbf{J_V^\intercal J_W} \\
+            \mathbf{J_W^\intercal J_S} & \mathbf{J_W^\intercal J_U} & \mathbf{J_W^\intercal J_V} & \mathbf{J_W^\intercal J_W}
+        \end{array}
+        \right]
+        \left[
+        \begin{array}{c}
+            \text{vec}(\mathbf{K_S}) \\
+            \text{vec}(\mathbf{K_U}) \\
+            \text{vec}(\mathbf{K_V}) \\
+            \text{vec}(\mathbf{K_W})
+        \end{array}
+        \right]
+    \end{equation}
+
+    The equations for each entry of the above matrix-vector product can be found below:
+
+    \newpage
+    \begin{equation*}
+        \begin{array}{ccc}
+                \mathbf{J_S^\intercal J_S \text{vec}(K_s)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_S(S^\intercal S)\ast (S^\intercal S) + 2\cdot S(K_S^\intercal S)\ast (S^\intercal S)}\bigl) \\
+                \mathbf{J_S^\intercal J_U \text{vec}(K_u)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_U(V^\intercal S)\ast (W^\intercal S) + V(K_U^\intercal S)\ast (W^\intercal S) + W(K_U^\intercal S)\ast (V^\intercal S)}\bigl) \\
+                \mathbf{J_S^\intercal J_V \text{vec}(K_v)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_V(U^\intercal S)\ast (W^\intercal S) + U(K_V^\intercal S)\ast (W^\intercal S) + W(K_V^\intercal S)\ast (U^\intercal S)}\bigl) \\
+                \mathbf{J_S^\intercal J_W \text{vec}(K_w)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_W(U^\intercal S)\ast (V^\intercal S) + U(K_W^\intercal S)\ast (V^\intercal S) + V(K_W^\intercal S)\ast (U^\intercal S)}\bigl) \\ \\
+                \mathbf{J_U^\intercal J_S \text{vec}(K_s)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_S(S^\intercal V)\ast (S^\intercal W) + S\bigl((K_S^\intercal W)\ast (S^\intercal V) + (K_S^\intercal V)\ast (S^\intercal W)\bigl)}\bigl) \\
+                \mathbf{J_U^\intercal J_U \text{vec}(K_u)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_U(V^\intercal V)\ast (W^\intercal W) + V(K_U^\intercal W)\ast (W^\intercal V) + W(K_U^\intercal V)\ast (V^\intercal W)}\bigl) \\
+                \mathbf{J_U^\intercal J_V \text{vec}(K_v)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_V(W^\intercal V)\ast (U^\intercal W) + W(K_V^\intercal W)\ast (U^\intercal V) + U(K_V^\intercal V)\ast (W^\intercal W)}\bigl) \\
+                \mathbf{J_U^\intercal J_W \text{vec}(K_w)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_W(U^\intercal V)\ast (V^\intercal W) + U(K_W^\intercal W)\ast (V^\intercal V) + V(K_W^\intercal V)\ast (U^\intercal W)}\bigl) \\ \\
+                \mathbf{J_V^\intercal J_S \text{vec}(K_s)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_S(S^\intercal U)\ast (S^\intercal W) + S\bigl((K_S^\intercal U)\ast (S^\intercal W) + (K_S^\intercal W)\ast (S^\intercal U)\bigl)}\bigl) \\
+                \mathbf{J_V^\intercal J_U \text{vec}(K_u)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_U(V^\intercal W)\ast (W^\intercal U) + V(K_U^\intercal U)\ast (W^\intercal W) + W(K_U^\intercal W)\ast (V^\intercal U)}\bigl) \\
+                \mathbf{J_V^\intercal J_V \text{vec}(K_v)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_V(W^\intercal W)\ast (U^\intercal U) + W(K_V^\intercal U)\ast (U^\intercal W) + U(K_V^\intercal W)\ast (W^\intercal U)}\bigl) \\
+                \mathbf{J_V^\intercal J_W \text{vec}(K_w)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_W(U^\intercal W)\ast (V^\intercal U) + U(K_W^\intercal U)\ast (V^\intercal W) + V(K_W^\intercal W)\ast (U^\intercal U)}\bigl) \\ \\
+                \mathbf{J_W^\intercal J_S \text{vec}(K_s)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_S(S^\intercal U)\ast (S^\intercal V) + S\bigl((K_S^\intercal U)\ast (S^\intercal V) + (K_S^\intercal V)\ast (S^\intercal U)\bigl)}\bigl) \\
+                \mathbf{J_W^\intercal J_U \text{vec}(K_u)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_U(V^\intercal U)\ast (W^\intercal V) + V(K_U^\intercal V)\ast (W^\intercal U) + W(K_U^\intercal U)\ast (V^\intercal V)}\bigl) \\
+                \mathbf{J_W^\intercal J_V \text{vec}(K_v)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_V(W^\intercal W)\ast (U^\intercal V) + W(K_V^\intercal V)\ast (U^\intercal U) + U(K_V^\intercal U)\ast (W^\intercal V)}\bigl) \\
+                \mathbf{J_W^\intercal J_W \text{vec}(K_w)} & = & \scriptstyle 3\cdot \text{vec}\bigl(\mathbf{K_W(U^\intercal U)\ast (V^\intercal V) + U(K_W^\intercal V)\ast (V^\intercal U) + V(K_W^\intercal U)\ast (U^\intercal V)}\bigl) \\
+        \end{array}
+    \end{equation*}
+
+    Then, we reach our algorithm
+    \begin{algorithm}
+        \caption{Cyclic Invariant CP Damped Gauss-Newton}
+        \label{alg:Mod-CP-DGN}
+        \begin{algorithmic}
+            \State{\textbf{Input:} Matrix Multiplication Tensor $\mathcal{M}$,}
+            \State{\hspace{3.25em} CP Tensor Rank $r$,}
+            \State{\hspace{3.25em} Damping Parameter $\lambda \in \mathbb{R}$,}
+            \State{\hspace{3.25em} Convergence Tolerance $\epsilon > 0$}
+            
+            \State \textbf{Output:} CP Tensor $\mathcal{K}$
+            \Function{DGN}{$\mathcal{M}, r, \lambda, \epsilon$}
+                \State{Initialize K and K\_prev to be a cell of length 4 with the first entry being of $n^2 \times r_s$ and the remaining three $n^2 \times r_c$ matrices}
+
+                \For{$i = 1:MaxIters$}
+                    \State{f $\longleftarrow \frac{1}{2} \|\mathcal{M} - \mathbf{\llbracket S, S, S\rrbracket - \llbracket U, V, W\rrbracket - \llbracket W, U, V\rrbracket - \llbracket V, W, U\rrbracket} \| $}
+                    \State{$\nabla \mathbf{f} \longleftarrow [\text{vec} \left( \frac{\partial f}{\partial \mathbf S}\right) \text{vec} \left( \frac{\partial f}{\partial \mathbf U}\right) \text{vec} \left( \frac{\partial f}{\partial \mathbf V}\right) \text{vec} \left( \frac{\partial f}{\partial \mathbf W}\right)]^T$} 
+                    \State{$S \longleftarrow \text{Solution to } (\textbf{J}^T\textbf{J} + \lambda I)\mathbf{K} = -\nabla \mathbf{f}$}
+                    \While{\textit{Goldstein Conditions Are Satisfied}}
+                        \State{K $\longleftarrow$ K\_prev + $\alpha S$}
+                        \State{f $_{new}\longleftarrow$ Compute Function Value}
+                        \State{$\alpha \longleftarrow \alpha / 2$}
+                    \EndWhile{}
+                    \If{f - f $_{new} < \epsilon$}
+                        \State{\textbf{break}}
+                    \EndIf{}
+                \EndFor{}
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}

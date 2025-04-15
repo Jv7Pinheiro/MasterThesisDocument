@@ -1,0 +1,21 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (M) at (0, 0);
+    \coordinate (center_M) at ($(\m/2, \n/2)$);
+
+    \coordinate (n_arrow) at ($(M) + (-\distance, \n)$);
+    \coordinate (n) at ($(n_arrow) + (-1.25*\distance, -\n/2)$);
+    
+    \coordinate (m_arrow) at ($(M) + (0, -\distance)$);
+    \coordinate (m) at ($(center_M) + (0, -7.5*\distance)$);
+    
+    \draw[] (M) rectangle (\m, \n);
+    \node[namenode] at (center_M) {$\mathbf{X}$};
+
+    \draw[->] (n_arrow) -- (-\distance, 0);
+    \node[namenode] at (n) {$m$};
+    
+    \draw[->] (m_arrow) -- (\m, -\distance);
+    \node[namenode] at (m) {$n$};
+
+\end{tikzpicture}

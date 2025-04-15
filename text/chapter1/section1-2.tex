@@ -1,0 +1,125 @@
+%!TEX root = ../../main.tex
+
+Tensors suffer from the infamous \textbf{curse of dimensionality}. This curse
+exists because as the number of the dimensions of a tensor grows, its storage
+cost and the cost of operations involving it grows exponentially. This is
+because the number of entries in a uniform $d$-way tensor is $n^d$. Thus, there
+is often a need to compress these large datasets. \textbf{Tensor decompositions}
+are techniques that decompose tensors into smaller structured representations.
+Similar to most types of matrix decompositions, we seek a set of
+matrices/tensors that can be multiplied together appropriately to reconstruct
+the input. Matrix or Tensor decompositions can be either exact or
+approximations, though the latter is much more common. Most tensor
+decompositions can be viewed as higher-order generalizations of matrix
+decompositions. There are several types of tensor decompositions, but in this
+work we focus on two of the most famous ones; The CP Decomposition, and the
+Tucker Decomposition. As mentioned back in the abstract, this thesis is build
+upon two projects, each project will focus on one of these decompositions.
+Furthermore, though it was just said that exact tensor decompositions are rarer,
+the first project focuses on exact CP decompositions of a special type of
+tensor. On the other hand, the second project focuses on numeric tensor
+approximations using the Tucker Decomposition. 
+
+
+\subsection{Kruskal Tensors and The CP Decomposition} \label{sec:Kruskal Tensors and The CP Decomposition}
+    The CP Decomposition compresses an input tensor into a Kruskal Tensor
+    (KTensor), which is a collection of $r$ rank-1 components. Each component is
+    an outer product of $r$ vectors. We refer to $r$ as the rank of the CP
+    decomposition, though this is technically true only when $r$ is minimal. The
+    vectors in each mode come together to form a factor matrix. We can visualize
+    this in the case of a 3-way tensor as shown in \Cref{fig:KTensor}.
+    \begin{figure}[ht!]
+        \centering
+        \begin{subfigure}[b]{0.99\textwidth}
+            \centering
+            \input{tikz/chapter1/section1-2/CP_Decomposition.tex}
+            \caption{A 3 way Kruskal Tensor Diagram}
+            \label{fig:KTensor}
+        \end{subfigure}
+        
+        \vspace{1em}
+        \begin{subfigure}[b]{0.99\textwidth}
+            \centering
+            \input{tikz/chapter1/section1-2/CP_Decom_factor_marices.tex}
+            \caption[Kruskal Tensor Factor Matrices]{The vectors of the components of the Kruskal tensor come together to form factor matrices}
+            \label{fig:KTensor_factor_matrices}
+        \end{subfigure}
+        \caption[The CP Decomposition]{The CP Decomposition}
+    \end{figure}
+
+    Mathetmatically, given a tensor $\mathcal{T} \in \mathbb{R}^{m\times n\times
+    p}$ and decomposition rank $r\in \mathbb{N}$, The goal of a CP Decomposition
+    is to find factor matrices $\mathbf{A}\in \mathbb{R}^{m\times r},
+    \mathbf{B}\in \mathbb{R}^{n\times r}, \mathbf{C}\in \mathbb{R}^{p\times r}$
+    such that 
+
+    \begin{equation}
+        t_{ijk} = \sum_{\ell = 1}^{r} a_{i\ell}b_{j\ell}c_{k\ell} \text{, } \forall (i, j, k) \in [m]\times [n]\times [p]
+    \end{equation}
+
+    Or alternatively:
+
+    \begin{equation}
+        \mathcal{T} \approx \llbracket \mathbf{A, B, C} \rrbracket = \sum_{\ell = 1}^{r} a_\ell \circ b_\ell \circ c_\ell
+    \end{equation}
+
+    The memory footprint of a KTensor is $3rn$. The approximation gets more
+    accurate as $r$ increases. This is the 2D matrix equivalent of having an
+    $n\times n$ matrix approximation to be the outer product of $n \times 1$ two
+    vectors. Traditional methods of computing the CP decomposition of a tensor
+    are gradient descent and the newton method. The method used in this work is
+    a variation of the later called damped gauss newton. All these methods often
+    minimize the sum of squares error. The least squares error is shown in
+    \ref{eq:cp_least_squares}:
+
+    \begin{equation} \label{eq:cp_least_squares}
+        \|\mathcal{T} - \llbracket \mathbf{A, B, C} \rrbracket \|^2 \equiv \sum_{i=1}^{m} \sum_{j=1}^{n} \sum_{k=1}^{p}\left(t_{ijk} - \sum_{\ell=1}^{r} a_{i\ell}b_{j\ell}c_{k\ell} \right)^2
+    \end{equation}
+
+    Thus, the CP optimization problem for a given $r$ is shown in
+    \ref{eq:cp_opt}. This is a non-convex problem. 
+
+    \begin{equation} \label{eq:cp_opt}
+        \min_{A} \|\mathcal{T} - \llbracket \mathbf{A, B, C} \rrbracket \|^2 \text{, subject to } \mathbf{A} \in \mathbb{R}^{m\times r} \mathbf{B} \in \mathbb{R}^{n\times r} \mathbf{C} \in \mathbb{R}^{p\times r}
+    \end{equation}
+        
+
+
+
+
+\subsection{Tucker Tensors and The Tucker Decomposition} \label{sec:Tucker Tensors and The Tucker Decomposition}
+    The Tucker Decomposition compresses an input tensor into a Tucker Tensor
+    (TTensor), which is a smaller core tensor with a factor matrix for each of
+    its modes. To reconstruct the approximation of the original tensor, each
+    factor matrix is multiplied with the core in its respective mode through a
+    TTM. We can visualize this in the case of a 3-way tensor as shown in
+    \Cref{fig:TTensor}.
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[scale=1]{tikz/chapter1/section1-2/Tucker_Tensor.pdf}
+        \caption[A 3-way Tucker Tensor Diagram]{A 3-way Tucker Tensor Diagram}
+        \label{fig:TTensor}
+    \end{figure}
+
+    If we consider a 3D tensor of size $n^3$ with core of size $r^3$ where $r <
+    n$. Then the number of entries of a TTensor is $3rn + r^3$ which is less
+    than the original memory footprint and much less if $r \ll n$. The
+    reconstruction of the original tensor is performed using TTMs as seen in
+    \ref{eq:tucker_ttm}, but if we wish to reconstruct but a single entry then
+    we perform \ref{eq:tucker_element}
+
+    \begin{equation} \label{eq:tucker_ttm}
+        \mathcal{T} \approx \llbracket \mathcal{G}; \mathbf{A,B,C} \rrbracket = \mathcal{G} \times_1 \mathbf{A} \times_2 \mathbf{B} \times_3 \mathbf{C}
+    \end{equation}
+    
+    \begin{equation} \label{eq:tucker_element}
+        t_{ijk} = \sum_{\alpha = 1}^{q} \sum_{\beta = 1}^{r} \sum_{\gamma = 1}^{s} g_{\alpha \beta \gamma}\cdot a_{i\alpha}b_{j\beta}c_{i\gamma}\text{, }\forall (i, j, k) \in [m]\otimes[n]\otimes[p]
+    \end{equation}
+    
+    
+    The traditional methods are
+    HOSVD (Higher Order Singular Value Decomposition) and STHOSVD (Sequentially
+    Truncated Singular Value Decomposition). Though HOOI (Higher Order
+    Orthogonal Iteration) is not as traditional, it will be the protagonist for
+    this work. We describe these algorithms in ??

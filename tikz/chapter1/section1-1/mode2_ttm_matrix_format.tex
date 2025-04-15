@@ -1,0 +1,43 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (YFrontLowerLeft) at (0, 0);
+
+    \coordinate (Ynamenode) at ($(\m*\pslices/2, \r + \namedistance)$);
+    \node[namenode] at (Ynamenode) {$\mathbf{Y}_{(2)}\in \mathbb{R}^{r\times mp}$};
+    
+    \draw (YFrontLowerLeft) rectangle (\m*\pslices, \r);
+
+    % Draw slices (horizontal lines) on the front face
+    \foreach \i in {1,...,20} {
+        \pgfmathsetmacro{\z}{\i*\m/\mslices}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thin] (\z,0) -- (\z,\r);
+    }
+
+
+    \coordinate (equal_sign) at ($(YFrontLowerLeft) + (\m*\pslices/2, -1.5*\namedistance)$);
+    \node[namenode] at (equal_sign) {$=$};
+    
+    \coordinate (ALowerLeft) at ($(YFrontLowerLeft) + (-\n/2 - \distance/2, -\r -3*\namedistance)$);
+    \begin{scope}[shift={(ALowerLeft)}]
+        \draw (0, 0) rectangle (\n, \r);
+        \coordinate (Anamenode) at ($(\n/2, -\namedistance)$);
+        \node[namenode] at (Anamenode) {$\mathbf{A}\in\mathbb{R}^{r\times n}$};
+
+        \coordinate (XLowerLeft) at ($(\n + \distance, \r-\n)$);
+        \draw (XLowerLeft) rectangle ($(XLowerLeft) + (\m*\pslices, \n)$);
+        \coordinate (Xnamenode) at ($(XLowerLeft) + (\m*\pslices/2, -\namedistance)$);
+        \node[namenode] at (Xnamenode) {$\mathbf{X}_{(2)} \in \mathbb{R}^{n \times mp}$};
+
+        \begin{scope}[shift={(XLowerLeft)}]
+        % Draw slices (horizontal lines) on the front face
+        \foreach \i in {1,...,20} {
+            \pgfmathsetmacro{\z}{\i*\m/\mslices}
+            
+            % Draw the lines in front of the cube
+            \draw[ultra thin] (\z,0) -- (\z,\n);
+        }
+        \end{scope}
+    \end{scope}
+\end{tikzpicture}

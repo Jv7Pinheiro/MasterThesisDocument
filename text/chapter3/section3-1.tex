@@ -1,0 +1,383 @@
+%!TEX root = ../../main.tex
+
+Recall from \Cref{sec:Tucker Tensors and The Tucker Decomposition} that a Tucker
+decomposition of a tensor $\mathcal{X}\in \mathbb{R}^{n_1\times \cdots \times
+n_d}$ approximates $\mathcal{X}$ as a product of a core tensor $\mathcal{G} \in
+\mathbb{R}^{r_1 \cdots r_d}$ and factor matrices $\mathbf{U}_j \in
+\mathbb{R}^{n_j\times r_j} \forall j \in [d]$ where $\mathcal{X} \approx
+\mathcal{\hat{X}} = \mathcal{G} \times_1 \mathbf{U}_1 \cdots \times
+\mathbf{U}_d$. The optimal rank-$\mathbf{r}$ Tucker decomposition of
+$\mathcal{X}$ can be expressed as a solution to the rank-specified optimization problem
+
+\begin{equation}\label{eq:tuckeropt-rank}
+    \begin{aligned}
+        \min \quad & \| \mathcal{X} - (\mathcal{G} \times_1 \mathbf{U}_1 \cdots \times \mathbf{U}_d)\| \\ 
+        \text{subject to } &\mathcal{G} \in \mathbb{R}^{r_1\times \cdots \times r_d}, \mathbf{U}_{j} \in \mathbb{R}^{n_j\times r_j} \forall j\in [d].
+    \end{aligned}
+\end{equation}
+
+Alternatively, the error-specified formulation of the Tucker approximation
+problem is given as
+
+\begin{equation}\label{eq:tuckeropt-err}
+    \begin{aligned}
+        \min \quad & \prod_{j=1}^d r_j + \sum_{j=1}^d n_jr_j & \\ 
+        \text{subject to } &\mathcal{G} \in \mathbf{R}^{r_1\times \cdots r_d}, \mathbf{U}_{j} \in \mathbb{R}^{n_j\times r_j} \forall j\in [d] \\
+        \text{and}\quad  & \| \mathcal{X} - (\mathcal{G} \times_1 \mathbf{U}_1 \cdots \times \mathbf{U}_d) \| \leq \epsilon \|\mathcal{X}\|.
+    \end{aligned}
+\end{equation}
+
+\subsection{STHOSVD} \label{sec:sthosvd} We start with the state-of-the art
+    algorithm that is capable of performing both rank-specified and
+    error-specified formulations. \Cref{alg:STHOSVD} showcases the $d$-way
+    construction of the STHOSVD algorithm. This method approximately solves
+    either \cref{eq:tuckeropt-rank} or \cref{eq:tuckeropt-err} by unfolding the
+    $j^\text{th}$ mode of the input tensor, computing its leaft leading singular
+    vectors (LLSV), and then performing a TTM with the result to truncate the
+    $j^\text{th}$ mode of rank $r_j$. Once all factor matrices have been
+    computed, the truncated tensor has rank $\mathbf{r}$.
+
+    A relative error error of $\epsilon$ can be achieved by selecting $r_j$ in
+    the LLSV computation such that \(\sum_{i=r_j+1}^{n_j}\varSigma_i^2 \leq
+    \epsilon^2 \|\mathcal{X}\|^2/d\), where $\varSigma_i$ is the $i^th$ largest
+    singular value of the $j^\text{th}$ unfolding, see \cite{BK25} for more
+    details. There are several algorithms one could choose in line
+    \ref{line:sthosvd_llsv} to compute $\mathbf{U}_j$. We assume that such
+    computation is performed via the eigenvalue decomposition (EVD) of the Gram
+    matrix $\mathbf{G}_({k})\mathbf{G}_{(k)}$. 
+
+    \begin{algorithm}
+        \caption{STHOSVD}
+        \label{alg:STHOSVD}
+        \begin{algorithmic}
+            \State{\textbf{Input:} Tensor $\mathcal{X} \in \mathbb{R}^{n_1 \times \cdots \times n_d}$} % \vspace{-0.75em}}
+            \State{\hspace{3.25em} Ranks \textbf{R} $ = r_1, \dots, r_d$ \textbf{OR} relative error tolerance $\epsilon > 0$} % \vspace{-0.75em}}
+            
+            \State{\textbf{Output:} TTensor $\mathcal{T}$ of ranks \textbf{R} with $\mathcal{T \approx X}$ \textbf{OR} E{\footnotesize \text{RR}} $\equiv ||\mathcal{X - T}|| \leq \epsilon ||\mathcal{X}||$}
+            \Function{STHOSVD}{$\mathcal{X}$, \textbf{R} or $\epsilon$}
+                \State{\textbf{if} $\epsilon$ is defined \textbf{then} $\bar{\epsilon} \gets (\epsilon / \sqrt{d})\cdot||\mathcal{X}||$}
+                \State{$\mathcal{G \gets X}$}
+                \For{$k = 1, \dots, d$}
+                    \State{$[U_k, \epsilon_k] \gets \textcolor{blue}{LLSV}(G_{(k)}, r_k \text{ or } \bar{\epsilon})$}\label{line:sthosvd_llsv} \Comment{$r_k$ leading left sing. vectors of residual} 
+                    \State{$\mathcal{G} \gets \mathcal{G \times_k} U^\intercal_k$} \Comment{compress in mode $k$}
+                \EndFor{}
+                \vspace{10pt}
+                \State{E{\footnotesize \text{RR}} $\gets \displaystyle \sqrt{\sum_{k=1}^d \epsilon_k^2}$} \Comment{equivalent to $||\mathcal{X - T}||$}
+                \vspace{10pt}
+                \State{\textbf{return} [$\mathcal{G}, U_{1:d}$, E{\footnotesize \text{RR}}]} \Comment{$\mathcal{T \equiv \{G; \textit{$U_{1:d}$}\}}$}
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+\subsection{Classic HOOI}
+    Our Protagonist is given in \cref{alg:Classic-HOOI} and is an alternative
+    method for solving the rank-specified formulation of the Tucker
+    approximation problem
+    \cite{kroonenberg1980principal,de2000best,kapteyn1986approach}. HOOI is a
+    block coordinate descent method and so it requires initial factor matrices.
+    Historically, the output factor matrices of STHOSVD have been used as input
+    factor matrices for the HOOI algorithm, as the latter has often been as an
+    aditional algorithm to just cheaply clean up the error. However, random
+    factor matrices can be used and generally no more than two iterations are
+    requireed to get a good approximation, often only one iteration is enough to
+    get a descent one. 
+
+    HOOI iteratively updates each factor matrix by performing a TTM with all but
+    the $k^\text{th}$ factor matrix to obtain an intermediate tensor
+    $\mathcal{Y}$ and computing the LLSV of $\mathbf{Y}_{(k)}$. The core tensor
+    $\mathcal G$ can be computed oce, at the end, or at the end of every
+    iteration in order to computate a per-iteration approximation error. 
+
+    \begin{algorithm}
+        \caption{HOOI}
+        \label{alg:Classic-HOOI}
+        \begin{algorithmic}
+            \State{\textbf{Input:} Tensor $\mathcal{X} \in \mathbb{R}^{n_1 \times \cdots \times n_d}$}
+            \State{\hspace{3.25em} Either Ranks \textbf{R} $ = r_1, \dots, r_d$}
+            \State{\hspace{3.25em} Maximum Number of Iterations}
+            
+            \State{\textbf{Output:} TTensor $\mathcal{T}$ of ranks \textbf{R} with $\mathcal{T \approx X}$}
+            \Function{HOOI}{$\mathcal{X}$, \textbf{R} or $\epsilon$}
+                \State{Initialize factor matrices $U_{1:d}$ randomly}
+                \State{$\mathcal{G \gets X}$}
+                \For{Maximum Number of Iterations}
+                    \For{$k = 1, \dots, d$}
+                        \State{$\mathcal{Y = X} \times_1 U_1^\intercal \times_2 \cdots \times_{k-1} U_{k-1}^\intercal \times_{k+1} U_{k+1}^\intercal \times_{k+2} \cdots \times_d U_d^\intercal$}
+                        \State{$U_k \gets \text{LLSV}(Y_{(k)}, r_k)$}
+                    \EndFor{}
+                \EndFor{}
+                \State{$\mathcal{G \gets Y} \times_d U_d^\intercal$} \Comment{update core}
+                \State{\textbf{return} [$\mathcal{G}, U_{1:d}$]} \Comment{$\mathcal{T \equiv \{G; \textit{$U_{1:d}$}\}}$}
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+    HOOI is a good algorithm, but it can be better. As previously mentioned, we
+    introduce three optimizations for the HOOI algorithm in an attempt to make
+    it more competitive against STHOSVD. 
+
+\subsection{HOOI's Dimension Trees Optimization}
+    Adapting ranks in each HOOI iteration is a low order cost, however, the cost
+    of TTMs is a factor of $d$ more expensive than in STHOSVD. We can reduce the
+    cost of TTMs by avoiding redundant computations. Notice that for $k = 1$ in
+    \cref{alg:Classic-HOOI} the following multi-TTM is computed $\mathcal{Y} =
+    \mathcal{X} \times_2 \mathbf{U}_{2}^\intercal \times_3
+    \mathbf{U}_{3}^\intercal \cdots \times_d \mathbf{U}_{d}$. At $k = 2$ the
+    multi-TTM is $\mathcal{B} = \mathcal{X} \times_2 \mathbf{U}_{1}\times
+    \times_3 \mathbf{U}_{3}^\intercal \cdots \times_d \mathbf{U}_{d}$. By
+    comparing the two multi-TTMs we can see that $d - 2$ TTMs are the same
+    (namely 3 to $d$). So we can reuse results from one multi-TTM to the next by
+    memoizing intermediate results. This idea, organized using so-called
+    ``dimension trees'', was first used in the context of CP decompositions
+    \cite{PTC13a} and has been applied to Tucker computations as well
+    \cite{kaya2019computing,MLB24}. \Cref{fig:dimtree} shows an example
+    dimension tree as we implement them for an order-$6$ tensor where each node
+    represents the set of modes in which a TTM has not been performed. At the
+    root of the tree, no TTMs have been performed, so the tensor is $\mathcal{X}$.
+    Each notch in an edge of the tree represents a TTM in the labeled mode. At
+    each leaf node, TTMs in all modes but one have been performed, so we update
+    the factor matrix in that mode by performing LLSV. The core tensor $\mathcal{G}$
+    is updated at the last leaf node by perform a TTM between the (memoized)
+    intermediate tensor and the factor matrix corresponding to the last leaf
+    node.
+
+    \begin{figure}
+        \centering
+        \input{tikz/chapter3/dimtree.tex}
+        \label{fig:dimtree}
+        \caption[A 6-way Dimension Tree]{Illustration of multi-TTM memoization
+        for an order-$6$ tensor. Each node in the tree shows the set of modes in
+        which multiplication has not been performed. Each notch in an edge is a
+        TTM in the labeled mode.  Factor matrices are computed at each leaf node
+        in the mode shown. $\mathcal{G}$ is updated in the last leaf node.}
+    \end{figure}
+
+    \Cref{alg:dimtree} shows the HOOI iteration using dimension tree memoization
+    implemented recursively.
+
+
+    \begin{algorithm}
+        \caption{Recursive HOOI iteration via dimension trees}
+        \label{alg:dimtree}
+        \begin{algorithmic}[1]
+            \Function{[$\mathcal{G},\{\mathbf{U}_{k}\}] = $HOOI-DT}{$\mathcal{X},\{\mathbf{U}_{k}\},\mathbf{m},\mathbf{r}$}
+                \If{length($\mathbf{m}) = 1$}
+                    \State $\mathbf{U}_{m} = $ \Call{LLSV}{$\mathbf{X}_{(m)}, \mathbf{U}_m, r_m$}
+                    \If{$m=d$}
+                        \State $\mathcal{G} = \mathcal{X} \times_d \mathbf{U}_{m}^\intercal$
+                    \EndIf
+                \Else
+                    \State Partition $\mathbf{m} = [\mathbf{\mu},\mathbf{\eta}]$ \State $\mathcal{X} = \mathcal{X} \scaleobj{1.7}{\times}_{k \in \mathbf{\mu}} \mathbf{U}_{k}^\intercal$
+                    %$\mathcal{X} = \mathcal{X} \times_{\mathbf{\mu}(1)} \mathbf{U}__{\mathbf{\mu}(1)}^\top \times \dots \times_{\mathbf{\mu}(end)} \mathbf{U}__{\mathbf{\mu}(end)}^\top$
+                    \State $[\mathcal{G},\{\mathbf{U}_{k}\}] = \Call{HOSI-DT}{\mathcal{X},\{\mathbf{U}_{k}\},\mathbf{\eta}, \mathbf{r}$}
+                    \State $\mathcal{X} = \mathcal{X} \scaleobj{1.7}{\times}_{k \in \mathbf{\eta}} \mathbf{U}_{k}^\intercal$
+                    %$\mathcal{X} = \mathcal{X} \times_{\mathbf{\eta}(1)} \mathbf{U}__{\mathbf{\eta}(1)}^\top \times \dots \times_{\mathbf{\eta}(end)} \mathbf{U}__{\mathbf{\eta}(end)}^\top$
+                    \State $[\mathcal{G},\{\mathbf{U}_{k}\}] =\Call{HOSI-DT}{\mathcal{X},\{\mathbf{U}_{k}\}, \mathbf{\mu},\mathbf{r}$}
+                \EndIf
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+\subsection{HOOI's Subspace Iteration Optimization}
+
+    So far, we have assumed that the LLSVs of a matrix $\mathbf{A}$ are obtained
+    as the eigenvectors of the Gram matrix, $\mathbf{A}\mathbf{A}^\intercal$,
+    which can be seen in \cref{alg:gram_llsv}. The next algorithmic improvement
+    we introduce is to compute the leading left singular vectors by using
+    subspace iterations. \Cref{alg:subiter} shows a single subspace iteration,
+    but in principle, the computations could be repeated to improve accuracy.
+
+    \begin{algorithm}
+        \caption{LLSV via Subspace Iteration}
+        \label{alg:subiter}
+        \begin{algorithmic}[1]
+        \Function{$\mathbf{Q} = $ \textcolor{red}{LLSV}}{$\mathbf{A}, \mathbf{U}, r$}
+    %        \If{$method == Gram+Eig$}
+    %            \State $\Mx{Z} = \Tm{B}{j} \Tm{B}{j}'$
+    %            % \Comment{Comm: all-to-all and reduce-scatter}
+    %            \State $\sqr{\Mx{Q}{j}, \Mx{\Lambda}} = \Call{eig}{\Mx{Z}}$
+    %        \ElsIf{$method == Sub.~Iter.$}
+    %	   \State $\mathbf{U}_ = \mathbf{U}_(:, 1:r)$
+                \State $\mathbf{G} = \mathbf{U}^\intercal \mathbf{A} $ \label{line:SI-TTM}
+                % \Comment{Comm: reduce-scatter}
+                \State $\mathbf{Z} = \mathbf{A} \mathbf{G}^\intercal$ \label{line:SI-contract}
+                % \Comment{Comm: reduce + broadcast}
+                \State $[\mathbf{Q}, \sim, \sim] = \Call{QRCP}{\mathbf{Z}}$ \label{line:SI-QRCP}
+    %        \EndIf
+    %        \State $\Mx{Q}{j} = \Mx{Q}{j}(:, 1:r_j)$
+        \EndFunction
+        \end{algorithmic}
+        %\AD{Not sure if I like branching based on $method$}
+        %\GB{I think I will change this to LLSV-SI and make variables more generic}
+    \end{algorithm}
+
+    We note that the input matrix $\mathbf{A}$ is $\mathbf{Y}_{(k)}$ from
+    \cref{alg:Classic-HOOI} or $\mathbf{X}_{(m)}$ from \cref{alg:hooi_dimtree},
+    which is the result of an all-but-one multi-TTM, and the input matrix
+    $\mathbf{U}$ is the factor matrix from the previous HOOI iteration. This implies
+    that the temporary matrix $\mathbf{G}$ in \cref{alg:subiter} is an unfolding of
+    the core tensor corresponding to the current set of factor matrices. That
+    is, the matrix multiplication in line \ref{line:SI-TTM} is a TTM, which we
+    implement using existing TuckerMPI subroutines. The multiplication in
+    line \ref{line:SI-contract} is a tensor contraction in all modes but one between
+    the core tensor and the result of an all-but-one multi-TTM, which is not
+    implemented in TuckerMPI. Our parallel algorithm mimics the computation of
+    the Gram matrix of a tensor unfolding, but it is a nonsymmetric operation
+    and has different costs. Finally, we perform QR with column pivoting in
+    line \ref{line:SI-QRCP} to orthonormalize the subspace iteration result and also
+    order the columns to aid in core analysis, which is discussed in
+    \cref{sec:HOOI's Adaptive Rank Optimization}. We choose to do only a single subspace iteration
+    because we use an accurate initialization (from the previous HOOI iteration)
+    and because high accuracy of a HOOI subiteration is less of a priority than
+    high accuracy of the full HOOI iteration.
+
+\subsection{HOOI's Adaptive Rank Optimization} \label{HOOI's Adaptive Rank Optimization}
+
+    \begin{figure}
+        \centering
+        \input{tikz/chapter3/adaptive_hooi.tex}
+        \caption{Adaptive HOOI}
+        \label{fig:adaptive_hooi}
+    \end{figure}
+
+    A significant disadvantage of HOOI is that it solves only the rank-specified
+    formulation of the Tucker approximation problem, whereas STHOSVD can
+    adaptively select ranks based on a relative error tolerance. We propose a
+    technique that allows HOOI to automatically adapt ranks to meet a
+    user-specified relative error tolerance, as shown in
+    \cref{alg:hooi_dimtree}. \Cref{line:HOSI-DT} performs an update of all
+    factor matrices and the core using optimizations described in
+    \cref{sec:dimtrees,sec:HOSI}.
+
+    Recall that for the errpr-specified formulation, given an error tolerance
+    $\varepsilon$ and an initial rank estimate $\mathbf{r}$, our method adaptively
+    finds a Tucker decomposition $\mathbf{\hat{X}} = [\mathcal{G}; \mathbf{U}_{1}, \dots,
+    \mathbf{U}_{d}]$ for a tensor $\mathcal{X} \in \mathbb{R}^{n_1 \times \dots \times
+    n_d}$ such that $\| \mathbf{\hat{X}} - \mathcal{X} \| \leq \varepsilon \| \mathcal{X} \|$.
+    We start with a typical HOOI iteration using our initial rank estimate
+    $\mathbf{r}$, partially compressing our tensor in all modes except mode $j$ and
+    updating factor matrix $\mathbf{U}_{j}$ to be the first $r_j$ left singular
+    vectors of the partially compressed tensor. Once all modes have been
+    processed in this manner, we check the error of the approximation at that
+    point. 
+    Whereas in clasical HOOI the core is only updated after the iterations, here
+    we compute the core tensor at the end of everu iteration and perform error
+    analysis on it. To check the error, we use the identity that for orthonormal
+    matrices $\mathbf{U}_{1},\dots,\mathbf{U}_{d}$ and $\mathcal{G} = \mathcal{X} \times_1
+    \mathbf{U}_{1}\intercal \times \dots \times_d \mathbf{U}_{d}^\intercal$, the approximation error can be
+    written as $\| \mathcal{X} - \mathbf{\hat{X}} \|^2 = \| \mathcal{X} - \mathcal{G} \times_1
+    \mathbf{U}_{1} \times \dots \times_d \mathbf{U}_{d} \|^2 = \| \mathcal{X} \|^2 - \| \mathcal{G}
+    \|^2$ (\cite[Proposition 6.3]{BK25}). If the current Tucker approximation is
+    not sufficiently accurate, we increase all ranks by a factor $\alpha$ and
+    perform the next HOOI iteration. If the current approximation satisfies the
+    error threshold, then we can optimize over all rank truncations by analyzing
+    the core tensor's entries.
+    We can thus estimate the relative error in the approximation by computing
+    $\| \mathcal{G} \|$, and choosing the next rank $\mathbf{r}$ so that $\|
+    \mathcal{G}(\mathbf{1}:\mathbf{r})\|^2 \approx (1 - \varepsilon^2) \| \mathcal{X} \|^2.$ 
+    Specifically, we solve the optimization problem
+    \begin{equation}\label{eq:rankcond}
+    \begin{aligned}
+    \min_{\mathbf{r}}  \quad & \Pi_{j=1}^d r_j + \Sigma_{j=1}^{d} n_j r_j,\\ 
+    \text{ subject to } &\|\mathcal{G}(\mathbf{1}:\mathbf{r}) \|^2 \geq (1 - \varepsilon^2) \| \mathcal{X} \|^2.
+    \end{aligned}
+    \end{equation}
+    This computes the leading subtensor of $\mathcal{G}$ that minimizes the size of
+    the Tucker approximation and also satisfies the error threshold. Note that
+    any subtensor of the core, along with the corresponding columns of the
+    factor matrices, is a valid Tucker approximation with error determined by
+    the norm of the core subtensor. The optimal subtensor need not be a leading
+    one, but we order factor matrix columns to concentrate the weight of
+    $\mathcal{G}$ towards the entry of smallest index value so that the heuristic of
+    searching over only leading subtensors is reasonable.
+
+    If such a rank $\mathbf{r}$ exists, we set our next rank as the closest
+    index satisfying \eqref{eq:rankcond} and truncate to that rank before
+    iterating. If no $\mathbf{r}$ exists, our current rank is too small, so we
+    increase it by a small factor $\alpha$ before trying again. Typically,
+    $\alpha \approx 2$ is sufficient. The details of this algorithm, which we
+    call HOOI-Adapt, are described in Algorithm~\ref{alg:hooi_adapt}. In
+    practice, we do the optimization problem above in a way that minimizes the
+    memory footprint. We do so by exploiting HOOI's form of the immediate core
+    $\mathcal{G}$. We use the immediate form to compute its cumulative sum of
+    the squared core $\mathcal{G}^2$ (square all entries in the core) and then
+    consider all values of this cumulative sum squared tensor to find the first
+    instance that satisfies the error tolerance to get the new ranks.
+
+    \begin{algorithm}
+        \caption{Adaptive HOOI}
+        \label{alg:Adaptive-HOOI}
+        \begin{algorithmic}
+            \Function{performCoreAnalysis}{$\mathcal{G}, \epsilon, \mathbf{r}$}
+                \If{$||\mathcal{G} ||^2 \geq (1 - \epsilon^2)||\mathcal{X}||^2$}
+                    \State{Find \textbf{r} = arg min $||\mathcal{G}(1:\textbf{r}) ||^2$}
+                    \State{$\hspace{0.1375\linewidth}$subject to $||\mathcal{G}(1:\textbf{r}) ||^2 \geq (1 - \epsilon^2)||\mathcal{X}||^2$}
+                    \State{}
+                    \State{Truncate $\mathcal{G}, A, B, C$ according to $\mathbf{r}$}
+                \Else{}
+                    \State{\textbf{r} = $\alpha$ \textbf{r}}
+                    \State{Increase columns of $ A, B, C$ according to $\mathbf{r}$}
+                \EndIf{}
+                \State{\textbf{return} $\mathbf{r}$}
+            \EndFunction{}
+        \end{algorithmic}
+    \end{algorithm}
+
+    % \begin{eqnarray*}
+    %     \text{min} ||\mathcal{X - G} \times U_1 \times_2 \cdots \times_d U_d || \\
+    %     \text{subject to } \mathcal{G} \in \mathbb{R}^{n_1 \times \cdots \times n_d}, U_k \in \mathbb{R}^{n_k \times r_k} \text{ } \forall k \in [d]
+    % \end{eqnarray*}
+    
+    % Now suppose we have a relative error tolerance of how accurate we want
+    % our approximation to be. Then the approximation must satisfy:
+    % \begin{eqnarray*}
+    %     \frac{||\mathcal{X - T}||}{||\mathcal{X}||} \leq \epsilon \\
+    %     \frac{||\mathcal{X - T}||^2}{||\mathcal{X}||^2} \leq \epsilon^2 \\
+    %     \therefore ||\mathcal{X - T}||^2 \leq \epsilon^2 \cdot ||\mathcal{X}||^2 \\
+    %     \therefore ||\mathcal{X}||^2 - ||\mathcal{G}||^2 \leq \epsilon^2 \cdot ||\mathcal{X}||^2 \\
+    %     \therefore ||\mathcal{X}||^2 - \epsilon^2 \cdot ||\mathcal{X}||^2 \leq ||\mathcal{G}||^2 \\
+    %     \therefore (1 - \epsilon^2) \cdot ||\mathcal{X}||^2 \leq ||\mathcal{G}|| \\
+    % \end{eqnarray*}
+    
+    % We can thus estimate the relative error in the approximation by
+    % computing $||\mathcal{G}||^2$ and choosing the next rank-\textbf{R} so
+    % that $||\mathcal{G}(1:\textbf{R}) ||^2 \approx (1 -
+    % \epsilon^2)||\mathcal{X}||^2$. Specifically, we solve the optimization
+    % problem
+    % \begin{eqnarray*}
+    %     \underbrace{\text{arg min}}_\textbf{R} ||\mathcal{G}(1:\textbf{R})||^2 \\
+    %     \text{subject to } ||\mathcal{G}(1:\textbf{R}) ||^2 \geq (1 - \epsilon^2)||\mathcal{X}||^2
+    % \end{eqnarray*}
+    
+    
+    % \begin{algorithm}
+    %     \caption{Adaptive HOOI}
+    %     \label{alg:Adaptive-HOOI}
+    %     \begin{algorithmic}
+    %         \State{\textbf{Input:} Tensor $\mathcal{X} \in \mathbb{R}^{n_1 \times \cdots \times n_d}$}
+    %         \State{\hspace{3.25em} Either Ranks \textbf{R} $ = r_1, \dots, r_d$}
+    %         \State{\hspace{3.25em} Maximum Number of Iterations}
+    %         \State{\hspace{3.25em} Rank Size Increase Rate $\alpha$}
+            
+    %         \State{\textbf{Output:} TTensor $\mathcal{T}$ of ranks \textbf{R} with $\mathcal{T \approx X}$}
+    %         \Function{AdaptiveHOOI}{$\mathcal{X}$, \textbf{R} or $\epsilon$}
+    %             \State{Initialize factor matrices $U_{1:d}$ randomly}
+    %             \State{$\mathcal{G \gets X}$}
+    %             \For{Maximum Number of Iterations}
+    %                 \For{$k = 1, \dots, d$}
+    %                     \State{$\mathcal{Y = X} \times_1 U_1^\intercal \times_2 \cdots \times_{k-1} U_{k-1}^\intercal \times_{k+1} U_{k+1}^\intercal \times_{k+2} \cdots \times_d U_d^\intercal$}
+    %                     \State{$U_k \gets \text{LLSV}(Y_{(k)}, r_k)$}
+    %                 \EndFor{}
+    %                 \State{$\mathcal{G \gets Y} \times_d U_d^\intercal$} \Comment{update core}
+    %                 \If{$||\mathcal{G} ||^2 \geq (1 - \epsilon^2)||\mathcal{X}||^2$}
+    %                     \State{Find \textbf{R} = arg min $||\mathcal{G}(1:\textbf{R}) ||^2$,subject to $||\mathcal{G}(1:\textbf{R}) ||^2 \geq (1 - \epsilon^2)||\mathcal{X}||^2$}
+    %                     \State{$\mathcal{G = G}(1:\textbf{R}, U_k = U_k(1:r_k) \text{  } \forall k \in [d]$}
+    %                 \Else{}
+    %                     \State{\textbf{R} = $\alpha$ \textbf{R}}
+    %                 \EndIf{}
+    %             \EndFor{}
+    %             \State{\textbf{return} [$\mathcal{G}, U_{1:d}$]} \Comment{$\mathcal{T \equiv \{G; \textit{$U_{1:d}$}\}}$}
+    %         \EndFunction
+    %     \end{algorithmic}
+    % \end{algorithm}
+    

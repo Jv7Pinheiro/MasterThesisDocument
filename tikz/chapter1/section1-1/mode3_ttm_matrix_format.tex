@@ -1,0 +1,48 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (YFrontLowerLeft) at (0, 0);
+    \coordinate (Ynamenode) at ($(\s/2, \m*\nslices+\namedistance)$);
+    
+    \draw (YFrontLowerLeft) rectangle (\s, \m*\nslices);
+    \node[namenode] at (Ynamenode) {$\mathbf{Y}^\intercal_{(3)} \in\mathbb{R}^{mn\times s}$};
+
+    % Draw slices (horizontal lines) on the front face
+    \foreach \i in {1,...,15} {
+        \pgfmathsetmacro{\z}{\i*\m/\mslices}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thin] (0,\z) -- (\s,\z);
+    }
+
+    \coordinate (equal_sign) at ($(YFrontLowerLeft) + (\s + 6*\distance + 0.1, \m*\nslices/2)$);
+    \node[namenode] at (equal_sign) {$=$};
+    
+    % \coordinate (ALowerLeft) at ($(YFrontLowerLeft) + (\n*\pslices + 2.15*\distance + 0.2, 0)$);
+    % \draw (ALowerLeft) rectangle ($(ALowerLeft) + (\m, \q)$);
+
+    % \coordinate (Anamenode) at ($(ALowerLeft) + (\m/2, -\namedistance)$);
+    % \node[namenode] at (Anamenode) {$\mathbf{A}\in \mathbb{R}^{q\times m}$};
+    
+    \coordinate (XFrontLowerLeft) at ($(YFrontLowerLeft) + (\s + 12*\distance + 0.2, 0)$);
+    
+    \begin{scope}[shift={(XFrontLowerLeft)}]
+        \coordinate (Xnamenode) at ($(\p/2, \m*\nslices+\namedistance)$);
+        \node[namenode] at (Xnamenode) {$\mathbf{X}_{(3)}^\intercal \in \mathbb{R}^{mn\times p}$};
+
+        \draw (0,0) rectangle (\p, \m*\nslices);
+    
+        % Draw slices (horizontal lines) on the front face
+        \foreach \i in {1,...,15} {
+            \pgfmathsetmacro{\z}{\i*\m/\mslices}
+            
+            % Draw the lines in front of the cube
+            \draw[ultra thin] (0,\z) -- (\p,\z);
+        }
+
+        \coordinate (ALowerLeft) at ($(XFrontLowerLeft) + (\p + \distance, \m*\nslices - \p)$);
+        \draw (ALowerLeft) rectangle++ (\s, \p);
+        \coordinate (Anamenode) at ($(ALowerLeft) + (\s + 3.5*\namedistance, \p/2)$);
+        \node[namenode] at (Anamenode) {$\mathbf{A}^\intercal \in \mathbb{R}^{p\times s}$};
+    \end{scope}
+
+\end{tikzpicture}

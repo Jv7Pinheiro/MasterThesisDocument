@@ -196,8 +196,8 @@
 %
 
 %-- SIDE MARGINS:
-% \oddsidemargin 26pt    %  Left margin on odd-numbered pages. THIS IS THE FINAL
-\oddsidemargin 15pt    %  Left margin on odd-numbered pages. I AM RUNNING THIS FOR DEVELOPMENT
+\oddsidemargin 26pt    %  Left margin on odd-numbered pages. THIS IS THE FINAL
+% \oddsidemargin 15pt    %  Left margin on odd-numbered pages. I AM RUNNING THIS FOR DEVELOPMENT
 \evensidemargin 36pt   %  Note that \oddsidemargin = \evensidemargin
 \marginparwidth 68pt   %  Width of marginal notes.
 \marginparsep 10pt     % Horizontal space between outer margin and marginal note
@@ -322,11 +322,10 @@
 %                           1 = A, 2 = B, etc.
 %
 % \pagenumbering{roman}
-% \renewcommand{\chaptername}		 {Please} % Removes "Chapter"
 \renewcommand{\thechapter}       {\arabic{chapter}}
 \renewcommand{\thesection}       {\thechapter.\arabic{section}}
 \renewcommand{\thesubsection}    {\thesection.\arabic{subsection}}
-\renewcommand{\thesubsubsection} {\thesubsection .\arabic{subsubsection}}
+\renewcommand{\thesubsubsection} {\thesubsection.\arabic{subsubsection}}
 \renewcommand{\theparagraph}     {\thesubsubsection.\arabic{paragraph}}
 \renewcommand{\thesubparagraph}  {\theparagraph.\arabic{subparagraph}}
 

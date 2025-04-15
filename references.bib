@@ -3,8 +3,9 @@
   author={Thomas Lam},
   year={2024},
   url={https://cims.nyu.edu/~tjl8195/survey/results.html},
-  note={NYU Courant Institute of Mathematical Sciences. Accessed: 2024-09-09}
+  note={Accessed: 2024-09-09} 
 }
+% NYU Courant Institute of Mathematical Sciences. 
 
 @book{Big_Boss,
   title={Tensor Decompositions for Data Science},
@@ -111,4 +112,417 @@
       archivePrefix={arXiv},
       primaryClass={cs.CV},
       url={https://arxiv.org/abs/2403.03161}
+}
+
+
+
+%% original HOOI papers%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{kroonenberg1980principal,
+  title={Principal component analysis of three-mode data by means of alternating least squares algorithms},
+  author={Kroonenberg, Pieter M and De Leeuw, Jan},
+  journal={Psychometrika},
+  volume={45},
+  pages={69--97},
+  year={1980},
+  publisher={Springer},
+  doi={10.1007/BF02293599}
+}
+
+@article{kapteyn1986approach,
+  title={An approach to n-mode components analysis},
+  author={Kapteyn, Arie and Neudecker, Heinz and Wansbeek, Tom},
+  journal={Psychometrika},
+  volume={51},
+  pages={269--275},
+  year={1986},
+  doi={10.1007/BF02293984},
+  publisher={Springer}
+}
+
+@article{de2000best,
+  title={On the best rank-1 and rank-$(r_1, r_2,..., r_n)$ approximation of higher-order tensors},
+  author={De Lathauwer, Lieven and De Moor, Bart and Vandewalle, Joos},
+  journal={SIAM journal on Matrix Analysis and Applications},
+  volume={21},
+  number={4},
+  pages={1324--1342},
+  year={2000},
+  doi={10.1137/S089547989834699},
+  publisher={SIAM}
+}
+
+@Misc{Tensorlab,
+  author = {Vervliet, N. and Debals, O. and Sorber, L. and Van Barel, M. and De Lathauwer, L.},
+  title  = {Tensorlab 3.0},
+  month  = mar,
+  year   = {2016},
+  note   = {Available online.},
+  url    = {http://www.tensorlab.net},
+}
+
+@Misc{TensorToolbox,
+  author       = {Brett W. Bader and Tamara G. Kolda and others},
+  title        = {{MATLAB Tensor Toolbox} Version 3.6},
+  howpublished = {Available online},
+  month        = oct,
+  year         = {2023},
+  url          = {https://www.tensortoolbox.org},
+}
+
+
+%% STHOSVD 
+@article{VVM12,
+  author  = {Nick Vannieuwenhoven and Raf Vandebril and Karl Meerbergen},
+  journal = {SIAM Journal on Scientific Computing},
+  title   = {A New Truncation Strategy for the Higher-Order Singular Value Decomposition},
+  year    = {2012},
+  number  = {2},
+  pages   = {A1027-A1052},
+  volume  = {34},
+  doi     = {10.1137/110836067},
+  eprint  = {http://dx.doi.org/10.1137/110836067},
+  file    = {VVM12.pdf:VVM12.pdf:PDF},
+  url     = {http://dx.doi.org/10.1137/110836067},
+}
+
+@Book{Hackbusch19,
+  author    = {Hackbusch, Wolfgang},
+  publisher = {Springer International Publishing},
+  title     = {Tensor Spaces and Numerical Tensor Calculus},
+  year      = {2019},
+  edition   = {2nd},
+  isbn      = {9783030355548},
+  doi       = {10.1007/978-3-030-35554-8},
+  issn      = {2198-3712},
+  journal   = {Springer Series in Computational Mathematics},
+}
+
+%% adaptive HOOI/adaptive approaches%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{xiao2021rank,
+  title={A rank-adaptive higher-order orthogonal iteration algorithm for truncated {T}ucker decomposition},
+  author={Xiao, Chuanfu and Yang, Chao},
+  journal={arXiv preprint arXiv:2110.12564},
+  year={2021}
+}
+
+%% LLSV Optimizations for HOOI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{sun2022hoqri,
+  author={Sun, Yuchen and Huang, Kejun},
+  booktitle={ICASSP 2022 - 2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 
+  title={HOQRI: Higher-Order QR Iteration for Scalable Tucker Decomposition}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={3648-3652},
+  doi={10.1109/ICASSP43922.2022.9746726}}
+
+}
+
+%% Dimension trees/memory optimizations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{kaya2019computing,
+  title={Computing dense tensor decompositions with optimal dimension trees},
+  author={Kaya, Oguz and Robert, Yves},
+  journal={Algorithmica},
+  volume={81},
+  pages={2092--2121},
+  year={2019},
+  doi={10.1007/s00453-018-0525-3},
+  publisher={Springer}
+}
+
+
+@inproceedings{kaya2016high,
+  title={High performance parallel algorithms for the {T}ucker decomposition of sparse tensors},
+  author={Kaya, Oguz and U{\c{c}}ar, Bora},
+  booktitle={2016 45th International Conference on Parallel Processing (ICPP)},
+  pages={103--112},
+  year={2016},
+  doi={10.1109/ICPP.2016.19},
+  organization={IEEE}
+}
+
+@inproceedings{chakaravarthy2017optimizing,
+  title={On optimizing distributed {Tucker} decomposition for dense tensors},
+  author={Chakaravarthy, Venkatesan T and Choi, Jee W and Joseph, Douglas J and Liu, Xing and Murali, Prakash and Sabharwal, Yogish and Sreedhar, Dheeraj},
+  booktitle={2017 IEEE International Parallel and Distributed Processing Symposium (IPDPS)},
+  pages={1038--1047},
+  year={2017},
+  doi={10.1109/IPDPS.2017.86},
+  organization={IEEE}
+}
+
+@InProceedings{CLC18,
+  author    = {Choi, Jee and Liu, Xing and Chakaravarthy, Venkatesan},
+  title     = {High-performance Dense {T}ucker Decomposition on GPU Clusters},
+  booktitle = {Proceedings of the International Conference for High Performance Computing, Networking, Storage, and Analysis},
+  year      = {2018},
+  series    = {SC '18},
+  pages     = {42:1--42:11},
+  address   = {Piscataway, NJ, USA},
+  publisher = {IEEE Press},
+  acmid     = {3291712},
+  articleno = {42},
+  file      = {:CLC18.pdf:PDF},
+  location  = {Dallas, Texas},
+  numpages  = {11},
+  url      = {http://dl.acm.org/citation.cfm?id=3291656.3291712},
+}
+
+@InProceedings{ABK16,
+  author      = {Woody Austin and Grey Ballard and Tamara G. Kolda},
+  title       = {Parallel Tensor Compression for Large-Scale Scientific Data},
+  booktitle   = {Proceedings of the 30th IEEE International Parallel and Distributed Processing Symposium},
+  year        = {2016},
+  pages       = {912--922},
+  month       = may,
+  doi         = {10.1109/IPDPS.2016.67},
+  file        = {ABK16.pdf:ABK16.pdf:PDF},
+  issn        = {1530-2075/16},
+  techversion = {ABK15-TR},
+  url         = {https://www.computer.org/csdl/proceedings/ipdps/2016/2140/00/2140a912-abs.html},
+}
+
+@InProceedings{CC+17,
+  author    = {V. T. {Chakaravarthy} and J. W. {Choi} and D. J. {Joseph} and X. {Liu} and P. {Murali} and Y. {Sabharwal} and D. {Sreedhar}},
+  title     = {On Optimizing Distributed {T}ucker Decomposition for Dense Tensors},
+  booktitle = {2017 IEEE International Parallel and Distributed Processing Symposium (IPDPS)},
+  year      = {2017},
+  pages     = {1038-1047},
+  month     = may,
+  doi       = {10.1109/IPDPS.2017.86},
+  file      = {:CC+17.pdf:PDF},
+  issn      = {1530-2075},
+}
+
+@article{BLP20,
+  author   = {Ballester-Ripoll, Rafael and Lindstrom, Peter and Pajarola, Renato},
+  journal  = {IEEE Transactions on Visualization and Computer Graphics},
+  title    = {{TTHRESH}: Tensor Compression for Multidimensional Visual Data},
+  year     = {2020},
+  number   = {9},
+  pages    = {2891-2903},
+  volume   = {26},
+  doi      = {10.1109/TVCG.2019.2904063},
+}
+
+@InProceedings{DK+24,
+  author    = {De, Saibal and Kolla, Hemanth and Meyer, Antoine and Phipps, Eric T. and Rizzi, Francesco},
+  booktitle = {Proceedings of the Platform for Advanced Scientific Computing Conference},
+  title     = {Hybrid Parallel Tucker Decomposition of Streaming Data},
+  year      = {2024},
+  address   = {New York, NY, USA},
+  publisher = {Association for Computing Machinery},
+  series    = {PASC '24},
+  articleno = {20},
+  doi       = {10.1145/3659914.3659934},
+  isbn      = {9798400706394},
+  location  = {Zurich, Switzerland},
+  numpages  = {12},
+  url       = {https://doi.org/10.1145/3659914.3659934},
+}
+
+@InProceedings{LFB21,
+  author    = {Zitong Li and Qiming Fang and Grey Ballard},
+  booktitle = {50th International Conference on Parallel Processing},
+  title     = {Parallel {Tucker} Decomposition with Numerically Accurate {SVD}},
+  year      = {2021},
+  address   = {New York, NY, USA},
+  month     = aug,
+  pages     = {11},
+  publisher = {ACM},
+  series    = {ICPP '21},
+  doi       = {10.1145/3472456.3472472},
+  file      = {:LFB21.pdf:PDF},
+  url       = {https://doi.org/10.1145/3472456.3472472},
+}
+
+@article{MS22,
+  author  = {Ma, Linjian and Solomonik, Edgar},
+  title   = {Accelerating alternating least squares for tensor decomposition by pairwise perturbation},
+  journal = {Numerical Linear Algebra with Applications},
+  year    = {2022},
+  number  = {e2431},
+  pages   = {1-33},
+  doi     = {10.1002/nla.2431},
+  file    = {:MS22.pdf:PDF},
+}
+
+@article{XY24,
+  author    = {Xiao, Chuanfu and Yang, Chao},
+  journal   = {Applied Numerical Mathematics},
+  title     = {{RA-HOOI}: Rank-adaptive higher-order orthogonal iteration for the fixed-accuracy low multilinear-rank approximation of tensors},
+  year      = {2024},
+  issn      = {0168-9274},
+  month     = jul,
+  number    = {C},
+  pages     = {290-300},
+  volume    = {201},
+  address   = {NLD},
+  doi       = {10.1016/j.apnum.2024.03.004},
+  publisher = {Elsevier Science Publishers},
+  url       = {https://doi.org/10.1016/j.apnum.2024.03.004},
+}
+
+
+@article{MSK20,
+  author  = {Minster, Rachel and Saibaba, Arvind K. and Kilmer, Misha E.},
+  title   = {Randomized Algorithms for Low-Rank Tensor Decompositions in the {Tucker} Format},
+  journal = {SIAM Journal on Mathematics of Data Science},
+  year    = {2020},
+  volume  = {2},
+  number  = {1},
+  pages   = {189-215},
+  doi     = {10.1137/19M1261043},
+  file    = {:MSK20.pdf:PDF},
+}
+
+@article{MLB24,
+  author   = {Minster, Rachel and Li, Zitong and Ballard, Grey},
+  journal  = {SIAM Journal on Scientific Computing},
+  title    = {Parallel Randomized {Tucker} Decomposition Algorithms},
+  year     = {2024},
+  number   = {2},
+  pages    = {A1186-A1213},
+  volume   = {46},
+  doi      = {10.1137/22m1540363},
+  file     = {:MLB24.pdf:PDF},
+  url      = {https://doi.org/10.1137/22M1540363},
+}
+
+@article{KZCS16,
+  author    = {Hemanth Kolla and Xin-Yu Zhao and Jacqueline H. Chen and N. Swaminathan},
+  journal   = {Combustion Science and Technology},
+  title     = {Velocity and Reactive Scalar Dissipation Spectra in Turbulent Premixed Flames},
+  year      = {2016},
+  number    = {9},
+  pages     = {1424-1439},
+  volume    = {188},
+  doi       = {10.1080/00102202.2016.1197211},
+  eprint    = {https://doi.org/10.1080/00102202.2016.1197211},
+  file      = {KZCS16.pdf:KZCS16.pdf:PDF},
+  publisher = {Taylor \& Francis},
+  url       = {https://doi.org/10.1080/00102202.2016.1197211},
+}
+
+@article{BCL14,
+  author  = {Ankit Bhagatwala and Jacqueline H. Chen and Tianfeng Lu},
+  title   = {Direct numerical simulations of HCCI/SACI with ethanol},
+  journal = {Combustion and Flame},
+  year    = {2014},
+  volume  = {161},
+  number  = {7},
+  pages   = {1826-1841},
+  doi     = {10.1016/j.combustflame.2013.12.027},
+  issn    = {0010-2180},
+  url     = {https://www.sciencedirect.com/science/article/pii/S0010218014000030},
+}
+
+
+@Book{BK25,
+  author    = {Ballard, Grey and Kolda, Tamara G.},
+  publisher = {Cambridge University Press},
+  title     = {Tensor Decompositions for Data Science},
+  year      = {2025},
+  place     = {Cambridge},
+}
+
+@article{PTC13a,
+  author  = {Anh-Huy Phan and Tichavsky, Petr and Cichocki, Andrzej},
+  title   = {Fast Alternating {LS} Algorithms for High Order {CANDECOMP/PARAFAC} Tensor Factorizations},
+  journal = {IEEE Transactions on Signal Processing},
+  year    = {2013},
+  volume  = {61},
+  number  = {19},
+  pages   = {4834--4846},
+  month   = oct,
+  doi     = {10.1109/TSP.2013.2269903},
+  issn    = {1053-587X},
+}
+
+@InProceedings{KD+20,
+  author    = {Zhao, Kai and Di, Sheng and Lian, Xin and Li, Sihuan and Tao, Dingwen and Bessac, Julie and Chen, Zizhong and Cappello, Franck},
+  booktitle = {IEEE International Conference on Big Data},
+  title     = {{SDRBench}: Scientific Data Reduction Benchmark for Lossy Compressors},
+  year      = {2020},
+  pages     = {2716-2724},
+  doi       = {10.1109/BigData50022.2020.9378449},
+  keywords  = {Measurement;Conferences;Benchmark testing;Big Data;Compressors;Standards},
+}
+
+
+
+@article{BV23,
+  author    = {Wouter Baert and Nick Vannieuwenhoven},
+  journal   = {{ACM} Transactions on Mathematical Software},
+  title     = {Algorithm~1036: {ATC}, An Advanced Tucker Compression Library for Multidimensional Data},
+  year      = {2023},
+  month     = jun,
+  number    = {2},
+  pages     = {1--25},
+  volume    = {49},
+  doi       = {10.1145/3585514},
+  file      = {:BV23.pdf:PDF},
+  publisher = {Association for Computing Machinery ({ACM})},
+}
+
+
+@inproceedings{baskaran2012efficient,
+  title={Efficient and scalable computations with sparse tensors},
+  author={Baskaran, Muthu and Meister, Beno{\^\i}t and Vasilache, Nicolas and Lethin, Richard},
+  booktitle={2012 IEEE Conference on High Performance Extreme Computing},
+  pages={1--6},
+  year={2012},
+  doi={10.1109/HPEC.2012.6408676},
+  organization={IEEE}
+}
+
+@inproceedings{kolda2008scalable,
+  title={Scalable tensor decompositions for multi-aspect data mining},
+  author={Kolda, Tamara G and Sun, Jimeng},
+  booktitle={2008 Eighth IEEE international conference on data mining},
+  pages={363--372},
+  year={2008},
+  doi={10.1109/ICDM.2008.89},
+  organization={IEEE}
+}
+
+@article{phan2013fast,
+  title={Fast alternating {LS} algorithms for high order {CANDECOMP/PARAFAC} tensor factorizations},
+  author={Phan, Anh-Huy and Tichavsk{\`y}, Petr and Cichocki, Andrzej},
+  journal={IEEE Transactions on Signal Processing},
+  volume={61},
+  number={19},
+  pages={4834--4846},
+  year={2013},
+  doi={10.1109/TSP.2013.2269903},
+  publisher={IEEE}
+}
+
+% prefix sum reference
+@article{blelloch1990prefix,
+  title={Prefix sums and their applications},
+  author={Blelloch, Guy E},
+  year={1990},
+  publisher={School of Computer Science, Carnegie Mellon University Pittsburgh, PA, USA}
+}
+
+@article{BKK20,
+  author      = {Ballard, Grey and Klinvex, Alicia and Kolda, Tamara G.},
+  title       = {{TuckerMPI}: A Parallel {C++/MPI} Software Package for Large-Scale Data Compression via the Tucker Tensor Decomposition},
+  journal     = {ACM Transactions on Mathematical Software},
+  year        = {2020},
+  volume      = {46},
+  number      = {2},
+  month       = jun,
+  address     = {New York, NY, USA},
+  articleno   = {13},
+  doi         = {10.1145/3378445},
+  issn        = {0098-3500},
+  issue_date  = {June 2020},
+  numpages    = {31},
+  publisher   = {ACM},
+  url         = {https://dl.acm.org/doi/10.1145/3378445},
 }

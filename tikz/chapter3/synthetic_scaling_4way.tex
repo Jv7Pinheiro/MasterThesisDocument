@@ -1,0 +1,46 @@
+\renewcommand{\datapath}{../../data}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        width =0.65\textwidth,
+        height=0.65\textwidth,
+        xlabel={Number of Cores},
+        ylabel={Time},
+        ylabel near ticks,
+        xlabel near ticks,
+        ymode=log,
+        log basis y={2},
+        xmode=log,
+        log basis x={2},
+        xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192},
+        xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192},
+        ytick={2^(-1),1,2,4,8,16,32,64,128,256,512,1024,2048},
+        x tick label style={rotate=45, anchor=east, font=\small},
+        grid=both,
+        legend pos=outer north east,
+        % legend style={draw=none, cells={anchor=west}, font=\small},
+        title={4 way},
+    ]
+
+        \addplot[color=red,mark=square,mark size=1.5pt]
+        	table[x=nprocs, y=HOOI_totals, col sep=comma] {/Users/joaodeoliveria/Documents/Thesis/MasterThesisDocument/data/Cores_4way_560_10_Single/Total_Times.csv};
+         \addlegendentry{HOOI}
+    
+        \addplot[color=blue,mark=square,mark size=1.5pt]
+        	table[x=nprocs, y=HOOI_DT_totals, col sep=comma] {/Users/joaodeoliveria/Documents/Thesis/MasterThesisDocument/data/Cores_4way_560_10_Single/Total_Times.csv};
+         \addlegendentry{HOOI-DT}
+    
+        \addplot[color=orange,mark=triangle,mark size=1.5pt]
+        	table[x=nprocs, y=HOSI_totals, col sep=comma] {/Users/joaodeoliveria/Documents/Thesis/MasterThesisDocument/data/Cores_4way_560_10_Single/Total_Times.csv};
+         \addlegendentry{HOSI}
+    
+        \addplot[color=purple,mark=triangle,mark size=1.5pt]
+        	table[x=nprocs, y=HOSI_DT_totals, col sep=comma] {/Users/joaodeoliveria/Documents/Thesis/MasterThesisDocument/data/Cores_4way_560_10_Single/Total_Times.csv};
+         \addlegendentry{HOSI-DT}
+    
+        \addplot[color=green,mark=o,mark size=1.5pt]
+        	table[x=nprocs, y=STHOSVD_totals, col sep=comma] {/Users/joaodeoliveria/Documents/Thesis/MasterThesisDocument/data/Cores_4way_560_10_Single/Total_Times.csv};
+         \addlegendentry{STHOSVD}
+
+    \end{axis}
+\end{tikzpicture}

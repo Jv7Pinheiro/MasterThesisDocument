@@ -1,0 +1,44 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (YFrontLowerLeft) at (0, 0);
+    \coordinate (Ynamenode) at ($(\n*\pslices/2, -\namedistance)$);
+    
+    \draw (YFrontLowerLeft) rectangle (\n*\pslices, \q);
+
+    % Draw slices (horizontal lines) on the front face
+    \foreach \i in {1,...,12} {
+        \pgfmathsetmacro{\z}{\i*\n/\nslices}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thin] (\z,0) -- (\z,\q);
+    }
+
+    \node[namenode] at (Ynamenode) {$\mathbf{Y}_{(1)}\in \mathbb{R}^{q\times np}$};
+
+    \coordinate (equal_sign) at ($(YFrontLowerLeft) + (\n*\pslices + \distance + 0.1, \q/2)$);
+    \node[namenode] at (equal_sign) {$=$};
+    
+    \coordinate (ALowerLeft) at ($(YFrontLowerLeft) + (\n*\pslices + 2.15*\distance + 0.2, 0)$);
+    \draw (ALowerLeft) rectangle ($(ALowerLeft) + (\m, \q)$);
+
+    \coordinate (Anamenode) at ($(ALowerLeft) + (\m/2, -\namedistance)$);
+    \node[namenode] at (Anamenode) {$\mathbf{A}\in \mathbb{R}^{q\times m}$};
+    
+    \coordinate (XFrontLowerLeft) at ($(ALowerLeft) + (\m + \distance, -\m + \q)$);
+    
+    \begin{scope}[shift={(XFrontLowerLeft)}]
+        \coordinate (Xnamenode) at ($(\n*\pslices/2, -\namedistance)$);
+        \node[namenode] at (Xnamenode) {$\mathbf{X}_{(1)} \in \mathbb{R}^{m\times np}$};
+
+        \draw (0,0) rectangle (\n*\pslices, \m);
+    
+        % Draw slices (horizontal lines) on the front face
+        \foreach \i in {1,...,12} {
+            \pgfmathsetmacro{\z}{\i*\n/\nslices}
+            
+            % Draw the lines in front of the cube
+            \draw[ultra thin] (\z,0) -- (\z,\m);
+        }
+    \end{scope}
+
+\end{tikzpicture}

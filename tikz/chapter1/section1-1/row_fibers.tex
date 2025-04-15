@@ -1,0 +1,46 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (TFrontLowerLeft) at (0, 0);
+    
+    \draw[] (TFrontLowerLeft) rectangle (\n, \m);
+
+    % This scope draws the top face of the cube
+    \begin{scope}[shift={(TFrontLowerLeft)}, canvas is zx plane at y=\m,rotate=\rot]
+        \draw (0,0) rectangle (\n,\p);
+    \end{scope}
+    
+    % This scope draws the left side of the cube
+    \begin{scope}[shift={(TFrontLowerLeft)},canvas is zy plane at x=\n,rotate=90]
+        \draw (0,0) rectangle (\m,\p); %
+    \end{scope}
+
+    % Draw slices (horizontal lines) on the front face
+    \foreach \i in {1,...,\mslices} {
+        \pgfmathsetmacro{\z}{\i*\m/\mslices}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thin] (0,\z) -- (\n,\z);
+
+        % Side face (ZY plane) - Shift lines correctly
+        \begin{scope}[canvas is zy plane at x=\n]
+            \draw[ultra thin] (0,\z) -- (-\p,\z);
+        \end{scope}
+    }
+
+    % Draw slices (horizontal lines) on the front face
+    \foreach \i in {1,...,\pslices} {
+        \pgfmathsetmacro{\z}{\i*\p/\pslices}
+        
+        % Side face (ZY plane) - Now going TOP to BOTTOM
+        \begin{scope}[canvas is zy plane at x=\n]
+            \draw[ultra thin] (-\z,0) -- (-\z,\m);
+        \end{scope}
+
+        % Top face (ZX plane) - Now going SIDE to SIDE
+        \begin{scope}[canvas is zx plane at y=\m]
+            \draw[ultra thin] (-\z,0) -- (-\z,\n);
+        \end{scope}
+    }
+    
+    
+\end{tikzpicture}

@@ -1,0 +1,21 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (v) at (0, 0);
+    \coordinate (center_v) at ($(\one/2, \n/2)$);
+
+    \coordinate (n_arrow) at ($(v) + (-\distance, \n)$);
+    \coordinate (n) at ($(n_arrow) + (-1.25*\distance, -\n/2)$);
+    
+    \coordinate (one_arrow) at ($(v) + (0, -\distance)$);
+    \coordinate (one) at ($(center_v) + (0, -7.5*\distance)$);
+    
+    \draw[] (v) rectangle (\one, \n);
+    \node[namenode] at (center_v) {$\mathbf{x}$};
+
+    \draw[->] (n_arrow) -- (-\distance, 0);
+    \node[namenode] at (n) {$n$};
+    
+    \draw[->] (one_arrow) -- (\one, -\distance);
+    \node[namenode] at (one) {$1$};
+
+\end{tikzpicture}x=

@@ -1,0 +1,400 @@
+%!TEX root = ../../main.tex
+
+\newcommand{\datapath}{}
+\newcommand{\errone}{}
+\newcommand{\errtwo}{}
+\newcommand{\errthree}{}
+\newcommand{\error}{}
+\newcommand{\test}{}
+\newcommand{\thresh}{}
+
+This section presents a comparison of the
+running time (strong scaling and running time breakdown) and compression (error
+vs. time and error vs. compression ratio) performance of the various Tucker
+algorithms presented in this work. All algorithms were implemented using the
+TuckerMPI (C++/OpenMPI) library \cite{BKK20}.
+
+\paragraph{Computing platform.} Our experiments were conducted on
+NERSC Perlmutter (CPU partition). The system consists of 3072 compute nodes with
+dual-socket AMD EPYC 7763 64-core CPUs. Each socket has 4 Non-Uniform Memory
+Access (NUMA) regions for a total of 8 NUMA regions per node. Each NUMA region
+has 64 GB of DRAM memory, therefore each CPU socket has 256 GB of DRAM for, a
+total of 512 GB of memory per node.
+% Each NUMA region can communicate with all the cores in its node, but it
+% communicates the fastest with the 16 cores in its socket.
+
+\paragraph{Experiments.} We perform experiments on synthetic tensors that are
+randomly generated and tensors obtained from real applications. We use 3-way and
+4-way tensors for the synthetic experiments, and three real datasets: Miranda
+\cite{KD+20} (3-way), HCCI \cite{BCL14} (4-way), and SP \cite{KZCS16} (5-way).
+The real datasets are described in more detail in \cref{sec:high_nr,sec:low_nr}.
+Experiments performed on synthetic tensors are performed in single precision,
+while experiments on real datasets are performed in single or double precision
+depending on their storage precision on disk. Strong scaling experiments are
+performed on the synthetic tensors. We show running time breakdown of both real
+and synthetic experiments. For synthetic tensors we show the running time
+breakdown at small and large scale to highlight how each step in a given
+algorithm scales. For real tensors we vary the error tolerance and starting
+ranks to show how performance breakdowns vary. Compression performance
+experiments are performed only on the real datasets.
+% two sets of experiments: strong scaling on
+% synthetic tensors using single precision, and a comparative performance against
+% the state-of-the art using the three data sets.
+
+Even for a fixed number of processors $P$, the $d$-way processor grid has a
+significant effect on all algorithms. As described in \cref{sec:algorithm},
+STHOSVD benefits from processor grids with $P_1=1$, and HOOI variants using
+dimension trees are theoretically more efficient when $P_1=P_d=1$. In addition,
+for modes with small tensor dimension, a large processor dimension in that mode
+may cause load imbalance due to uneven division. In all experiments, we test all
+algorithms on a variety of grids, including those we expect to benefit
+individual algorithms, and we report the fastest observed running times.
+%For the most part,
+%HOOI and HOSI prefer grids that have 1 in the last mode, HOOI-DT and HOSI-DT
+%prefer algorithms that have 1 in both the first and last mode, and STHOSVD
+%prefers grids that have 1 in the first mode. 
+%The occasions where such pattern
+%not result in their best performance for a certain experiment is when a
+%processor grid mode greatly exceeds the input tensor or core tensor size for
+%that mode since that creates work imbalance. 
+%For example, in
+%\cref{sec:synthetic_strong_scaling} for both the 3-way and 4-way experiments,
+%HOSI-DT's best times came from grids that had a 1 in the first and last mode up
+%to 512 cores, afterwards, it preferred grids that more evenly split the
+%workload. From 1024 to 4096 cores HOSI-DT prefers grids with a 2 in the first
+%and last mode. At 8192, HOSI-DT also preferred the grid that had a 2 in the
+%first and last modes, but for the 3-way, it preferred grids that more evenly
+%split the work. 
+
+\subsection{Strong Scaling on Synthetic Tensors} \label{sec:synthetic_strong_scaling} 
+
+    First, we present strong scaling
+    experiments on the 3-way and 4-way synthetic tensors to demonstrate the parallel
+    scaling of HOOI, HOOI-DT, HOSI, HOSI-DT, and STHOSVD. We choose tensor
+    dimensions to maximize the size of the tensor that can fit on a single node (in
+    single precision).
+    % We present an experiment on synthetic tensors that demonstrates the parallel
+    % scaling capabilities of each algorithm. Specifically, we wish to demonstrate
+    % scaling of HOOI, HOOI-DT, HOSI, HOSI-DT, and STHOSVD on two synthetic
+    % tensors, a 3-way and a 4-way tensor. The dimensions of each tensor were
+    % chosen so that maximize the size of the tensor on single precision such that
+    % the input tensor and its tucker decomposition could all fit on a single
+    % node. The HOOI algorithms are run on two iterations. Since STHOSVD is not
+    % an iterative algorithm, we informally refer to its runtime as a `single
+    % iteration'.
+
+    For synthetic input, we generate tensors by forming a Tucker-format tensor of specified rank and adding a specified level of noise.
+    Thus, these experiments are performed for the rank-specified formulation of the Tucker approximation problem to recover the input. 
+    We run for two iterations for each variant of HOOI even though we often have a sufficiently accurate approximation after a single iteration.
+    We include overhead due to core analysis for the error-specified formulation in the experiments on the real datasets.
+    % the rank-specified variations of all five algorithms, the input ranks are the
+    % same as the ranks used to generate the tensor. In other words, we are still
+    % not testing core analysis on the HOOI algorithms, and we are using the
+    % rank-specified version of STHOSVD.
+    The largest 3-way tensor that fits into single-node memory is a
+    tensor of size $3750 \times 3750 \times 3750$. 
+    We generate this tensor to
+    have a rank of $30$ in all modes.
+    % by multiplying factor matrices $\Mx{A}{i} \in \Rmsiz{3750, 30}$ into the core
+    % tensor $\Tn{G}\in \Rmsiz{30, 30, 30}$.
+    %Here, $\frac{n}{r} = 125$, and the compression ratio is $1,953,125$. 
+    Similarly, we construct the 4-way tensor of size $560 \times 560 \times 560\times 
+    560$ with Tucker ranks $(10,10,10,10)$.
+
+    \begin{figure}
+        \centering
+        \input{tikz/chapter3/synthetic_scaling_3way.tex}
+        \caption[3-way Strong Scaling]{Strong scaling comparison of Tucker
+        algorithms in single precision using a 3-way $\mathbf{3750 \times 3750
+        \times 3750}$ input tensor }
+        \label{fig:3way_scaling}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \input{tikz/chapter3/synthetic_scaling_4way.tex}
+        \caption[4-way Strong Scaling]{Strong scaling comparison of Tucker algorithms in single
+        precision using a 4-way $\mathbf{560 \times 560 \times 560 \times 560}$
+        input tensor}
+        \label{fig:4way_scaling}
+    \end{figure}
+
+    \Cref{fig:scaling} shows the strong scaling results of the HOOI 
+    variants and STHOSVD on up to $4096$ cores for the 3-way and 4-way
+    synthetic datasets. We observe that STHOSVD scales well to $64$ cores,
+    attaining a speedup of $15.2\times$ over the single core STHOSVD run.
+    STHOSVD continues to scale up to $2048$ cores, but achieves only a modest
+    speedup of $1.3\times$ over the $64$ core run. This is due to TuckerMPI's
+    limitation of having a sequential EVD implementation. In contrast, the 4-way
+    STHOSVD strong scaling experiment shows good scaling up to $8192$ cores,
+    achieving a speedup of $937\times$ over the single core run. This difference
+    in STHOSVD performance is explained by the tensor dimension: a sequential EVD of a matrix of dimension 560 does not become the bottleneck until $P$ is large.
+    %The high $\frac{n}{r}$ of the 3-way experiment makes it so that LLSV's
+    %eigenvalue decomposition subroutine is the limiting factor, which is made
+    %worse due to the sequential implementation. This is not the same as on the
+    %4-way case as the lower $\frac{n}{r}$ makes the TTMs be the bottleneck.
+
+    When comparing the two HOOI variants (which use Gram SVD), we observe that HOOI-DT yields a
+    sequential speedup of $1.4\times$ over HOOI's direct TTM implementation for
+    the 3-way tensor. For the 4-way tensor, HOOI-DT achieves a sequential
+    speedup of $5.4\times$ faster than HOOI. When comparing parallel scaling in
+    the 3-way case, we see that HOOI and HOOI-DT scale to $16$ cores with a
+    speedup of $3.5\times$ and $2.8\times$, respectively, over their single core
+    runs. However, neither variant scales beyond $16$ cores for the 3-way
+    tensor because of the sequential EVD bottlenecks. 
+    For the 4-way tensor, HOOI and HOOI-DT scale to $8192$ cores with a
+    speedup of $629\times$ and $346\times$, respectively, over their single core
+    runs.
+    % However, neither HOOI variant achieves a speedup over STHOSVD at $8192$ cores.
+    The performance of HOOI and HOOI-DT degrades at $128$ cores (single node)
+    because both variants are memory-bandwidth bound, and we saturate bandwidth
+    at $64$ cores. HOOI and HOOI-DT continue scaling beyond $128$ cores
+    (multi-node scaling) because memory bandwidth increases. 
+    As can be seen in the 4096 core plots of \cref{fig:scaling_breakdown},
+    HOOI and HOOI-DT suffer from the problem of the sequential EVD, and they are approximately twice as
+    slow as STHOSVD because they do twice as many EVDs over two iterations.
+
+
+    HOSI and HOSI-DT show significantly better scaling on the 3-way tensor when
+    compared to STHOSVD and the HOOI variants because of the difference in LLSV
+    subroutines. HOSI-DT achieves sequential speedups of $6.5\times$ and
+    $1.7\times$ over STHOSVD and HOOI-DT, respectively. The HOSI variants scale
+    to 4096 cores with HOSI-DT achieving significant parallel speedups of
+    $259\times$ and $515\times$ over STHOSVD and HOOI-DT, respectively. HOSI-DT
+    is also the fastest Tucker variant for the 4-way experiment attaining
+    speedups of $1.5\times$ and $2.9\times$ over STHOSVD and HOOI-DT,
+    respectively when comparing the best running times of each algorithm. HOSI
+    and HOSI-DT exhibit similar memory bandwidth scaling behavior as the HOOI
+    variants where performance degrades at $128$ cores (single node) and
+    continues to scale beyond $128$ cores (multi-node scaling).
+    These can be seen on \Cref{fig:scaling_breakdown}. We chose to showcase the
+    breakdown using 1 core and using 4096 cores.
+
+    \begin{figure}
+        \centering
+        \input{tikz/chapter3/synthetic_breakdown.tex}
+        \caption{Running time breakdown for the synthetic 3-way (top) and 4-way (bottom) tensors}
+        \label{fig:scaling_breakdown}
+    \end{figure}
+    
+    \paragraph{3-way.} Observing the single-node scaling (1 to 128) of the 3-way
+    experiment, we notice that all HOOI algorithms outperform STHOSVD, with
+    HOSI and HOSI-DT being much further ahead of the competition since the large
+    $\frac{n}{r}$ ratio of this experiment implies a LLSV bottleneck and these
+    two algorithms avoid that. Here, STHOSVD is much slower because it does a
+    more expensive LLSVs before the TTMs whereas the HOOI algorithms reduce this
+    cost by performing the TTMs beforehand. Starting from 32 nodes, STHOSVD
+    begins to outperform HOOI and HOOI-DT due to the cost of the LLSV.
+    \Cref{fig:scaling_breakdown} demonstrates that the cost of LLSV is the same
+    for HOOI, HOOI-DT and STHOSVD, but because HOOI must perform two
+    iterations, it takes twice as long. In fact, we see that the three
+    algorithms stagnate at large scaling due to TuckerMPI's limitation of having
+    a sequential eigenvalue computation. Though HOSI and HOSI-DT still perform
+    two iterations, neither of them need to pay the cost of the sequential
+    eigenvalue decomposition. Even with a sequential QR decomposition, they
+    still scale best, with the lesser TTM cost of HOSI-DT making it the best out
+    of these five algorithms.
+
+    For the 3-way synthetic tensor on 1 core, it can be seen
+    that the cost of the Gram computation is the bottleneck for STHOSVD. The
+    TTM cost for the dimension tree algorithms are cheaper, as expected. HOSI-DT
+    is faster than HOOI-DT simply because of the smaller cost for the LLSV
+    computations. The two iterations for all HOOI algorithms are faster than the
+    `single iteration' for STHOSVD. However, that is not the case for the 4096
+    cores experiment. Now, the TTM costs for all algorithms are negligible due
+    to the parallel scaling. The Gram computation for STHOSVD is also
+    negligible now for the same reasons. The bottleneck at this scale is now the
+    Eigenvalue computation. The reason why HOOI, HOOI-DT, and STHOSVD stagnate
+    over the high number of cores on \Cref{fig:scaling} is because of
+    TuckerMPI's limitation of having a sequential eigenvalue computation, and
+    the reason why HOOI and HOOI-DT are twice as expensive on multi-node
+    experiments is because they must do two iterations, this fact can be
+    visualized on the breakdown for the 4096 cores experiment.
+
+    \paragraph{4-way.} In this experiment, HOOI-DT and HOSI-DT are the ones that
+    get a comparative headstart since the small $\frac{n}{r}$ ratio of this
+    experiment implies a TTM bottleneckm and these two algorithms avoid that.
+    They diverge around 128 cores for the same reasons mentioned above as
+    HOOI-DT must pay the cost of two expensive eigenvalue computation. For that
+    matter, STHOSVD still eventually catches up to HOOI-DT, but now this
+    happens at 512 cores as opposed to 32. For this reason, HOSI eventually
+    closes the gap to HOSI-DT, with STHOSVD being not too far behind simply
+    because of the smaller $\frac{n}{r}$.
+
+    \paragraph{Overall} There are two factors that are pertinent to both 3-way and 4-way
+    experiments. The first is the spike noticible at 128 for most (some more
+    than others) of the algorithms. These come from a choice of configuration of
+    the slurm jobs regarding the binding of NUMA regions to the cores. There
+    were two main options available to run these experiments with,
+    \textit{cores} and \textit{map\_ldom}. The former assigns all the NUMA
+    regions of the node to the running cores, and the latter we most perform a
+    manual assignment of the NUMA regions which gives us more control. We are
+    not utilizing the full potential of a node from 1 to 64 cores, as there are
+    more cores available, but the \textit{cores} configuration still assigns all
+    the NUMA regions of the node to the running cores, so these cores have more
+    memory than what is `pertinent' to them. Thus, when we first use the full
+    potential of a node at 128 cores, there is now a competition for resources.
+    Running the \textit{map\_ldom} configuration allows us to bypass that
+    limitation, so from 1 to 64 cores we only assign NUMA regions that would be
+    `pertinent' to those cores assuring a steady parallel scaling in terms of
+    memory. This makes the experiments from 1 to 32 nodes equally slower to all
+    five algorithms. In other words it removes the spike, simply because the
+    rate of increase is steady now. The other factor regards why HOSI and
+    HOSI-DT stop scaling at 8192 cores, the reason is 42. 
+
+\subsection{Performance on Simulation Datasets} \label{sec:performance_comparisons} 
+
+    We turn our focus for the error-specified comparison of our best algorithm,
+    HOSI-DT, and the state-of-the-art, STHOSVD. The data sets are decomposed
+    using three error tolerances; 0.1 (``high compression''), 0.05 (``mid compression''), and 0.01 (``low compression''). 
+    Furthermore, we
+    showcase HOSI-DT through three different types of starting ranks for each
+    error tolerance. Perfect starting ranks are the same as the final ranks of
+    STHOSVD given the maximum relative error threshold. We overshoot and
+    undershoot the same starting ranks by 25\% above and below to force our
+    algorithm to respectively increase and decrease ranks on the first
+    iteration. We cap the number of iterations for HOSI-DT at 3. Though all
+    three iterations are shown in the Error vs Time and Error vs Size plots, the
+    running time breakdown plots show  the breakdown only for however many
+    iterations it took for HOSI-DT to reach the desired error threshold. For
+    example, the top right plot of \cref{fig:HCCI_breakdown} it can be seen that
+    the HOSI-DT (Over) 0.1 threshold reached the desired at the first iteration,
+    so we don't show the breakdown for the second iteration despite its total
+    time being shown on \cref{fig:HCCI}.
+
+    \subsubsection{Miranda (3-way)}\label{sec:high_nr}
+        The Miranda dataset is a three-dimensional simulation data of the
+        density ratios of non-reacting flow of viscous fluids \cite{KD+20}. Each
+        of its dimensions is 3072, and it is stored in single
+        precision requiring 115 GB.
+        Our experiments use 1024 cores (8 nodes) for all algorithms.
+
+        \begin{figure}
+            \centering
+            \renewcommand{\datapath}{data/Miranda/N8_n1024}
+            \renewcommand{\thresh}{1e-01,5e-02,1e-02}
+            \input{tikz/chapter3/realdata_error.tex}
+            \caption{Progression of time, error, and relative size over 3 iterations of rank-adaptive HOSI-DT on the Miranda dataset using 1024 cores.}
+            \label{fig:miranda}
+        \end{figure}
+
+        \begin{figure}
+            \centering
+            \renewcommand{\datapath}{data/Miranda/N8_n1024}
+            \renewcommand{\thresh}{1e-01,5e-02,1e-02}
+            \input{tikz/chapter3/realdata_breakdown.tex}
+            \caption{Running time breakdown for the Miranda dataset using 1024 cores under different levels of compression.}
+            \label{fig:miranda_breakdown}
+        \end{figure}
+
+        %% Just need to remove the second half of the paragraph. 
+        \Cref{fig:miranda} demonstrates that for all error tolerances, three
+        iterations of HOSI-DT combined is faster than STHOSVD. But as mentioned
+        earlier, we focus on the least amount of iterations required to reach
+        the desired error threshold. It is in high- and
+        mid-compression where we find the most speedup. Precisely, perfect ranks
+        achieve speedups of $82\times$ for high-compression and $25\times$ for
+        mid-compression, undershooting the ranks achieves speedups of $91\times$
+        for high-compression and $35\times$ for mid-compression, and
+        overshooting the ranks achieves speedups of $156\times$ for
+        high-compression and $47\times$ for mid-compression. Low-compression is
+        the first scenario where we observe nonnegligible costs of the core
+        analysis subroutine. 
+        %Regardless, RA-HOSI-DT achieves speedups of
+        %$1.3\times$ for perfect ranks, $1.9\times$ for undershooting ranks and
+        %$1.5\times$ for overshooting ranks. 
+        %These reported speedups are
+        %considering all three iterations, but \cref{fig:miranda_breakdown}
+        %indicates that no matter the compression, perfect and undershooting
+        %ranks require only two iterations to achieve the specified error,
+        %overshooting the ranks only requires one iteration. 
+        %Thus, considering
+        %only our fastest runs to get under the threshold (which are all rank
+        %overshots) we have speedups of $156\times$ for high-compression,
+        %$47\times$ for mid-compression, and $3\times$ for low compression. 
+        For
+        high-compression, the best relative compression ratio is $69\%$ which
+        occurs at perfect ranks, mid-compression achieves a $10\%$ improvement
+        using perfect ranks, and low-compression has better compression at $6\%$
+        when underestimating the ranks.
+
+    \subsubsection{HCCI (4-way) and SP (5-way)} \label{sec:low_nr}
+    
+        We combine the discussion of the HCCI and SP datasets results, as the results are qualitatively similar. The Homogeneous Charge Compression Ignition (HHCI)
+        dataset is generated from a numerical simulation of combustion
+        \cite{BCL14}. The dimension of the 4-way dataset is $672\times 672\times
+        33\times 626$ stored in double precision for a total of 75 GB. Thus, we
+        can fit it on a single node and use all 128 cores. The first
+        two modes are spatial dimensions, the third mode corresponds to 33
+        variable, and the fourth mode corresponds to time steps. 
+        The SP dataset is generated from the simulation of a statistically
+        stationary planar methane-air flame \cite{KZCS16}. This 5-way dataset has
+        dimensions $500\times 500\times 500\times 11\times 400$ stored in double
+        precision and requires 4.4 TB in storage.
+        For these experiments, we use 2048 cores (16 nodes). 
+        The first three modes are spatial dimensions, the fourth mode
+        corresponds to 11 variables, and the last mode corresponds to time steps.
+
+        In the case where we are dominated by the TTMs, the comparisons between
+        HOSI-DT and STHOSVD are less extreme. \Cref{fig:HCCI} shows that on
+        low-compression, STHOSVD is faster than any of the starting ranks of
+        HOSI-DT to get to the desired threshold. However, for high- and
+        mid-compression HOSI-DT achieves speedups when overshooting the ranks,
+        specifically $1.9\times$ for high-compression and $1.4\times$ for
+        low-compression, neither of which achieved better compression.
+        \Cref{fig:HCCI_breakdown} shows the breakdown times of these speedups.
+        However, HODI-DT achieves better compression with perfect and under
+        ranks for all error tolerances, but always requiring three iterations to
+        do so. 
+        
+        \Cref{fig:SP} shows that we can typically obtain better compression
+        after three iterations. For example, overestimating the ranks for low
+        compression yields a speedup of $1.1\times$ after 1 iteration, but we do
+        not obtain better compression. Similar to HCCI, three iterations
+        produces a smaller Tucker approximation but takes over twice as long.
+        However, for high compression, starting from perfect and underestimates
+        of the ranks achieve a $27\%$ and $8\%$ improvement on compression over
+        STHOSVD after two iterations, respectively. In another example,
+        \cref{fig:SP_breakdown} shows that when starting from perfect estimates
+        of the ranks for mid compression, HOSI-DT gets the desired error
+        tolerance and same compression ratio in less time than STHOSVD, with
+        HOSI-DT achieving a $1.4\times$ speedup.
+        
+
+        \begin{figure}
+            \centering
+            \renewcommand{\datapath}{data/HCCI/N1_n128}
+            \renewcommand{\thresh}{1e-01,5e-02,1e-02}
+            \input{tikz/chapter3/realdata_error.tex}
+            \caption{Progression of time, error, and relative size over 3 iterations of rank-adaptive HOSI-DT on the HCCI dataset using 128 cores.}
+            \label{fig:HCCI}
+        \end{figure}
+        \begin{figure}
+            \centering
+            \renewcommand{\datapath}{data/HCCI/N1_n128}
+            \renewcommand{\thresh}{1e-01,5e-02,1e-02}
+            \input{tikz/chapter3/realdata_breakdown.tex}
+            \caption{Running time breakdown for the HCCI dataset using 128 cores under different levels of compression.}
+            \label{fig:HCCI_breakdown}
+        \end{figure}
+        
+
+        \begin{figure}
+            \centering
+            \renewcommand{\datapath}{data/SP/N16_n2048}
+            \renewcommand{\thresh}{1e-01,5e-02,1e-02}
+            \input{tikz/chapter3/realdata_error.tex}
+            \caption{Progression of time, error, and relative size over 3 iterations of rank-adaptive HOSI-DT on the SP dataset using 2048 cores.}
+            \label{fig:SP}
+        \end{figure}
+
+        \begin{figure}
+            \centering
+            \renewcommand{\datapath}{data/SP/N16_n2048}
+            \renewcommand{\thresh}{1e-01,5e-02,1e-02}
+            \input{tikz/chapter3/realdata_breakdown.tex}
+            \caption{Running time breakdown for the SP dataset using 2048 cores under different levels of compression.}
+            \label{fig:SP_breakdown}
+        \end{figure}
+
+

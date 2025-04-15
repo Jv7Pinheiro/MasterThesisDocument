@@ -1,0 +1,90 @@
+%!TEX root = ../../main.tex
+
+
+\newcommand{\maxiter}{3}
+\pgfmathsetmacro{\n}{\maxiter - 1}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        hide axis, % Hide the dummy axis
+        axis lines=none,
+        xmin=0, xmax=1,
+        ymin=0, ymax=1,
+        width= 0.45\textwidth,
+        height=0.45\textwidth,
+        legend style={fill=white, at={(2.25, -0.515)}, anchor=north east, font=\small},
+        legend columns=1, % Arrange legend in one column
+        reverse legend
+    ]   
+        \addplot [color=white, fill=white, mark=square*,opacity=0] coordinates {(0,0)};
+        \addlegendentry{}
+
+        \addlegendimage{mark=square*, color=blue!25, fill=blue!25, only marks, mark options={scale=2.5, fill=blue!25}}
+        \addlegendentry{TTM Comp}
+
+        \addlegendimage{mark=square*, color=blue!50, fill=blue!50, only marks, mark options={scale=2.5, fill=blue!50}}
+        \addlegendentry{TTM Comm}
+
+        \addlegendimage{mark=square*, color=red!25, fill=red!25, only marks, mark options={scale=2.5, fill=red!25}}
+        \addlegendentry{Contraction Comp}
+
+        \addlegendimage{mark=square*, color=red!50, fill=red!50, only marks, mark options={scale=2.5, fill=red!50}}
+        \addlegendentry{Contraction Comm}
+
+        \addlegendimage{mark=square*, color=yellow!50, fill=yellow!50, only marks, mark options={scale=2.5, fill=yellow!50}}
+        \addlegendentry{Eig/QR}
+
+        \addlegendimage{mark=square*, color=green!25, fill=green!25, only marks, mark options={scale=2.5, fill=green!25}}
+        \addlegendentry{Core Comp}
+        
+        \addlegendimage{mark=square*, color=green!50, fill=green!50, only marks, mark options={scale=2.5, fill=green!50}}
+        \addlegendentry{Core Comm}
+    \end{axis}
+
+    \begin{groupplot}[
+        group style={
+            group size=2 by 2,
+            horizontal sep=2cm,
+            vertical sep=2cm,
+        },
+        ybar stacked,
+        symbolic x coords={HOSI-DT-Under, HOSI-DT-Perfect, HOSI-DT-Over, STHOSVD},
+        xticklabels={Under, Perfect, Over, STHOSVD},
+        xtick=data,
+        ylabel={Time},
+        ylabel style = {yshift=-.675cm},
+        ymajorgrids=true,
+        width=0.45\textwidth,
+        height=0.45\textwidth,
+        x tick label style={rotate=30, anchor=east},
+        title style={yshift=-1.5ex},
+    ]
+
+    \xintFor #1 in \thresh \do {
+        \nextgroupplot[title = {#1 Error}]
+        \foreach \i in {0, ..., \n} {    
+            \addplot[ybar,color=blue,fill=blue!25] 
+            		table[x=Algorithm, y=TTM_Computation_Iter_\i, col sep=comma] {\datapath_#1_Breakdown.csv};  
+		
+            \addplot[ybar,color=blue,fill=blue!50] 
+            		table[x=Algorithm, y=TTM_Communication_Iter_\i, col sep=comma] {\datapath_#1_Breakdown.csv};
+		
+            \addplot[ybar,color=red,fill=red!25] 
+            		table[x=Algorithm, y=GramLQ_Computation_Iter_\i, col sep=comma] {\datapath_#1_Breakdown.csv};
+		
+            \addplot[ybar,color=red,fill=red!50] 
+    		table[x=Algorithm, y=GramLQ_Communication_Iter_\i, col sep=comma] {\datapath_#1_Breakdown.csv};
+		
+            \addplot[ybar,color=yellow,fill=yellow!50] 
+    		table[x=Algorithm, y=EigSVD_Iter_\i, col sep=comma] {\datapath_#1_Breakdown.csv};
+		
+            \addplot[ybar,color=green,fill=green!25] 
+    		table[x=Algorithm, y=Core_Analysis_Iter_\i, col sep=comma] {\datapath_#1_Breakdown.csv};
+		
+            \addplot[ybar,color=green,fill=green!50] 
+    		table[x=Algorithm, y=Core_Gathering_Iter_\i, col sep=comma] {\datapath_#1_Breakdown.csv};
+        }
+    }
+
+\end{groupplot}
+\end{tikzpicture}

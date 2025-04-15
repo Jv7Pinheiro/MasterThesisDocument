@@ -1,0 +1,71 @@
+\begin{tikzpicture}[scale=1.5,namenode/.style={scale=1}]
+    \def\ix{2} % This modifies the width of the objects
+    \def\iy{1.5} % This modifies the height of the objects
+    \def\is{1} %
+    \def\h{.75}
+    \def\corescale{1.75}
+    \def\rx{\ix/\corescale}
+    \def\ry{\iy/\corescale}
+    \def\rz{\is/\corescale}
+    
+    \coordinate (MiddleS) at (0, 0);
+    \draw[fill=red] (MiddleS) rectangle ++ (\is,\iy);
+    \node[namenode] at ($(MiddleS) + (0.5*\is, 0.5*\iy)$)  {$\mathbf{S}$};
+    \node[namenode] at ($(MiddleS) + (-0.5*\is, 0.5*\iy)$)  {$\mathbf{B}$};
+    
+    \coordinate (MiddleW) at ($(MiddleS) + (\is,0)$);
+    \draw[fill=mycustomorange] (MiddleW) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(MiddleW) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{W}$};
+
+    \coordinate (MiddleU) at ($(MiddleW) + (\ix,0)$);
+    \draw[fill=mycustomgreen] (MiddleU) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(MiddleU) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{U}$};
+    
+    \coordinate (MiddleV) at ($(MiddleU) + (\ix,0)$);
+    \draw[fill=mycustompurple] (MiddleV) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(MiddleV) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{V}$};
+    \node[namenode] at ($(MiddleV) + (1.25*\ix, 0.5*\iy)$)  {$n^2$};
+
+
+    \coordinate (TopS) at ($(MiddleS) + (0, \iy + \h)$);
+    \draw[fill=red] (TopS) rectangle ++ (\is,\iy);
+    \node[namenode] at ($(TopS) + (0.5*\is, 0.5*\iy)$)  {$\mathbf{S}$};
+    \node[namenode] at ($(TopS) + (-0.5*\is, 0.5*\iy)$)  {$\mathbf{A}$};
+
+    \coordinate (TopU) at ($(TopS) + (\is,0)$);
+    \draw[fill=mycustomgreen] (TopU) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(TopU) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{U}$};
+
+    \coordinate (TopV) at ($(TopU) + (\ix,0)$);
+    \draw[fill=mycustompurple] (TopV) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(TopV) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{V}$};
+    
+    \coordinate (TopW) at ($(TopV) + (\ix,0)$);
+    \draw[fill=mycustomorange] (TopW) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(TopW) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{W}$};
+    \node[namenode] at ($(TopW) + (1.25*\ix, 0.5*\iy)$)  {$n^2$};
+
+
+    \coordinate (BottomS) at ($(MiddleS) - (0, \iy + \h)$);
+    \draw[fill=red] (BottomS) rectangle ++ (\is,\iy);
+    \node[namenode] at ($(BottomS) + (0.5*\is, 0.5*\iy)$)  {$\mathbf{S}$};
+    \node[namenode] at ($(BottomS) + (-0.5*\is, 0.5*\iy)$)  {$\mathbf{C}$};
+    \node[namenode] at ($(BottomS) + (0.5*\is, -0.25*\iy)$)  {$r_s$};
+
+    \coordinate (BottomV) at ($(BottomS) + (\is,0)$);
+    \draw[fill=mycustompurple] (BottomV) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(BottomV) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{V}$};
+    \node[namenode] at ($(BottomV) + (0.5*\ix, -0.25*\iy)$)  {$r_c$};
+
+    \coordinate (BottomW) at ($(BottomV) + (\ix,0)$);
+    \draw[fill=mycustomorange] (BottomW) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(BottomW) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{W}$};
+    \node[namenode] at ($(BottomW) + (0.5*\ix, -0.25*\iy)$)  {$r_c$};
+    \node[namenode] at ($(\is/2 + 3*\ix/2, -2.15*\iy)$)  {$r = r_s + 3r_c$};
+    
+    \coordinate (BottomU) at ($(BottomW) + (\ix,0)$);
+    \draw[fill=mycustomgreen] (BottomU) rectangle ++ (\ix,\iy);
+    \node[namenode] at ($(BottomU) + (0.5*\ix, 0.5*\iy)$)  {$\mathbf{U}$};
+    \node[namenode] at ($(BottomU) + (0.5*\ix, -0.25*\iy)$)  {$r_c$};
+    \node[namenode] at ($(BottomU) + (1.25*\ix, 0.5*\iy)$)  {$n^2$};
+\end{tikzpicture}

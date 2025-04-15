@@ -1,0 +1,186 @@
+\begin{tikzpicture}[scale=0.75,namenode/.style={scale=0.75}]
+    \def\ix{2} % This modifies the height of the objects
+    \def\iy{2} % This modifies the width of the objects
+    \def\iz{2.5} %
+    \def\r{.25}
+
+    %%%%%%%%%%%%%%%
+    %%%    S    %%%
+    %%%%%%%%%%%%%%%
+
+    %%%%%%%%% 1st S Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (S1VLowerLeft) at (0,0);
+    \draw[fill=red] (S1VLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(S1VLowerLeft)-(0,2*\r)$) {$\mathbf{S}_1$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (S1HLowerLeft) at ($(S1VLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=red] (S1HLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(S1HLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{S}_1$};
+
+    % This scopee draws the tp-screen chicken feet
+    \begin{scope}[shift={(0,2*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=red] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(S1HLowerLeft)+(.6*\ix,1)$) {$\mathbf{S}_1$};
+    
+    % S ellipsis
+    \coordinate (SEllipsis) at (2*\iy,.75*\ix);
+    \node[namenode] at (SEllipsis) {$+ \quad \cdots \quad +$};
+    
+    %%%%%%%%% last S Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (SRVLowerLeft) at ($(SEllipsis) + (\iy,-.75*\ix)$);
+    \draw[fill=red] (SRVLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(SRVLowerLeft)-(0,2*\r)$) {$\mathbf{S}_{r_s}$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (SRHLowerLeft) at ($(SRVLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=red] (SRHLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(SRHLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{S}_{r_s}$};
+    
+        % This scopee draws the tp-screen chicken feet
+    \begin{scope}[shift={(3*\iy,2*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=red] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(SRHLowerLeft)+(.6*\ix,1)$) {$\mathbf{S}_{r_s}$};
+
+    %%%%%%%%%%%%%%%%
+    %%% Cyclic 1 %%%
+    %%%%%%%%%%%%%%%%
+    
+    % top sum
+    \coordinate (TopSum) at (4.5*\iy,.75*\ix);
+    \node[namenode] at (TopSum) {$+ $};
+
+    %%%%%%%%% 1st Cyclic 1 Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (U1VLowerLeft) at ($(TopSum) - (0,0.75*\iy) + (0.75,0)$);
+    \draw[fill=mycustomgreen] (U1VLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(U1VLowerLeft)-(0,2*\r)$) {$\mathbf{U}_1$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (W1HLowerLeft) at ($(U1VLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=mycustomorange] (W1HLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(W1HLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{W}_1$};
+
+    % This scopee draws the to-screen chicken feet
+    \begin{scope}[shift={(4.875*\iy,2*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=mycustompurple] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(W1HLowerLeft)+(.6*\ix,1)$) {$\mathbf{V}_1$};
+    
+    % top ellipsis
+    \coordinate (TopEllipsis) at (6.875*\iy,.75*\ix);
+    \node[namenode] at (TopEllipsis) {$+ \quad \cdots \quad +$};
+    
+    %%%%%%%%% last Cyclic 1 Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (URVLowerLeft) at ($(TopEllipsis) + (\iy,-.75*\ix)$);
+    \draw[fill=mycustomgreen] (URVLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(URVLowerLeft)-(0,2*\r)$) {$\mathbf{U}_{r_c}$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (WRHLowerLeft) at ($(URVLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=mycustomorange] (WRHLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(WRHLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{W}_{r_c}$};
+
+    % This scopee draws the to-screen chicken feet
+    \begin{scope}[shift={(7.875*\iy,2*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=mycustompurple] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(WRHLowerLeft)+(.6*\ix,1)$) {$\mathbf{V}_{r_c}$};
+
+    %%%%%%%%%%%%%%%%
+    %%% Cyclic 2 %%%
+    %%%%%%%%%%%%%%%%
+
+    % middle sum
+    \coordinate (MiddleSum) at ($(TopSum) + (0, -17*\r)$);
+    \node[namenode] at (MiddleSum) {$+ $};
+
+    %%%%%%%%% 1st Cyclic 2 Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (V1VLowerLeft) at ($(MiddleSum) - (0,0.75*\iy) + (0.75,0)$);
+    \draw[fill=mycustompurple] (V1VLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(V1VLowerLeft)-(0,2*\r)$) {$\mathbf{V}_1$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (U1HLowerLeft) at ($(V1VLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=mycustomgreen] (U1HLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(U1HLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{U}_1$};
+
+    % This scopee draws the tp-screen chicken feet
+    \begin{scope}[shift={(4.875*\iy,-15*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=mycustomorange] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(U1HLowerLeft)+(.6*\ix,1)$) {$\mathbf{W}_1$};
+    
+    % middle ellipsis
+    \coordinate (MiddleEllipsis) at ($(MiddleSum) + (4.75, 0)$);
+    \node[namenode] at (MiddleEllipsis) {$+ \quad \cdots \quad +$};
+    
+    %%%%%%%%% last Cyclic 2 Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (VRVLowerLeft) at ($(MiddleEllipsis) + (\iy,-.75*\ix)$);
+    \draw[fill=mycustompurple] (VRVLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(VRVLowerLeft)-(0,2*\r)$) {$\mathbf{V}_{r_c}$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (URHLowerLeft) at ($(VRVLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=mycustomgreen] (URHLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(URHLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{U}_{r_c}$};
+    
+    % This scopee draws the tp-screen chicken feet
+    \begin{scope}[shift={(7.875*\iy,-15*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=mycustomorange] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(URHLowerLeft)+(.6*\ix,1)$) {$\mathbf{W}_{r_c}$};
+
+    %%%%%%%%%%%%%%%%
+    %%% Cyclic 3 %%%
+    %%%%%%%%%%%%%%%%
+    
+    % bottom sum
+    \coordinate (BottomSum) at ($(MiddleSum) + (0, -17*\r)$);
+    \node[namenode] at (BottomSum) {$+ $};
+
+    %%%%%%%%% 1st Cyclic 3 Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (W1VLowerLeft) at ($(BottomSum) - (0,0.75*\iy) + (0.75,0)$);
+    \draw[fill=mycustomorange] (W1VLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(W1VLowerLeft)-(0,2*\r)$) {$\mathbf{W}_1$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (V1HLowerLeft) at ($(W1VLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=mycustompurple] (V1HLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(V1HLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{V}_1$};
+
+    % This scopee draws the tp-screen chicken feet
+    \begin{scope}[shift={(4.875*\iy,-2.125*15*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=mycustomgreen] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(V1HLowerLeft)+(.6*\ix,1)$) {$\mathbf{U}_1$};
+    
+    % bottom ellipsis
+    \coordinate (MiddleEllipsis) at ($(BottomSum) + (4.75, 0)$);
+    \node[namenode] at (MiddleEllipsis) {$+ \quad \cdots \quad +$};
+    
+    %%%%%%%%% last Cyclic 3 Component %%%%%%%%%
+    % This draws the vertical chicken feet
+    \coordinate (WRVLowerLeft) at ($(MiddleEllipsis) + (\iy,-.75*\ix)$);
+    \draw[fill=mycustomorange] (WRVLowerLeft) rectangle ++ (\r,\iy);
+    \node[namenode] at ($(WRVLowerLeft)-(0,2*\r)$) {$\mathbf{W}_{r_c}$};
+
+    % This draws the horizontal chicken feet
+    \coordinate (VRHLowerLeft) at ($(WRVLowerLeft) + (\r,\iy) + (\r,\r)$);
+    \draw[fill=mycustompurple] (VRHLowerLeft) rectangle ++ (\ix,\r);
+    \node[namenode] at ($(VRHLowerLeft)+(.5*\iy,-2*\r)$) {$\mathbf{V}_{r_c}$};
+
+    % This scopee draws the tp-screen chicken feet
+    \begin{scope}[shift={(7.875*\iy,-2.125*15*\r)},canvas is zx plane at y=\iy,rotate=90]
+        \draw[fill=mycustomgreen] (0,\r) rectangle ++ (\r,\iz);
+    \end{scope}
+    \node[namenode] at ($(VRHLowerLeft)+(.6*\ix,1)$) {$\mathbf{U}_{r_c}$};
+\end{tikzpicture}

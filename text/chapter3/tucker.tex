@@ -1,0 +1,54 @@
+%!TEX root = ../../main.tex
+
+The rank of a Tucker decomposition, given by the size of $\mathcal{G}$, directly
+impacts the amount of compression, so the choice of rank is consequential. If
+the decomposition's ranks are large, then great accuracy is achieved at the cost
+of poor compression. If the decomposition's ranks are small, then great
+compression is achieved at the cost of poor accuracy. This is known as the
+tensor decomposition trade-off as seen in
+\Cref{fig:tensor_decomposition_trade_off}. It is applied to all forms of
+decompositions, but it is specially relevant here. 
+
+\begin{figure}[ht!]
+    \centering
+    \input{tikz/chapter3/trade-off.tex}
+    \caption{The Tensor Decomposition Trade-Off}
+    \label{fig:tensor_decomposition_trade_off}
+\end{figure}
+
+To know compression beforehand, we specify the size of the core tensor
+$\mathcal{G}$. In the 3-way case, we specify the array of ranks $\mathbf{r} =
+[q, r, s]$, or in the $d$-way case, $\mathbf{r} = [r_1, \hdots, r_d]$. Because
+we know the ranks beforehand, this is called the \textbf{rank-specified}
+formulation, and with it, we also know the compression ratio before hand as seen
+in \Cref{eq:compression_ratio} for the 3-way case. In this formulation, we
+cannot say in advance what the accuracy will be.
+
+\begin{equation} \label{eq:compression_ratio}
+    \frac{mnp}{qrs + qm + nr + sp} \approx \frac{mnp}{qrs}
+\end{equation}
+
+To know accuracy beforehand, we specify the maximum relative error threshold
+$\epsilon$ of the tucker approximation. The 3-way case of the relative error can
+be seen in \Cref{eq:rel_error}. This is called the \textbf{error-specified}
+formulation, where we cannot say in advance what the compression will be. 
+
+\begin{equation} \label{eq:rel_error}
+    \frac{\| \mathcal{X} - \llbracket \mathcal{G}; \mathbf{U, V, W} \rrbracket \|}{\|\mathcal{X}\|} \leq \epsilon
+\end{equation}
+
+We now go on a journey to understand two of the main Tucker Decomposition
+algorithms; STHOSVD and HOOI. STHOSVD is the more popular of the two for many
+reasons, but one of them is that the algorithm works in both rank- and
+error-specified formulation. HOOI, on the other hand, can only work in the
+rank-specified formulation. 
+
+
+\section{Tucker Algorithms}
+    \input{text/chapter3/section3-1.tex}
+
+\section{The TuckerMPI Library}
+    \input{text/chapter3/section3-2.tex}
+
+\section{Results}
+    \input{text/chapter3/section3-3.tex}

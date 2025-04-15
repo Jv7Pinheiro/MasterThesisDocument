@@ -1,0 +1,34 @@
+\begin{tikzpicture}[namenode/.style={scale=1}]
+
+    \coordinate (TFrontLowerLeft) at (0, 0);
+    
+    \draw[ultra thick] (TFrontLowerLeft) rectangle (10, \p);
+
+    \draw[-to, ultra thick] ($(\n/\nslices/2, \p - 0.15)$) -- ($(\n/\nslices/2, 0.15)$);
+
+    % Draw slices (horizontal lines) on the front face
+    \foreach \i in {1,...,30} {
+        \pgfmathsetmacro{\z}{\i*\m/\mslices}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thin] (\z,0) -- (\z,\p);
+
+        % % Side face (ZY plane) - Shift lines correctly
+        % \begin{scope}[canvas is zx plane at y=\m]
+        %     \draw[ultra thin] (0,\z) -- (-\p,\z);
+        % \end{scope}
+    }
+    
+    \foreach \i in {0,...,5} {
+        \pgfmathsetmacro{\z}{\i*\m}
+        
+        % Draw the lines in front of the cube
+        \draw[ultra thick] (\z,0) -- (\z,\p);
+
+        % % Side face (ZY plane) - Shift lines correctly
+        % \begin{scope}[canvas is zx plane at y=\m]
+        %     \draw[ultra thin] (0,\z) -- (-\p,\z);
+        % \end{scope}
+    }
+    
+\end{tikzpicture}

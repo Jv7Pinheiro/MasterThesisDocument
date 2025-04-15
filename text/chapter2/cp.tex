@@ -1,0 +1,56 @@
+%!TEX root = ../../main.tex
+
+Despite the tile, the focus of this project are not CP Decompositions. Rather,
+their active use in searching for fast matrix multiplication algorithms. There
+was a glimpse of these types of algorithms in \Cref{sec:Matrix-Matrix Products},
+but the rabbit hole goes deeper than that. Therefore, the use of CP
+Decompositons of a special tensor to discover new fast matrix multiplication
+algorithms is left for \Cref{sec:The Matrix Multiplication Tensor}, and
+\Cref{sec:Matrix Multiplication Algorithms} starts this chapter with some
+much-needed background about Matrix Multiplication Algorithms.
+
+% The goal for the first project is difficult to describe. Preliminary work on
+% attempting to search for fast matrix multiplication algorithm shows that it is a
+% daunting task. Even though exhaustive search is not enough to prove that an
+% algorithm doesn't exist for certain ranks, it is clear that there are many more
+% places where an algorithm fails to exist than the ones where it actually exists.
+% But have implemented a new way of searching these algorithms much more
+% efficiently than what was done in the past, and it could prove itself worthy of
+% future use. We have more recently turned to a more mathematical approach to the
+% project with the aid of Dr. Frank Moore and Dr. Pratyush Mishra. But where we
+% are heading is still unknown. We wish to share some both the new method of
+% searching for algorithm and some of the interesting solutions we found.
+
+% The work done in the first project is more extensive. Recall that we can
+% actively search for fast matrix multiplication algorithms by
+% optimization as in \Cref{Opt}. We can do so by performing an CP
+% Decomposition on the matrix multiplication tensor by specifying the size
+% of the matrix $n$ and the number of multiplications in the algorithm
+% $R$. This is described in algorithm \ref{alg:CP-DGN} where the details
+% of how to compute the Function value, the gradient and the Jacobian are
+% left as an exercise to the reader. But now, how do we modify it so that
+% we can decrease the number of possibilities from $3^{84}$ to $3^{28}$ by
+% relying on the cyclic invariance structure described earlier? The
+% details of so can be seen in Algorithm \ref{alg:Mod-CP-DGN}. I once
+% again leave the now much, much more complicated details of how to
+% compute the function value, the gradient and the Jacobian as another
+% exercise to the reader. 
+
+\section{Matrix Multiplication Algorithms} \label{sec:Matrix Multiplication Algorithms}
+    \input{text/chapter2/section2-1.tex}
+
+
+\section{Cyclic Invariance} \label{sec:Cyclic Invariance}
+    \input{text/chapter2/section2-2.tex}
+
+\newpage
+\section{Further Structure in Matrix Multiplication Algorithms} \label{sec:Further Structure in Matrix Multiplication Algorithms}
+
+\JP{This is ongoing work. Essentially, we are searching for additional
+structure in the solutions we have found. I will try to summarize the main ideas
+in the talk as well as in this section before I graduate, but realistic the
+precise writing of this section won't be in its full version before I graduate}
+
+
+
+
