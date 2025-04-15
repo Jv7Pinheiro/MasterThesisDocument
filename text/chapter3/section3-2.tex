@@ -1,7 +1,7 @@
 %!TEX root = ../../main.tex
 
 \begin{center}
-    \includegraphics[scale=0.5]{/Users/joaodeoliveria/Documents/Conferences/CSE25/Figures/TuckerMPI-logo.png}
+    \includegraphics[scale=0.5]{tikz/chapter3/TuckerMPI-logo.png}
 \end{center}
 
 TuckerMPI uses $P$ processors organized into a $d$-dimensional $P_1\times \cdots
@@ -186,12 +186,12 @@ algorithms.
 
 
 \subsection{TuckerMPI's Subspace Iterations} \label{TuckerMPI's Subspace Iterations}
-    \subsection{Subspace Iteration Computational Complexity.}
+    \subsubsection{Subspace Iteration Computational Complexity.}
         Each subspace iteration requires two matrix-matrix multiplications and
         one QR decomposition. The first matrix-multiplication corresponds to the
-        TTM $\mathcal{G}=\mathcal{Y} \times_k \mathbf{U}_{(k)}\intercal$ (in the
+        TTM $\mathcal{G}=\mathcal{Y} \times_k \mathbf{U}_{(k)}^\intercal$ (in the
         notation of \cref{alg:Classic-HOOI}) and the second computes the tensor
-        contraction $\mathbf{Y}_{(k)}\mathbf{G}_{(k)}\intercal$. The total computational cost of
+        contraction $\mathbf{Y}_{(k)}\mathbf{G}_{(k)}^\intercal$. The total computational cost of
         performing the TTM and contraction in each HOOI iteration is
         $4d\cdot\nicefrac{nr^d}{P}$. The cost of the QR decomposition of the
         matrix $\mathbf{Z} \in \mathbb{R}^{n\times r}$ in each HOOI iteration is
@@ -214,7 +214,7 @@ algorithms.
         %which we will refer to as HOSI-DT. \Cref{tab:flops} summarizes the flops cost
         %of $t$ iterations of HOSI-DT.
 
-    \subsection{Subspace Iteration Communication Complexity.}
+    \subsubsection{Subspace Iteration Communication Complexity.}
         Subspace iteration requires communication in the TTM, tensor contraction, and QR
         decomposition in each mode. The communication cost of the TTM is given by
         $\nicefrac{r^d}{P}\cdot (P_k - 1)$, where $P_k$ corresponds to the number of
