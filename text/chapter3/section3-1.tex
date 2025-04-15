@@ -4,7 +4,7 @@ Recall from \Cref{sec:Tucker Tensors and The Tucker Decomposition} that a Tucker
 decomposition of a tensor $\mathcal{X}\in \mathbb{R}^{n_1\times \cdots \times
 n_d}$ approximates $\mathcal{X}$ as a product of a core tensor $\mathcal{G} \in
 \mathbb{R}^{r_1 \cdots r_d}$ and factor matrices $\mathbf{U}_j \in
-\mathbb{R}^{n_j\times r_j} \forall j \in [d]$ where $\mathcal{X} \approx
+\mathbb{R}^{n_k\times r_k} \forall k \in [d]$ where $\mathcal{X} \approx
 \mathcal{\hat{X}} = \mathcal{G} \times_1 \mathbf{U}_1 \cdots \times
 \mathbf{U}_d$. The optimal rank-$\mathbf{r}$ Tucker decomposition of
 $\mathcal{X}$ can be expressed as a solution to the rank-specified optimization problem
@@ -12,7 +12,7 @@ $\mathcal{X}$ can be expressed as a solution to the rank-specified optimization 
 \begin{equation}\label{eq:tuckeropt-rank}
     \begin{aligned}
         \min \quad & \| \mathcal{X} - (\mathcal{G} \times_1 \mathbf{U}_1 \cdots \times \mathbf{U}_d)\| \\ 
-        \text{subject to } &\mathcal{G} \in \mathbb{R}^{r_1\times \cdots \times r_d}, \mathbf{U}_{j} \in \mathbb{R}^{n_j\times r_j} \forall j\in [d].
+        \text{subject to } &\mathcal{G} \in \mathbb{R}^{r_1\times \cdots \times r_d}, \mathbf{U}_{k} \in \mathbb{R}^{n_k\times r_k} \forall k\in [d].
     \end{aligned}
 \end{equation}
 
@@ -22,29 +22,31 @@ problem is given as
 \begin{equation}\label{eq:tuckeropt-err}
     \begin{aligned}
         \min \quad & \prod_{j=1}^d r_j + \sum_{j=1}^d n_jr_j & \\ 
-        \text{subject to } &\mathcal{G} \in \mathbf{R}^{r_1\times \cdots r_d}, \mathbf{U}_{j} \in \mathbb{R}^{n_j\times r_j} \forall j\in [d] \\
+        \text{subject to } &\mathcal{G} \in \mathbf{R}^{r_1\times \cdots r_d}, \mathbf{U}_{j} \in \mathbb{R}^{n_k\times r_k} \forall k\in [d] \\
         \text{and}\quad  & \| \mathcal{X} - (\mathcal{G} \times_1 \mathbf{U}_1 \cdots \times \mathbf{U}_d) \| \leq \epsilon \|\mathcal{X}\|.
     \end{aligned}
 \end{equation}
 
-\subsection{STHOSVD} \label{sec:sthosvd} We start with the state-of-the art
-    algorithm that is capable of performing both rank-specified and
-    error-specified formulations. \Cref{alg:STHOSVD} showcases the $d$-way
-    construction of the STHOSVD algorithm. This method approximately solves
-    either \cref{eq:tuckeropt-rank} or \cref{eq:tuckeropt-err} by unfolding the
-    $j^\text{th}$ mode of the input tensor, computing its leaft leading singular
-    vectors (LLSV), and then performing a TTM with the result to truncate the
-    $j^\text{th}$ mode of rank $r_j$. Once all factor matrices have been
-    computed, the truncated tensor has rank $\mathbf{r}$.
+\subsection{STHOSVD} \label{sec:sthosvd} 
 
-    A relative error error of $\epsilon$ can be achieved by selecting $r_j$ in
-    the LLSV computation such that \(\sum_{i=r_j+1}^{n_j}\varSigma_i^2 \leq
-    \epsilon^2 \|\mathcal{X}\|^2/d\), where $\varSigma_i$ is the $i^th$ largest
+    We start with the state-of-the art algorithm that is capable of performing
+    both rank-specified and error-specified formulations. \Cref{alg:STHOSVD}
+    showcases the $d$-way construction of the STHOSVD algorithm. This method
+    approximately solves either \cref{eq:tuckeropt-rank} or
+    \cref{eq:tuckeropt-err} by unfolding the $k^\text{th}$ mode of the input
+    tensor, computing its leaft leading singular vectors (LLSV), and then
+    performing a TTM with the result to truncate the $k^\text{th}$ mode of rank
+    $r_k$. Once all factor matrices have been computed, the truncated tensor has
+    rank $\mathbf{r}$.
+
+    A relative error error of $\epsilon$ can be achieved by selecting $r_k$ in
+    the LLSV computation such that \(\sum_{i=r_k+1}^{n_k}\varSigma_i^2 \leq
+    \epsilon^2 \|\mathcal{X}\|^2/d\), where $\varSigma_i$ is the $i^\text{th}$ largest
     singular value of the $j^\text{th}$ unfolding, see \cite{BK25} for more
     details. There are several algorithms one could choose in line
-    \ref{line:sthosvd_llsv} to compute $\mathbf{U}_j$. We assume that such
+    \ref{line:sthosvd_llsv} to compute $\mathbf{U}_k$. We assume that such
     computation is performed via the eigenvalue decomposition (EVD) of the Gram
-    matrix $\mathbf{G}_({k})\mathbf{G}_{(k)}$. 
+    matrix $\mathbf{G}_{(k)}\mathbf{G}_{(k)}$. 
 
     \begin{algorithm}
         \caption{STHOSVD}
@@ -59,7 +61,7 @@ problem is given as
                 \State{$\mathcal{G \gets X}$}
                 \For{$k = 1, \dots, d$}
                     \State{$[U_k, \epsilon_k] \gets \textcolor{blue}{LLSV}(G_{(k)}, r_k \text{ or } \bar{\epsilon})$}\label{line:sthosvd_llsv} \Comment{$r_k$ leading left sing. vectors of residual} 
-                    \State{$\mathcal{G} \gets \mathcal{G \times_k} U^\intercal_k$} \Comment{compress in mode $k$}
+                    \State{$\mathcal{G} \gets \mathcal{G \times_k} U^\intercal_k$}\label{line:sthosvd_ttm} \Comment{compress in mode $k$}
                 \EndFor{}
                 \vspace{10pt}
                 \State{E{\footnotesize \text{RR}} $\gets \displaystyle \sqrt{\sum_{k=1}^d \epsilon_k^2}$} \Comment{equivalent to $||\mathcal{X - T}||$}
@@ -69,8 +71,9 @@ problem is given as
         \end{algorithmic}
     \end{algorithm}
 
-\subsection{Classic HOOI}
-    Our Protagonist is given in \cref{alg:Classic-HOOI} and is an alternative
+\subsection{Classic HOOI} \label{sec:Classic HOOI} 
+
+    Our protagonist is given in \cref{alg:Classic-HOOI} and is an alternative
     method for solving the rank-specified formulation of the Tucker
     approximation problem
     \cite{kroonenberg1980principal,de2000best,kapteyn1986approach}. HOOI is a
@@ -116,6 +119,8 @@ problem is given as
     introduce three optimizations for the HOOI algorithm in an attempt to make
     it more competitive against STHOSVD. 
 
+\subsection{Motivating HOOI Optimizations}
+
 \subsection{HOOI's Dimension Trees Optimization}
     Adapting ranks in each HOOI iteration is a low order cost, however, the cost
     of TTMs is a factor of $d$ more expensive than in STHOSVD. We can reduce the
@@ -123,7 +128,7 @@ problem is given as
     \cref{alg:Classic-HOOI} the following multi-TTM is computed $\mathcal{Y} =
     \mathcal{X} \times_2 \mathbf{U}_{2}^\intercal \times_3
     \mathbf{U}_{3}^\intercal \cdots \times_d \mathbf{U}_{d}$. At $k = 2$ the
-    multi-TTM is $\mathcal{B} = \mathcal{X} \times_2 \mathbf{U}_{1}\times
+    multi-TTM is $\mathcal{Y} = \mathcal{X} \times_2 \mathbf{U}_{1}\times
     \times_3 \mathbf{U}_{3}^\intercal \cdots \times_d \mathbf{U}_{d}$. By
     comparing the two multi-TTMs we can see that $d - 2$ TTMs are the same
     (namely 3 to $d$). So we can reuse results from one multi-TTM to the next by
@@ -178,14 +183,15 @@ problem is given as
         \end{algorithmic}
     \end{algorithm}
 
-\subsection{HOOI's Subspace Iteration Optimization}
+\subsection{HOOI's Subspace Iteration Optimization} \label{sec:HOOI's Subspace Iteration Optimization}
 
     So far, we have assumed that the LLSVs of a matrix $\mathbf{A}$ are obtained
-    as the eigenvectors of the Gram matrix, $\mathbf{A}\mathbf{A}^\intercal$,
-    which can be seen in \cref{alg:gram_llsv}. The next algorithmic improvement
-    we introduce is to compute the leading left singular vectors by using
-    subspace iterations. \Cref{alg:subiter} shows a single subspace iteration,
-    but in principle, the computations could be repeated to improve accuracy.
+    as the eigenvectors of the Gram matrix, $\mathbf{A}\mathbf{A}^\intercal$.
+    % which can be seen in \cref{alg:gram_llsv}
+    The next algorithmic improvement we introduce is to compute the leading left
+    singular vectors by using subspace iterations. \Cref{alg:subiter} shows a
+    single subspace iteration, but in principle, the computations could be
+    repeated to improve accuracy.
 
     \begin{algorithm}
         \caption{LLSV via Subspace Iteration}
@@ -212,7 +218,7 @@ problem is given as
     \end{algorithm}
 
     We note that the input matrix $\mathbf{A}$ is $\mathbf{Y}_{(k)}$ from
-    \cref{alg:Classic-HOOI} or $\mathbf{X}_{(m)}$ from \cref{alg:hooi_dimtree},
+    \cref{alg:Classic-HOOI} or $\mathbf{X}_{(m)}$ from \cref{alg:dimtree},
     which is the result of an all-but-one multi-TTM, and the input matrix
     $\mathbf{U}$ is the factor matrix from the previous HOOI iteration. This implies
     that the temporary matrix $\mathbf{G}$ in \cref{alg:subiter} is an unfolding of
@@ -231,7 +237,7 @@ problem is given as
     and because high accuracy of a HOOI subiteration is less of a priority than
     high accuracy of the full HOOI iteration.
 
-\subsection{HOOI's Adaptive Rank Optimization} \label{HOOI's Adaptive Rank Optimization}
+\subsection{HOOI's Adaptive Rank Optimization} \label{sec:HOOI's Adaptive Rank Optimization}
 
     \begin{figure}
         \centering
@@ -244,12 +250,9 @@ problem is given as
     formulation of the Tucker approximation problem, whereas STHOSVD can
     adaptively select ranks based on a relative error tolerance. We propose a
     technique that allows HOOI to automatically adapt ranks to meet a
-    user-specified relative error tolerance, as shown in
-    \cref{alg:hooi_dimtree}. \Cref{line:HOSI-DT} performs an update of all
-    factor matrices and the core using optimizations described in
-    \cref{sec:dimtrees,sec:HOSI}.
+    user-specified relative error tolerance. 
 
-    Recall that for the errpr-specified formulation, given an error tolerance
+    Recall that for the error-specified formulation, given an error tolerance
     $\varepsilon$ and an initial rank estimate $\mathbf{r}$, our method adaptively
     finds a Tucker decomposition $\mathbf{\hat{X}} = [\mathcal{G}; \mathbf{U}_{1}, \dots,
     \mathbf{U}_{d}]$ for a tensor $\mathcal{X} \in \mathbb{R}^{n_1 \times \dots \times
@@ -295,14 +298,14 @@ problem is given as
     index satisfying \eqref{eq:rankcond} and truncate to that rank before
     iterating. If no $\mathbf{r}$ exists, our current rank is too small, so we
     increase it by a small factor $\alpha$ before trying again. Typically,
-    $\alpha \approx 2$ is sufficient. The details of this algorithm, which we
-    call HOOI-Adapt, are described in Algorithm~\ref{alg:hooi_adapt}. In
-    practice, we do the optimization problem above in a way that minimizes the
-    memory footprint. We do so by exploiting HOOI's form of the immediate core
-    $\mathcal{G}$. We use the immediate form to compute its cumulative sum of
-    the squared core $\mathcal{G}^2$ (square all entries in the core) and then
-    consider all values of this cumulative sum squared tensor to find the first
-    instance that satisfies the error tolerance to get the new ranks.
+    $\alpha \approx 2$ is sufficient. The details of this algorithm, are
+    described in \ref{alg:Adaptive-HOOI}. In practice, we do the optimization
+    problem above in a way that minimizes the memory footprint. We do so by
+    exploiting HOOI's form of the immediate core $\mathcal{G}$. We use the
+    immediate form to compute its cumulative sum of the squared core
+    $\mathcal{G}^2$ (square all entries in the core) and then consider all
+    values of this cumulative sum squared tensor to find the first instance that
+    satisfies the error tolerance to get the new ranks.
 
     \begin{algorithm}
         \caption{Adaptive HOOI}
