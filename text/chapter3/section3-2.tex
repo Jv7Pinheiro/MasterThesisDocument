@@ -11,18 +11,18 @@ stores a $1/P$ fraction of $\mathcal{X}$. Our analysis will assume $\mathcal{X}
 \mathbb{R}^{r\times \cdots \times r}$ to simplify cost comparison across
 algorithms.
 
-\subsection{TuckerMPI's STHOSVD}
-    \subsubsection{STHOSVD's Computational Complexity}
+\subsection{TuckerMPI's STHOSVD} \label{sec:TuckerMPI's STHOSVD}
+    \subsubsection{STHOSVD's Computational Complexity} \label{STHOSVD's Computational Complexity}
 
-        The cost of LLSV in \cref{line:sthosvd-llsv} is given by
+        The cost of LLSV in line \ref{line:sthosvd_llsv} is given by
         \begin{equation*}
             \sum_{j=1}^{d} \left(\frac{r^{j-1}n^{d-j+2}}{P} + \mathcal{O}(n^3)\right) \approx \frac{n^{d+1}}{P} + \mathcal{O}(dn^3),
         \end{equation*}
         where the first term is the cost of computing the $n \times n$ Gram matrix and
         the second term is the cost of sequentially computing the EVDs to leading order.
         %We perform the Eigendecomposition sequentially on a single processor and communicate $\Mx{U}_j$.
-        After $\mathbf{U}_{j}$ is computed, $\mathcal{Y}$ is truncated by performing the TTM in
-        \cref{line:sthosvd-ttm}, which costs
+        After $\mathbf{U}_{k}$ is computed, $\mathcal{Y}$ is truncated by
+        performing the TTM in line \ref{line:sthosvd_ttm}, which costs
         \begin{equation*}
             2\sum_{j=1}^{d} \frac{r^j n^{d-j+1}}{P} \approx 2\frac{rn^d}{P}.
         \end{equation*}
@@ -34,11 +34,11 @@ algorithms.
         summarize the leading order STHOSVD flops cost in \cref{tab:flops} (shown in
         red).
 
-    \subsubsection{STHOSVD's Communication Complexity}
+    \subsubsection{STHOSVD's Communication Complexity} \label{sec:STHOSVD's Communication Complexity}
 
         TuckerMPI's parallel algorithm for LLSV explicitly forms the Gram
-        matrix, $\mathbf{G} = \mathbf{Y}_{(j)}\mathbf{Y}_{(j)}^\intercal$,
-        where $\mathbf{Y}_{(j)}$ is redistributed (if necessary) to a 1D column
+        matrix, $\mathbf{G} = \mathbf{Y}_{(k)}\mathbf{Y}_{(k)}^\intercal$,
+        where $\mathbf{Y}_{(k)}$ is redistributed (if necessary) to a 1D column
         layout across $P$ processors, and then sequentially computes the EVD of
         $\mathbf{G}$. After redistribution of $\mathbf{G}$, each processor
         computes a local Gram matrix which can be sum-reduced (or all-reduced)
@@ -63,8 +63,8 @@ algorithms.
         experiments). We summarize the STHOSVD communication costs in
         \cref{tab:comm} (shown in red).
 
-\subsection{TuckerMPI's HOOI}
-    \subsubsection{HOOI's Computational Complexity}
+\subsection{TuckerMPI's HOOI} \label{sec:TuckerMPI's HOOI}
+    \subsubsection{HOOI's Computational Complexity} \label{sec:HOOI's Computational Complexity}
 
         Since HOOI is an iterative algorithm for Tucker decomposition, we analyze the
         cost of one HOOI iteration. Each HOOI iteration requires $d$ multi-TTMs, in all
@@ -85,7 +85,7 @@ algorithms.
             d\frac{r^{d-1}n^2}{P} + \mathcal{O}(dn^3),
         \end{equation*}
         where the first term is the cost of computing the Gram matrix
-        $\mathbf{Y}_{(j)}\mathbf{Y}_{(j)}'$ and the second term is the cost of
+        $\mathbf{Y}_{(k)}\mathbf{Y}_{(k)}'$ and the second term is the cost of
         computing the EVD. Finally, the core tensor at the end of each HOOI
         iteration is obtained by performing a TTM in mode-$d$ with the
         intermediate tensor $\mathcal{Y}$ and $\mathbf{U}_{d}$, which has a cost of
@@ -94,7 +94,7 @@ algorithms.
         \cref{tab:flops} (shown in red).
 
 
-    \subsubsection{HOOI's Communication Complexity}
+    \subsubsection{HOOI's Communication Complexity} \label{sec:HOOI's Communication Complexity}
         The communication cost of each iteration of HOOI is dominated by multi-TTMs and
         LLSV computations. Each TTM in the multi-TTM requires communication to perform a
         sum reduction to form $\mathcal{Y}$. Communication is required along the processor
@@ -121,9 +121,9 @@ algorithms.
         Communication is also required when computing the LLSV in each mode.
         Using the same LLSV algorithm as in STHOSVD, the Gram matrix is computed
         in parallel followed by a sequential EVD. Computing the Gram matrix
-        requires an all-to-all to redistribute $\mathbf{Y}_{(j)}$ so that it is
+        requires an all-to-all to redistribute $\mathbf{Y}_{(k)}$ so that it is
         stored in 1D-column layout. After redistribution
-        $\mathbf{Y}_{j}\mathbf{Y}_{j}^\intercal$ is computed in parallel by
+        $\mathbf{Y}_{k}\mathbf{Y}_{k}^\intercal$ is computed in parallel by
         performing local matrix-matrix multiplications that are sum-reduced to
         obtain the Gram matrix. The cost of communication for the LLSV is given
         by
@@ -141,8 +141,8 @@ algorithms.
         We summarize the HOOI communication costs as implemented by TuckerMPI in \Cref{tab:comm} (shown in red).
 
 
-\subsection{TuckerMPI's Dimension Tree}
-    \subsubsection{Dimension Tree Computational Complexity}
+\subsection{TuckerMPI's Dimension Tree} \label{sec:TuckerMPI's Dimension Tree}
+    \subsubsection{Dimension Tree Computational Complexity} \label{sec:Dimension Tree Computational Complexity}
 
         The flops cost of performing multi-TTMs using dimension trees is given by
         \begin{equation*}
@@ -155,7 +155,7 @@ algorithms.
         (i.e. the first TTM in each branch), which is a factor of $\nicefrac d2$ improvement over
         computing multi-TTMs directly. This cost is summarized in \Cref{tab:flops}.
     
-    \subsubsection{Dimension Tree Communication Complexity}
+    \subsubsection{Dimension Tree Communication Complexity} \label{sec:Dimension Tree Communication Complexity}
 
         Since the first TTM in each of the two multi-TTMs off the root dominate,
         the communication cost of multi-TTMs is given by
@@ -185,10 +185,60 @@ algorithms.
         and the communication cost by a factor of $d-1$ in the first term.
 
 
-\subsection{TuckerMPI's Subspace Iterations}
+\subsection{TuckerMPI's Subspace Iterations} \label{TuckerMPI's Subspace Iterations}
+    \subsection{Subspace Iteration Computational Complexity.}
+        Each subspace iteration requires two matrix-matrix multiplications and
+        one QR decomposition. The first matrix-multiplication corresponds to the
+        TTM $\mathcal{G}=\mathcal{Y} \times_k \mathbf{U}_{(k)}\intercal$ (in the
+        notation of \cref{alg:Classic-HOOI}) and the second computes the tensor
+        contraction $\mathbf{Y}_{(k)}\mathbf{G}_{(k)}\intercal$. The total computational cost of
+        performing the TTM and contraction in each HOOI iteration is
+        $4d\cdot\nicefrac{nr^d}{P}$. The cost of the QR decomposition of the
+        matrix $\mathbf{Z} \in \mathbb{R}^{n\times r}$ in each HOOI iteration is
+        $\mathcal{O}(dnr^2)$, where we assume a sequential QR decomposition. The
+        total cost of performing subspace iteration in each mode across an
+        entire HOOI iteration is given by
+        \begin{equation*}
+            4d\frac{nr^d}{P} + \mathcal{O}(dnr^2).
+        \end{equation*}
 
-\subsection{TuckerMPI's Adaptive Rank}
-    \subsubsection{Core Analysis Computational Complexity.}
+        As shown in \cref{tab:flops}, the cost of LLSV using subspace iteration is a
+        factor of $\nicefrac{1}{4} \cdot \nicefrac{n}{r}$ cheaper than the cost of LLSV via the
+        Gram matrix.
+        %When compared to the Gram computation in STHOSVD, HOOI with subspace iteration is a factor of approximately $\frac{1}{4dt} \cdot \prn+{\frac{n}{r}}$ faster.
+        When comparing the sequential EVD to the sequential QR decomposition,
+        the cost of the latter is a factor of
+        $\mathcal{O}\left(\big(\nicefrac{n}{r}\big)^2\right)$ faster.
+        %The best variant of HOOI based on the algorithmic improvements we have
+        %introduced is HOOI with dimension trees and subspace iteration optimizations,
+        %which we will refer to as HOSI-DT. \Cref{tab:flops} summarizes the flops cost
+        %of $t$ iterations of HOSI-DT.
+
+    \subsection{Subspace Iteration Communication Complexity.}
+        Subspace iteration requires communication in the TTM, tensor contraction, and QR
+        decomposition in each mode. The communication cost of the TTM is given by
+        $\nicefrac{r^d}{P}\cdot (P_k - 1)$, where $P_k$ corresponds to the number of
+        processors in the $k^\text{th}$ mode. The tensor contraction requires redistribution of
+        both tensors via all-to-all communication steps. However, the all-to-all cost is
+        a lower order term since it is a factor of $P_k$ cheaper than the communication
+        cost associated with the TTM. Once the contraction is performed, a sum reduction
+        followed by a broadcast is required to ensure that all processors can
+        independently compute local QR decompositions. The communication cost of the QR
+        decomposition is given by $2nr$ since $\mathbf{Z} \in \mathbf{R}^{n\times r}$ and must be
+        communicated twice. As shown in \cref{tab:comm}, the total communication cost of
+        the LLSV calls within an iteration of HOOI using subspace iteration is given by
+        \begin{equation*}
+            \frac{r^d}{P}\sum_{j=1}^{d}\left(P_j - 1\right) + 2dnr.
+        \end{equation*}
+
+
+
+
+
+
+
+\subsection{TuckerMPI's Adaptive Rank} \label{TuckerMPI's Adaptive Rank}
+    \subsubsection{Core Analysis Computational Complexity} \label{sec:Core Analysis Computational Complexity}
 
         The cost of one RA-HOOI iteration is the same as one iteration of HOOI given in
         \cref{tab:flops}, but with the possible additional cost of performing analysis
@@ -210,7 +260,7 @@ algorithms.
         parallel, but we expect that the cost of communication would outweigh
         the benefits of parallelizing this operation.
 
-    \subsubsection{Core Analysis Communication Complexity.}
+    \subsubsection{Core Analysis Communication Complexity} \label{sec:Core Analysis Communication Complexity}
 
         At the end of a HOOI iteration, $\mathcal{G}$ is distributed across all processors,
         so it must be gathered on a single processor in order to perform analysis. Since

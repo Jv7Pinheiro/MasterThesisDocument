@@ -42,7 +42,7 @@ experiments are performed only on the real datasets.
 % the state-of-the art using the three data sets.
 
 Even for a fixed number of processors $P$, the $d$-way processor grid has a
-significant effect on all algorithms. As described in \cref{sec:algorithm},
+significant effect on all algorithms. As described in \cref{sec:TuckerMPI's STHOSVD},
 STHOSVD benefits from processor grids with $P_1=1$, and HOOI variants using
 dimension trees are theoretically more efficient when $P_1=P_d=1$. In addition,
 for modes with small tensor dimension, a large processor dimension in that mode
@@ -119,16 +119,18 @@ individual algorithms, and we report the fastest observed running times.
         \label{fig:4way_scaling}
     \end{figure}
 
-    \Cref{fig:scaling} shows the strong scaling results of the HOOI 
-    variants and STHOSVD on up to $4096$ cores for the 3-way and 4-way
-    synthetic datasets. We observe that STHOSVD scales well to $64$ cores,
-    attaining a speedup of $15.2\times$ over the single core STHOSVD run.
-    STHOSVD continues to scale up to $2048$ cores, but achieves only a modest
-    speedup of $1.3\times$ over the $64$ core run. This is due to TuckerMPI's
-    limitation of having a sequential EVD implementation. In contrast, the 4-way
-    STHOSVD strong scaling experiment shows good scaling up to $8192$ cores,
-    achieving a speedup of $937\times$ over the single core run. This difference
-    in STHOSVD performance is explained by the tensor dimension: a sequential EVD of a matrix of dimension 560 does not become the bottleneck until $P$ is large.
+    Figures \ref{fig:3way_scaling} and \ref{fig:4way_scaling} shows the strong
+    scaling results of the HOOI variants and STHOSVD on up to $4096$ cores for
+    the 3-way and 4-way synthetic datasets. We observe that STHOSVD scales well
+    to $64$ cores, attaining a speedup of $15.2\times$ over the single core
+    STHOSVD run. STHOSVD continues to scale up to $2048$ cores, but achieves
+    only a modest speedup of $1.3\times$ over the $64$ core run. This is due to
+    TuckerMPI's limitation of having a sequential EVD implementation. In
+    contrast, the 4-way STHOSVD strong scaling experiment shows good scaling up
+    to $8192$ cores, achieving a speedup of $937\times$ over the single core
+    run. This difference in STHOSVD performance is explained by the tensor
+    dimension: a sequential EVD of a matrix of dimension 560 does not become the
+    bottleneck until $P$ is large.
     %The high $\frac{n}{r}$ of the 3-way experiment makes it so that LLSV's
     %eigenvalue decomposition subroutine is the limiting factor, which is made
     %worse due to the sequential implementation. This is not the same as on the
@@ -195,21 +197,21 @@ individual algorithms, and we report the fastest observed running times.
     still scale best, with the lesser TTM cost of HOSI-DT making it the best out
     of these five algorithms.
 
-    For the 3-way synthetic tensor on 1 core, it can be seen
-    that the cost of the Gram computation is the bottleneck for STHOSVD. The
-    TTM cost for the dimension tree algorithms are cheaper, as expected. HOSI-DT
-    is faster than HOOI-DT simply because of the smaller cost for the LLSV
-    computations. The two iterations for all HOOI algorithms are faster than the
-    `single iteration' for STHOSVD. However, that is not the case for the 4096
-    cores experiment. Now, the TTM costs for all algorithms are negligible due
-    to the parallel scaling. The Gram computation for STHOSVD is also
-    negligible now for the same reasons. The bottleneck at this scale is now the
-    Eigenvalue computation. The reason why HOOI, HOOI-DT, and STHOSVD stagnate
-    over the high number of cores on \Cref{fig:scaling} is because of
-    TuckerMPI's limitation of having a sequential eigenvalue computation, and
-    the reason why HOOI and HOOI-DT are twice as expensive on multi-node
-    experiments is because they must do two iterations, this fact can be
-    visualized on the breakdown for the 4096 cores experiment.
+    For the 3-way synthetic tensor on 1 core, it can be seen that the cost of
+    the Gram computation is the bottleneck for STHOSVD. The TTM cost for the
+    dimension tree algorithms are cheaper, as expected. HOSI-DT is faster than
+    HOOI-DT simply because of the smaller cost for the LLSV computations. The
+    two iterations for all HOOI algorithms are faster than the `single
+    iteration' for STHOSVD. However, that is not the case for the 4096 cores
+    experiment. Now, the TTM costs for all algorithms are negligible due to the
+    parallel scaling. The Gram computation for STHOSVD is also negligible now
+    for the same reasons. The bottleneck at this scale is now the Eigenvalue
+    computation. The reason why HOOI, HOOI-DT, and STHOSVD stagnate over the
+    high number of cores on \Cref{fig:3way_scaling} is because of TuckerMPI's
+    limitation of having a sequential eigenvalue computation, and the reason why
+    HOOI and HOOI-DT are twice as expensive on multi-node experiments is because
+    they must do two iterations, this fact can be visualized on the breakdown
+    for the 4096 cores experiment.
 
     \paragraph{4-way.} In this experiment, HOOI-DT and HOSI-DT are the ones that
     get a comparative headstart since the small $\frac{n}{r}$ ratio of this
