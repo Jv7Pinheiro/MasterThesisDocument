@@ -47,7 +47,7 @@ algorithms.
         each mode is of size $n \times n$, so the total communication cost is
         $dn^2$ for the all-reduce. Thus, the communication cost is given by
         \begin{equation*}
-            \sum_{j=1}^{d} \bigg(\frac{r^{j-1}n^{d-j+1}}{P}\cdot \frac{P_j - 1}{P_j} + \mathcal{O}(n^2)\bigg) \approx \frac{n^{d}}{P}\cdot \frac{P_1 - 1}{P_1} + dn^2,
+            \sum_{j=1}^{d} \bigg(\frac{r^{j-1}n^{d-j+1}}{P}\cdot \frac{P_j - 1}{P_j} + \mathcal{O}(n^2)\bigg) \approx \frac{n^{d}}{P}\cdot \frac{P_1 - 1}{P_1} + O(dn^2),
         \end{equation*}
         where we assume the redistribution cost is dominated by the first mode. However,
         note that there is no redistribution cost in mode $j$ if $P_j=1$. Finally, the
@@ -70,7 +70,7 @@ algorithms.
         cost of one HOOI iteration. Each HOOI iteration requires $d$ multi-TTMs, in all
         modes but mode-$j$, and $d$ LLSV computations to update factors matrices, in all
         modes. Once the factor matrices have been updated, the core tensor $\mathcal{G}$ is
-        obtained by performing a TTM with the last factor matrix $\mathbf{U}{d}$. The cost
+        obtained by performing a TTM with the last factor matrix $\mathbf{U}_{d}$. The cost
         of computing $d$ multi-TTMs is given by
 
         \begin{equation*}
@@ -85,11 +85,11 @@ algorithms.
             d\frac{r^{d-1}n^2}{P} + \mathcal{O}(dn^3),
         \end{equation*}
         where the first term is the cost of computing the Gram matrix
-        $\mathbf{Y}_{(k)}\mathbf{Y}_{(k)}'$ and the second term is the cost of
+        $\mathbf{Y}_{(k)}\mathbf{Y}_{(k)}^\intercal$ and the second term is the cost of
         computing the EVD. Finally, the core tensor at the end of each HOOI
         iteration is obtained by performing a TTM in mode-$d$ with the
         intermediate tensor $\mathcal{Y}$ and $\mathbf{U}_{d}$, which has a cost of
-        $2\nicefrac{nr^{d}}{P}$ and is a lower order term. We summarize the
+        $2\cdot \nicefrac{nr^{d}}{P}$ and is a lower order term. We summarize the
         leading order cost per HOOI iteration as implemented by TuckerMPI in
         \cref{tab:flops} (shown in red).
 

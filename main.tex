@@ -24,8 +24,8 @@
 \usepackage{pgfmath}
 \usepackage{scalerel}
 \usepackage{multirow}
-\usepackage{pgfplots}
 \usepackage{xinttools}
+\usepackage{pgfplots}
 \usepgfplotslibrary{groupplots}
 
 
@@ -155,26 +155,29 @@
     work presents recent advances in tensor decompositions which are techniques
     that break down complex high-dimensional arrays into smaller structured
     components. There are two projects presented in this thesis, each in its own
-    chapter. The first project applies tensor decompositions on searches for new
-    algorithms for fast matrix multiplication. The second project focuses on the
-    development of scalable, adaptive methods for compressing massive data sets.
-    Here, the abstracts for the two projects separately, in chronological order
-    in which I began working on them.
+    abstract and chapter. 
+    % The first project applies tensor decompositions on searches for new
+    % algorithms for fast matrix multiplication. The second project focuses on the
+    % development of scalable, adaptive methods for compressing massive data sets.
 
     \textbf{Searching For Fast Matrix Multiply Algorithms using Cyclic-Invariant
     CP decomposition:} Fast matrix multiplication algorithms correspond to exact
     CP decompositions of tensors that encode matrix multiplication of fixed
-    dimensions. This 3-way matrix multiplication tensor M has cyclic symmetry:
-    the entry values are invariant under cyclic permutation of the indices. The
-    CP decomposition of Strassen's original fast matrix multiplication algorithm
-    for 2x2 matrices is cyclic invariant, and cyclic invariant decompositions
-    are known to exist for 3x3 and 4x4 matrix multiplication as well. Cyclic
-    invariance means a cyclic permutation of the CP factors results in the same
-    CP components, just in a different order. We describe how to search for
-    these solutions, which involve one third of the variables of generic
-    solutions, using the damped Gauss-Newton optimization method along with
-    heuristic rounding techniques, and we summarize the algorithms discovered so
-    far.
+    dimensions. This 3-way matrix multiplication tensor has cyclic symmetry: the
+    entry values are invariant under cyclic permutation of the indices. The CP
+    decomposition of Strassen's original fast matrix multiplication algorithm
+    for 2x2 matrices is cyclic invariant, which means a cyclic permutation of
+    the CP factors results in the same CP components, just in a different order.
+    We describe how to search for these solutions, using the damped Gauss-Newton
+    optimization method along with heuristic rounding techniques. We not only
+    summarize the algorithms discovered so far but also attempt to search for
+    further structure in these algorithms; the $GL_3$ and the transpose-like
+    symmetry. After discussing what algorithms require to have such structure,
+    we describe how future work can modify our search algorithm further to
+    obtain solutions with all three structure.
+    
+    % are known to exist for 3x3 and 4x4 matrix multiplication as well. 
+
 
     \textbf{Parallel Higher-Order Orthogonal Iteration for Tucker Decomposition
     with Rank Adaptivity:} Higher Order Orthogonal Iteration (HOOI) is an

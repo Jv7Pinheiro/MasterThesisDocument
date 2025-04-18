@@ -12,8 +12,8 @@ the input. Matrix or Tensor decompositions can be either exact or
 approximations, though the latter is much more common. Most tensor
 decompositions can be viewed as higher-order generalizations of matrix
 decompositions. There are several types of tensor decompositions, but in this
-work we focus on two of the most famous ones; The CP Decomposition, and the
-Tucker Decomposition. As mentioned back in the abstract, this thesis is build
+work we focus on two of the most famous ones; the CP Decomposition, and the
+Tucker Decomposition. As mentioned back in the abstract, this thesis is built
 upon two projects, each project will focus on one of these decompositions.
 Furthermore, though it was just said that exact tensor decompositions are rarer,
 the first project focuses on exact CP decompositions of a special type of
@@ -21,7 +21,7 @@ tensor. On the other hand, the second project focuses on numeric tensor
 approximations using the Tucker Decomposition. 
 
 
-\subsection{Kruskal Tensors and The CP Decomposition} \label{sec:Kruskal Tensors
+\subsection{Kruskal Tensors and the CP Decomposition} \label{sec:Kruskal Tensors
     and The CP Decomposition} The CP Decomposition compresses an input tensor
     into a Kruskal Tensor (KTensor), which is a collection of $r$ rank-1
     components. Each component is an outer product of $r$ vectors. We refer to
@@ -29,9 +29,9 @@ approximations using the Tucker Decomposition.
     only when $r$ is minimal. The vectors in each mode come together to form a
     factor matrix. We can visualize this in the case of a 3-way tensor as shown
     in \Cref{fig:KTensor}. The rank-1 components in their outer-product format
-    are cassually and kindheartdly referred to as chicken feet for their
+    are casually and kindheartedly referred to as chicken feet for their
     appearance. It is crucial to note that we can move these chicken feet around
-    as long as we keep their corresponding indeces accross all factor matrices
+    as long as we keep their corresponding indices across all factor matrices
     together, this fact will be relevant later on.
 
     \begin{figure}[ht!]
@@ -53,30 +53,23 @@ approximations using the Tucker Decomposition.
         \caption[The CP Decomposition]{The CP Decomposition}
     \end{figure}
 
-    Mathetmatically, given a tensor $\mathcal{T} \in \mathbb{R}^{m\times n\times
-    p}$ and decomposition rank $r\in \mathbb{N}$, The goal of a CP Decomposition
+    Mathematically, given a tensor $\mathcal{T} \in \mathbb{R}^{m\times n\times
+    p}$ and decomposition rank $r\in \mathbb{N}$, the goal of a CP Decomposition
     is to find factor matrices $\mathbf{A}\in \mathbb{R}^{m\times r},
     \mathbf{B}\in \mathbb{R}^{n\times r}, \mathbf{C}\in \mathbb{R}^{p\times r}$
-    such that 
-
-    \begin{equation}
-        t_{ijk} = \sum_{\ell = 1}^{r} a_{i\ell}b_{j\ell}c_{k\ell} \text{, } \forall (i, j, k) \in [m]\times [n]\times [p]
-    \end{equation}
-
-    Or alternatively:
-
-    \begin{equation}
-        \mathcal{T} \approx \llbracket \mathbf{A, B, C} \rrbracket = \sum_{\ell = 1}^{r} a_\ell \circ b_\ell \circ c_\ell
-    \end{equation}
+    such that \[ t_{ijk} \approx \sum_{\ell = 1}^{r} a_{i\ell}b_{j\ell}c_{k\ell}
+    \text{, } \forall (i, j, k) \in [m]\times [n]\times [p] \] or alternatively
+    \[ \mathcal{T} \approx \llbracket \mathbf{A, B, C} \rrbracket = \sum_{\ell =
+    1}^{r} a_\ell \circ b_\ell \circ c_\ell.\]
 
     The memory footprint of a KTensor is $3rn$. The approximation gets more
     accurate as $r$ increases. This is the 2D matrix equivalent of having an
-    $n\times n$ matrix approximation to be the outer product of $n \times 1$ two
-    vectors. Traditional methods of computing the CP decomposition of a tensor
-    are gradient descent and the newton method. The method used in this work is
-    a variation of the later called damped gauss newton. All these methods often
-    minimize the sum of squares error. The least squares error is shown in
-    \ref{eq:cp_least_squares}:
+    $n\times n$ matrix approximation to be the sum of the outer product of two
+    $n \times 1$ vectors. Traditional methods of computing the CP decomposition
+    of a tensor are gradient descent and the Newton method. The method used in
+    this work is a variation of the latter called damped Gauss-Newton (DGN).
+    This method minimizes the sum of squares error seen in
+    \Cref{eq:cp_least_squares}. 
 
     \begin{equation} \label{eq:cp_least_squares}
         \|\mathcal{T} - \llbracket \mathbf{A, B, C} \rrbracket \|^2 \equiv \sum_{i=1}^{m} \sum_{j=1}^{n} \sum_{k=1}^{p}\left(t_{ijk} - \sum_{\ell=1}^{r} a_{i\ell}b_{j\ell}c_{k\ell} \right)^2
@@ -86,7 +79,7 @@ approximations using the Tucker Decomposition.
     \ref{eq:cp_opt}. This is a non-convex problem. 
 
     \begin{equation} \label{eq:cp_opt}
-        \min_{A} \|\mathcal{T} - \llbracket \mathbf{A, B, C} \rrbracket \|^2 \text{, subject to } \mathbf{A} \in \mathbb{R}^{m\times r} \mathbf{B} \in \mathbb{R}^{n\times r} \mathbf{C} \in \mathbb{R}^{p\times r}
+        \min \|\mathcal{T} - \llbracket \mathbf{A, B, C} \rrbracket \|^2 \text{, subject to } \mathbf{A} \in \mathbb{R}^{m\times r} \mathbf{B} \in \mathbb{R}^{n\times r} \mathbf{C} \in \mathbb{R}^{p\times r}
     \end{equation}
         
 
@@ -110,7 +103,7 @@ approximations using the Tucker Decomposition.
     \end{figure}
 
     If we consider a 3D tensor of size $n^3$ with core of size $r^3$ where $r <
-    n$. Then the number of entries of a TTensor is $3rn + r^3$ which is less
+    n$, then the number of entries of a TTensor is $3rn + r^3$ which is less
     than the original memory footprint and much less if $r \ll n$. The
     reconstruction of the original tensor is performed using TTMs as seen in
     \ref{eq:tucker_ttm}, but if we wish to reconstruct but a single entry then

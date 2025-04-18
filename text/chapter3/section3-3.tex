@@ -130,7 +130,7 @@ individual algorithms, and we report the fastest observed running times.
     to $8192$ cores, achieving a speedup of $937\times$ over the single core
     run. This difference in STHOSVD performance is explained by the tensor
     dimension: a sequential EVD of a matrix of dimension 560 does not become the
-    bottleneck until $P$ is large.
+    bottleneck until $P$ is large. \AD{Decrease size of the images}
     %The high $\frac{n}{r}$ of the 3-way experiment makes it so that LLSV's
     %eigenvalue decomposition subroutine is the limiting factor, which is made
     %worse due to the sequential implementation. This is not the same as on the

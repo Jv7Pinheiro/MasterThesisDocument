@@ -1,36 +1,22 @@
 %!TEX root = ../../main.tex
 
-\subsection{What Is A Tensor?} \label{sec:What is A Tensor}
-    There is no widely agreed definition of a tensor; different fields define it
-    differently. In March 2024, Mathematics Professor Thomas Lam at NYU
-    conducted an online informal survey on mathematical conventions
-    \cite{Math_Conventions_Survey}. The results of one of its questions can be
-    seen on \Cref{fig:What Is A Tensor?}. Though the target audience for
-    this survey were mostly mathematicians and mathematics enthusiats, we can
-    still observe a lerge variaty in definitions of a tensor. But in the great
-    words of my advisor \textit{``84\% of people are wrong''}, and so we reach
-    the definition: \textbf{a tensor is a multidimensional array}. 
-
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[width=0.8\textwidth, keepaspectratio]{figures/WhatIsATensor.png} % 
-        \caption[What Is A Tensor?]{What Is A Tensor?}
-        \label{fig:What Is A Tensor?}
-    \end{figure}
-
-    In other words, a \textbf{tensor} is a $d$-way array, where $d$ is referred
-    to as the order of the tensor. Before we move on any further, a bit of
-    notation is required. The set of real values is denoted as $\mathbb{R}$.
-    Letters $m, n, p, q, r$ are used to represent sizes (or simply $n_1, \cdots,
-    n_d$) and letters $i, j, k, \ell$ are used to represent indices (or simply
-    $i_1, \cdots, i_d$). For the sake of simplification, let $[n] \equiv [1,
-    \cdots, n]$, and furthermore let $[m] \otimes [n] \equiv \{ (i, j) |
-    i\in[m], j\in[n]\}$. Some lower order tensors have other names:
+\subsection{What Is A Tensor?} \label{sec:What is A Tensor} There is no widely
+    agreed definition of a tensor; different fields define it differently. For
+    the purposes of this work, we define tensors through the definition widely
+    used in the field of computer science. A \textbf{tensor} is a $d$-way
+    array, where $d$ is referred to as the order of the tensor. Before we move
+    on any further, a bit of notation is required. The set of real values is
+    denoted as $\mathbb{R}$. Letters $m, n, p, q, r$ are used to represent sizes
+    (or simply $n_1, \cdots, n_d$) and letters $i, j, k, \ell$ are used to
+    represent indices (or simply $i_1, \cdots, i_d$). For the sake of
+    simplification, let $[n] \equiv [1, \cdots, n]$, and furthermore let $[m]
+    \otimes [n] \equiv \{ (i, j) | i\in[m], j\in[n]\}$. Some lower order tensors
+    have other names:
 
 
     \begin{itemize}
-        \item A \textbf{scalar} is a `zero-dimensional' tensor. This is simply a
-        number
+        \item A \textbf{scalar} is a `zero-dimensional' tensor. This is any
+        number $x\in \mathbb{R}$. 
         \item A \textbf{vector} is a one-dimensional array of scalars that
         represent a collection of measurements. This can be visualzied on Figure
         \ref{fig:vector}. We represent vectors by lowercase boldface roman
@@ -422,9 +408,9 @@
         b} \in \mathbb{R}^n$ produces a scalar, and is denoted as $\langle
         \mathbf{a, b}\rangle = \mathbf{a}^\intercal \mathbf{b}$, and is defined
         as in equation \ref{eq:vec_inner_prod}. A vector norm is defined as the
-        inner product of a vector with itself: $\langle \mathbf{a, a} \rangle$.
-        The computational complexity of vector inner products is
-        $\mathcal{O}(n)$
+        square root of the inner product of a vector with itself: $\sqrt{\langle
+        \mathbf{a, a} \rangle}$. The computational complexity of vector inner
+        products is $\mathcal{O}(n)$
         \begin{equation} \label{eq:vec_inner_prod}
             \langle \mathbf{a, b} \rangle = \mathbf{a}^\intercal \mathbf{b} = 
             \left[
@@ -666,8 +652,8 @@
         the mode 3 TTM in \Cref{fig:Mode-3_TTM}. Notice that the matrix
         multiplication format of this TTM in \ref{fig:mode3_ttm_matrix_format}
         have been adapted to have the transpose of all elements involved. This
-        is to avoid any memory movement which is deemed expensive. Again, more
-        details of this can be found on \cite{Big_Boss}
+        is to avoid any data memory movement which is deemed expensive. Again,
+        more details of this can be found on \cite{Big_Boss}
 
         \begin{figure}
             \centering
@@ -708,11 +694,12 @@
         \textit{inner dimensions to match}. For 1D tensors, arrays, There were
         two types of multiplication as there are two ways we can match the
         dimensions. An array $\mathbf{a} \in \mathbb{R}^{n}$ can be multiplied
-        by an array $\mathbf{b}$ of the same length either through $a^\intercal
-        b$ (inner product) or $ab^\intercal$ (outer product). In other words, we
-        could either perform a $1 \times n$ by $n\times 1$ inner product or an
-        $n\times 1$ by $1\times n$ outer product. The former \textit{contracts}
-        the $n$ vs $n$ dimensions to produce a $1$ by $1$ scalar, and the latter
+        by an array $\mathbf{b}$ of the same length either through
+        $\mathbf{a}^\intercal \mathbf{b}$ (inner product) or
+        $\textbf{ab}^\intercal$ (outer product). In other words, we could either
+        perform a $1 \times n$ by $n\times 1$ inner product or an $n\times 1$ by
+        $1\times n$ outer product. The former \textit{contracts} the $n$ vs $n$
+        dimensions to produce a $1$ by $1$ scalar, and the latter
         \textit{contracts} the $1$ vs $1$ dimensions to produce an $n$ by $n$
         matrix. The same idea of contracting the matching inner dimensions can
         be seen in matrix-vector products where we match the second dimension of
@@ -724,10 +711,10 @@
         matrices. In a mode-$k$ TTM we match the columns of matrix to the
         mode-$k$ fibers of a tensor $\mathcal{X}$, then the $k^\text{th}$ mode
         is contracted. The idea of the generalized tensor contraction is the
-        same, contract the matching modes of two tensors. 
+        same, contract some subset of the  matching modes of two tensors. 
 
         Consider two tensors, $\mathcal{X}\in\mathbb{R}^{m\times n\times p}$ and
-        $\mathcal{X}\in\mathbb{R}^{p\times q\times r}$. The last mode of
+        $\mathcal{Y}\in\mathbb{R}^{p\times q\times r}$. The last mode of
         $\mathcal{X}$ matches the size of the first mode of $\mathcal{Y}$, so we
         can contract along those modes. The result is a tensor
         $\mathcal{Z}\in\mathbb{R}^{m\times n\times q\times r}$ defined by 

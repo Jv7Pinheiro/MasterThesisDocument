@@ -4,14 +4,14 @@
 
 \subsection{Fast Matrix Multiplication Algorithms} \label{sec:Fast Matrix Multiplication Algorithms}
 
-    Recall from \Cref{sec:Matrix-Matrix Products} the way matrix multiplications are
-    performed. In fact, \Cref{eq:two_by_two_mat_mul} demonstrates how to multiply
-    two matrices $\mathbf{A, B} \in \mathbb{R}^{2\times2}$. Matrices $\mathbf{A}$
-    and $\mathbf{B}$ don't necessarily need to be of size 2 by 2, as long as they
-    are of a size that is a multiple of 2, we can perform such matrix multiplication
-    using a recursive algorithm like the one on \Cref{alg:recursive_mat_mul}. This
-    is the only time such algorithm is presented using the pseudocode format, for
-    the sake of simplicity algorithms will be showcased in the format displayed in
+    Recall from \Cref{sec:Matrix-Matrix Products} the way matrix multiplications
+    are performed. In fact, \Cref{eq:two_by_two_mat_mul} demonstrates how to
+    multiply two matrices $\mathbf{A, B} \in \mathbb{R}^{2\times2}$. Matrices
+    $\mathbf{A}$ and $\mathbf{B}$ don't necessarily need to be of size 2 by 2,
+    we can perform such matrix multiplication using a recursive algorithm like
+    the one on \Cref{alg:recursive_mat_mul}. This is the only time such
+    algorithm is presented using the pseudocode format, for the sake of
+    simplicity algorithms will be showcased in the format displayed in
     \ref{eq:classic_matmul}.
 
     \begin{algorithm}[!ht]
@@ -90,7 +90,7 @@
     This algorithm involves 8 multiplications and 4 additions of matrices of size
     $\nicefrac n2$. Therefore, our computational complexity becomes $T(n) =
     8T(\nicefrac{n}{2}) + O(n^2) = O(n^{\log_2 8}) = O(n^3)$. This computational
-    cost can be decresed by carefully manipulating our multiplications and additions
+    cost can be decreased by carefully manipulating our multiplications and additions
     in order to reduce the number of recursive calls. In 1969, Volker Strassen
     became the first to develop an algorithm with cost less than $O(n^3)$, which
     made way for \textbf{fast matrix multiplication algorithms}. His classic
@@ -123,15 +123,15 @@
     Strassen's algorithm can be rearranged; we can modify the additions and
     multiplies to get another a permuted version of his algorithm with the same
     number of multiplies and additions. An example of these variations of
-    Strassen's algorithms can be seen in \ref{eq:per_strassen}. This permutted
+    Strassen's algorithms can be seen in \ref{eq:per_strassen}. This permuted
     version will be relevant for \Cref{sec:Cyclic Invariance} as it contains a
     special structure that is hard to visualize in the
     \Cref{eq:classic_strassen}. Notice how the two algorithms are the same,
     except that $\mathbf M_3$ became $\mathbf M_6$, $\mathbf M_4$ became
-    $\mathbf M_3$, and $\mathbf M_6$ became $\mathbf M_4$, and the additions in
-    $\mathbf C$ changed respectively. It is explained in \Cref{sec:Cyclic
-    Invariant Matrix Multiplication Algorithms} that this is due to a change in
-    the columns of a KTensor decomposition. 
+    $\mathbf M_3$, $\mathbf M_6$ became $\mathbf M_7$, and $\mathbf{M}_7$ became
+    $\mathbf{M}_4$ and the additions in $\mathbf C$ changed respectively. It is
+    explained in \Cref{sec:Cyclic Invariant Matrix Multiplication Algorithms}
+    that this is due to a change in the columns of a KTensor decomposition. 
 
     \begin{center}
         \textbf{Permuted Strassen's Algorithm}
@@ -159,17 +159,18 @@
     are considered Strassen's algorithm because they both involve 7
     multiplications. This is because the term \textit{Strassen's algorithm} has
     become an all-encapsulating term for any 2 by 2 matrix multiplication
-    algorithm that uses 7 multiplications instead of the classic 8. For example,
-    take a look at \Cref{eq:var_strassen}. It is no longer just a permutted
-    version of \Cref{eq:classic_strassen} as this onw has 24 matrix additions as
-    opposed to the original's 18. Again, since matrix addition is not the
-    bottleneck, both of these algorithms have the same computational complexity.
-    The algorithm below is still called Strassen's algorithm for the reasons
-    mentioned previously. Furthermore, this variant version will also be
-    relevant in \Cref{sec:Cyclic Invariance} as it contains the same srtructure
-    we will explore later on, but slighly different. It has been proven that
-    there are no possible fast matrix multiplication algorithms with 6
-    multiplications. 
+    algorithm that uses 7 multiplications instead of the classic 8 (since they
+    are all equivalent up to $GL_3$, transpose-like, and cyclic invariant
+    permutations). For example, take a look at \Cref{eq:var_strassen}. It is no
+    longer just a permuted version of \Cref{eq:classic_strassen} as this onw has
+    24 matrix additions as opposed to the original's 18. Again, since matrix
+    addition is not the bottleneck, both of these algorithms have the same
+    computational complexity. The algorithm below is still called Strassen's
+    algorithm for the reasons mentioned previously. Furthermore, this variant
+    version will also be relevant in \Cref{sec:Cyclic Invariance} as it contains
+    the same srtructure we will explore later on, but slighly different. It has
+    been proven that there are no possible fast matrix multiplication algorithms
+    with 6 multiplications. 
 
     \begin{center}
         \textbf{Variant Strassen's Algorithm}
@@ -271,7 +272,10 @@
     \begin{figure}
         \centering
         \input{tikz/chapter2/section2-1/MatMul_asTensor.tex}
-        \caption{Matrix Multiplication in Tensor Format}
+        \caption[Matrix Multiplication in Tensor Format]{Matrix Multiplication
+        in Tensor Format. The matrices should be interpreted as vectorizations
+        of the matrices, for example the label $\mathbf{A}$ should really be
+        vec($\mathbf{A}$)}
         \label{fig:matmul_tensor}
     \end{figure}
 
@@ -395,7 +399,7 @@
     Thus, \Cref{eq:cp_least_squares} becomes 
 
     \begin{equation}
-        \min_{A, B, C} f(\mathbf{v}) = \frac{1}{2} \|\phi (\mathbf{v})\|^2
+        \min f(\mathbf{v}) = \frac{1}{2} \|\phi (\mathbf{v})\|^2
     \end{equation}
 
     With that out of the way we must choose an optimization method. Gradient is
@@ -423,29 +427,29 @@
         \left(
         \left[
         \begin{array}{c}
-            \frac{\partial f}{\partial \mathbf{A}} \\
-            \frac{\partial f}{\partial \mathbf{B}} \\
-            \frac{\partial f}{\partial \mathbf{C}}
+            \nicefrac{\partial f}{\partial \mathbf{A}} \\
+            \nicefrac{\partial f}{\partial \mathbf{B}} \\
+            \nicefrac{\partial f}{\partial \mathbf{C}}
         \end{array}
         \right]
         \right) = 
         \left[
             \begin{array}{c}
-                \frac{\partial f}{\partial \text{vec}(\mathbf{A})} \\
-                \frac{\partial f}{\partial \text{vec}(\mathbf{B})} \\
-                \frac{\partial f}{\partial \text{vec}(\mathbf{C})}
+                \nicefrac{\partial f}{\partial \text{vec}(\mathbf{A})} \\
+                \nicefrac{\partial f}{\partial \text{vec}(\mathbf{B})} \\
+                \nicefrac{\partial f}{\partial \text{vec}(\mathbf{C})}
             \end{array}
         \right]
-        \in \mathbb{R}^{3nr}
+        \in \mathbb{R}^{3n^4}
     \end{equation}
 
     Where each partial derivative is defined as:
 
     \begin{equation}
         \begin{array}{rcl}
-            \frac{\partial f}{\partial \mathbf{A}} & = & -\mathbf{M}_{(1)}(\mathbf{C\odot B}) + \mathbf{A(C^\intercal C\ast B^\intercal B)} \\ 
-            \frac{\partial f}{\partial \mathbf{B}} & = & -\mathbf{M}_{(1)}(\mathbf{C\odot A}) + \mathbf{B(C^\intercal C\ast A^\intercal A)} \\ 
-            \frac{\partial f}{\partial \mathbf{C}} & = & -\mathbf{M}_{(1)}(\mathbf{B\odot A}) + \mathbf{C(B^\intercal B\ast A^\intercal A)} 
+            \nicefrac{\partial f}{\partial \mathbf{A}} & = & -\mathbf{M}_{(1)}(\mathbf{C\odot B}) + \mathbf{A(C^\intercal C\ast B^\intercal B)}\in \mathbb{R}^{n^2\times n^2} \\ 
+            \nicefrac{\partial f}{\partial \mathbf{B}} & = & -\mathbf{M}_{(2)}(\mathbf{C\odot A}) + \mathbf{B(C^\intercal C\ast A^\intercal A)}\in \mathbb{R}^{n^2\times n^2} \\ 
+            \nicefrac{\partial f}{\partial \mathbf{C}} & = & -\mathbf{M}_{(3)}(\mathbf{B\odot A}) + \mathbf{C(B^\intercal B\ast A^\intercal A)}\in \mathbb{R}^{n^2\times n^2} 
         \end{array}
         \label{eq:cp_dgn_partials}
     \end{equation}
@@ -510,7 +514,6 @@
             \text{vec}(\mathbf{\bar{A}(B^\intercal B \ast C^\intercal C) + A(\bar{B}^\intercal B\ast C^\intercal C) + A(B^\intercal B \ast \bar{C}^\intercal C)}) \\
             \text{vec}(\mathbf{B(\bar{A}^\intercal A \ast C^\intercal C) + \bar{B}(A^\intercal A\ast C^\intercal C) + B(A^\intercal A \ast \bar{C}^\intercal C)}) \\
             \text{vec}(\mathbf{C(\bar{A}^\intercal A \ast B^\intercal B) + C(A^\intercal A\ast \bar{B}^\intercal B) + \bar{C}(A^\intercal A \ast B^\intercal B)}) \\
-
         \end{array}
         \right]
     \end{equation*}
